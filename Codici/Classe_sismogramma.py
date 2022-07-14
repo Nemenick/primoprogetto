@@ -2,8 +2,9 @@ import dask.dataframe as dd
 import numpy as np
 import h5py
 import matplotlib.pyplot as plt
+import pandas as pd
 
-
+# TODO invece di fare dizionario fai pd.dataframe
 class Classe_Dataset:
     def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
         self.percorsocsv = percorsocsv
@@ -16,7 +17,8 @@ class Classe_Dataset:
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])
 
-    def acquisisci(self, percorsohdf5):  # colselezione faccio selezione solo dei dati che servono
+    # TODO fai che si chiama lettura scv autonomamente
+    def acquisisci_new(self, percorsohdf5):  # colselezione faccio selezione solo dei dati che servono
         filehdf5 = h5py.File(percorsohdf5, 'r')
         dataset = filehdf5.get("data")
         print("\ndatasetORI", dataset)
@@ -25,6 +27,7 @@ class Classe_Dataset:
         print(nomidata)
         self.sismogramma = []
         self.metadata = {}
+
         for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
@@ -37,9 +40,46 @@ class Classe_Dataset:
                     # P_times.append(trace_P_arrival_sample[i])  # Solo quelli con polarity definita
                     # P_polarity.append(trace_polarity[i])
         sismogramma = np.array(self.sismogramma)
+        pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"]})
+        writer = pd.ExcelWriter('Selezionati.xlsx')
+        pd_names.to_excel(writer, sheet_name='Sheet1', index=False)
+        writer.save()
+        print("shape", sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
+
+    # TODO fai che si chiama lettura scv autonomamente (passa percorso csv)
+    # legge da questo cvs e hdf5 le tracce presenti in percorso nomi
+    def acquisisci_old(self, percorsohdf5,percorso_nomi):  # colselezione faccio selezione solo dei dati che servono
+        filehdf5 = h5py.File(percorsohdf5, 'r')
+        dataset = filehdf5.get("data")
+        print("\ndatasetORI", dataset)
+        # nomidata = list(dataset.keys())                                  # Mi sono salvato i nomi di tutti i dataset
+        nomidata = # Todo leggi da file csv o xls
+        print(nomidata)
+        self.sismogramma = []
+        self.metadata = {}
+
+        for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
+            self.metadata[key] = []
+        for i in range(len(nomidata)):
+            if self.allmetadata["trace_polarity"][i] != 'undecidable' \
+                    and (self.allmetadata["station_channels"][i]=="HH" or self.allmetadata["station_channels"][i]=="EH"  ):        # TODO condizione da aggiornare
+                self.sismogramma.append(dataset.get(nomidata[i]))
+                self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
+                for key in self.metadata:
+                    self.metadata[key].append(self.allmetadata[key][i])
+                    # P_times.append(trace_P_arrival_sample[i])  # Solo quelli con polarity definita
+                    # P_polarity.append(trace_polarity[i])
+        sismogramma = np.array(self.sismogramma)
+        pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"]})
+        writer = pd.ExcelWriter('Selezionati.xlsx')
+        pd_names.to_excel(writer, sheet_name='Sheet1', index=False)
+        writer.save()
         print("shape", sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
     def plotta(self,visualizza):
+        if len(self.sismogramma<visualizza):
+            print("lunghezza sismogramma < visualizza")
+            return 1
         for i in range(visualizza):                 #TODO aggiungi qui sotto un # per far printare traccia tutta
             plt.plot(range(200), self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - 100:self.metadata["trace_P_arrival_sample"][i] + 100])
             plt.axvline(x=100, c="r", ls="--")
@@ -59,6 +99,6 @@ coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_pol
 # trace_name,station_channels needed
 Dataset_1 = Classe_Dataset()
 Dataset_1.letturacsv(csv, coltot)
-Dataset_1.acquisisci(hdf5)
-Dataset_1.plotta(visualizza=1058)
+Dataset_1.acquisisci_new(hdf5) # TODO fare acquisisci_old, non selezione quelli da acquisire ma tracenames da file xls
+# Dataset_1.plotta(visualizza=0)
 
