@@ -1,0 +1,5 @@
+in un file (tipo di testo, MANUALMENTE), mentre controllato e seleziono le forme d'onda non buone, mi scrivo i loro nomi.
+
+faccio leggere a python i nomi dal file, 
+mi cerco il nome nel file "selezionati.csv",
+mi sovrascrivo il file con i nomi che non mi piacciono eliminati.
