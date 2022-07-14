@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import dask.dataframe as dd
 
-visualizza = 40
+visualizza = 4
 
 # TOdo lettura file CSV
 datd = dd.read_csv('C:/Users/HP_i3-7200U/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv', usecols=["trace_name", "trace_P_arrival_sample", "trace_polarity"])
