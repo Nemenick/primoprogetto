@@ -3,7 +3,7 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import time
 
 class Classe_Dataset:
     # TODO aggiungi proprità self.source (nome del file da cui derivano le tracce)
@@ -11,6 +11,7 @@ class Classe_Dataset:
     def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
         """ TODO è obsoleto"""
         self.percorsocsv = percorsocsv
+
         datd = dd.read_csv(self.percorsocsv, usecols=coltot)
         self.allmetadata = {}
         for i in coltot:                # genera metadata["colname"] = np.array["colname"]
@@ -28,14 +29,18 @@ class Classe_Dataset:
         """
         self.percorsocsv = percorsocsv
         # FIXME engine"python" (lentissimo) - mi dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
-        datd = dd.read_csv(self.percorsocsv, usecols=coltot,skiprows=[33114], on_bad_lines="skip")
+        start = time.perf_counter()
+        datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip", sample=10**8, assume_missing=True)
+        print(time.perf_counter() - start)
         self.allmetadata = {}
         for i in coltot:  # genera metadata["colname"] = np.array["colname"]
             self.allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
+            print(i, time.perf_counter() - start)
         for key in self.allmetadata:
             print(key, self.allmetadata[key])
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])
+        print(time.perf_counter() - start)
 
         filehdf5 = h5py.File(percorsohdf5, 'r')
         dataset = filehdf5.get("data")
