@@ -36,7 +36,7 @@ class Classe_Dataset:
         print(nomidata)
         self.sismogramma = []
         self.metadata = {}
-        indice_csv = []
+        self.indice_csv = []
         for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
@@ -45,14 +45,14 @@ class Classe_Dataset:
                          self.allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
                 self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
-                indice_csv.append(i)
+                self.indice_csv.append(i)
                 for key in self.metadata:
                     self.metadata[key].append(self.allmetadata[key][i])
                     # P_times.append(trace_P_arrival_sample[i])  # Solo quelli con polarity definita
                     # P_polarity.append(trace_polarity[i])
         self.sismogramma = np.array(self.sismogramma)
-        indice_csv = np.array(indice_csv)
-        pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"], "indice_csv": indice_csv})  # bastaindicecsv
+        self.indice_csv = np.array(self.indice_csv)
+        pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"], "indice_csv": self.indice_csv})  # bastaindicecsv
         pd_names.to_csv("Selezionati.csv", index=False)
         # pd_names = tracenames':[], 'indice file csv'
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
@@ -75,7 +75,7 @@ class Classe_Dataset:
         # nomidata = list(dataset.keys())                                  # Mi sono salvato i nomi di tutti i dataset
         datnomi = dd.read_csv(percorso_nomi, usecols=["trace_name", "indice_csv"])
         nomidata = np.array(datnomi["trace_name"])
-        indice_csv = np.array(datnomi["numero_csv"])
+        self.indice_csv = np.array(datnomi["indice_csv"])
         print(nomidata)
         self.sismogramma = []
         self.metadata = {}
@@ -86,13 +86,13 @@ class Classe_Dataset:
             self.sismogramma.append(dataset.get(nomidata[i]))
             self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
             for key in self.metadata:
-                self.metadata[key].append(self.allmetadata[key][indice_csv[i]])  # FIXME va bene indicecsv??
+                self.metadata[key].append(self.allmetadata[key][self.indice_csv[i]])  # FIXME va bene indicecsv??
         self.sismogramma = np.array(self.sismogramma)
 
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
     def plotta(self, visualizza, namepng):
-        if len(self.sismogramma < visualizza):
+        if len(self.sismogramma) < visualizza:
             print("lunghezza sismogramma < visualizza")
             return 1
         for i in range(visualizza):                 # TODO aggiungi qui sotto un # per far printare traccia tutta
@@ -101,8 +101,9 @@ class Classe_Dataset:
             stringa = ""
             for key in self.metadata:
                 stringa = stringa + str(self.metadata[key][i]) + " "
+            stringa = stringa + str(self.indice_csv[i])
             plt.title(stringa)
-            plt.savefig(namepng + str(i))
+            plt.savefig(namepng + "_" + str(self.indice_csv[i]))
             plt.clf()
             # plt.show()
 
@@ -111,8 +112,11 @@ csv = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_
 hdf5 = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+nomi = "Selezionati.csv"
 # trace_name,station_channels needed
 Dataset_1 = Classe_Dataset()
-#Dataset_1.letturacsv(csv, coltot)
+# Dataset_1.letturacsv(csv, coltot)
 Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
-# Dataset_1.plotta(visualizza=30, )
+Dataset_1.plotta(visualizza=30, namepng="New")
+Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
+Dataset_1.plotta(visualizza=30, namepng="Old")
