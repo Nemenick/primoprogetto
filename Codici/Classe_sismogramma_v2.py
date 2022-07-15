@@ -6,7 +6,10 @@ import pandas as pd
 
 
 class Classe_Dataset:
+    # TODO aggiungi proprità self.source (nome del file da cui derivano le tracce)
+
     def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
+        """ TODO è obsoleto"""
         self.percorsocsv = percorsocsv
         datd = dd.read_csv(self.percorsocsv, usecols=coltot)
         self.allmetadata = {}
@@ -17,9 +20,15 @@ class Classe_Dataset:
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])
 
+    # FIxme prova a vedere perchè non legge csv e risolvi su tutte le letture
     def acquisisci_new(self, percorsohdf5, percorsocsv, coltot):
+        """
+        Acquisisce e seleziona tracce del file hdf5 e csv
+        e salva in file csv nomi e indici delle tracce selezionate
+        """
         self.percorsocsv = percorsocsv
-        datd = dd.read_csv(self.percorsocsv, usecols=coltot)
+        # FIXME engine"python" (lentissimo) - mi dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
+        datd = dd.read_csv(self.percorsocsv, usecols=coltot,skiprows=[33114], on_bad_lines="skip")
         self.allmetadata = {}
         for i in coltot:  # genera metadata["colname"] = np.array["colname"]
             self.allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
@@ -57,8 +66,11 @@ class Classe_Dataset:
         # pd_names = tracenames':[], 'indice file csv'
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
-    # legge da questo cvs e hdf5 le tracce indicate in percorso nomi
     def acquisisci_old(self, percorsohdf5, percorsocsv, coltot, percorso_nomi):
+        """"
+        Acquisisce le tracce presenti in file hdf5 e csv che sono nominate nel file percorso nomi
+        """
+
         self.percorsocsv = percorsocsv
         datd = dd.read_csv(self.percorsocsv, usecols=coltot)
         self.allmetadata = {}
@@ -91,6 +103,18 @@ class Classe_Dataset:
 
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
+    # TODO completa
+    def crea_custom_dataset(self, percorsohdf5in, percorsocsvin, percorsohdf5out, percorsocsvout, coltot):
+        """
+        creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
+        """
+
+    # TODO completa
+    def leggi_custom_dataset(self, percorsohdf5, percorsocsv):
+        """
+        legge TUTTE le tracce di questo dataset
+        """
+
     def plotta(self, visualizza, namepng):
         if len(self.sismogramma) < visualizza:
             print("lunghezza sismogramma < visualizza")
@@ -108,8 +132,8 @@ class Classe_Dataset:
             # plt.show()
 
 
-csv = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5 = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
+hdf5 = '/home/silvia/Desktop/Instance_Data/data'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
@@ -117,6 +141,6 @@ nomi = "Selezionati.csv"
 Dataset_1 = Classe_Dataset()
 # Dataset_1.letturacsv(csv, coltot)
 Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
-Dataset_1.plotta(visualizza=30, namepng="New")
-Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
-Dataset_1.plotta(visualizza=30, namepng="Old")
+Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
+# Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
+# Dataset_1.plotta(visualizza=30, namepng="Old")
