@@ -183,8 +183,8 @@ class Classe_Dataset:
             print("lunghezza sismogramma < visualizza")
             return 1
         for i in range(visualizza):                 # TODO aggiungi qui sotto un # per far printare traccia tutta
-            plt.plot(range(200), self.sismogramma[i][int(self.metadata["trace_P_arrival_sample"][i]) - 100:
-                                                     int(self.metadata["trace_P_arrival_sample"][i]) + 100])
+            plt.plot(range(200), self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - 100:
+                                                     self.metadata["trace_P_arrival_sample"][i] + 100])
             plt.axvline(x=100, c="r", ls="--")
             stringa = ""
             for key in self.metadata:
