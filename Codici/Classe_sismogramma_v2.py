@@ -164,6 +164,19 @@ class Classe_Dataset:
         legge TUTTE le tracce di questo dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
+        start = time.perf_counter()
+        filehdf5 = h5py.File(percorsohdf5, 'r')
+        self.sismogramma = filehdf5.get("dataset1")
+        self.sismogramma = np.array(self.sismogramma)
+        print("ho caricato hdf5",time.perf_counter()-start)
+        datd = dd.read_csv(percorsocsv) # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
+        print("ho letto csv", time.perf_counter()-start)
+        self.metadata = {}
+        for key in datd:
+            self.metadata[key] = np.array(datd[key])
+            print("ho caricato la key ", key, time.perf_counter() - start)
+        # print(self.sismogramma.shape, len(self.sismogramma))
+
 
     def plotta(self, visualizza, namepng):
         if len(self.sismogramma) < visualizza:
@@ -192,7 +205,8 @@ coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_pol
 nomi = "Selezionati.csv"
 # trace_name,station_channels needed
 Dataset_1 = Classe_Dataset()
-Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
+Dataset_1.leggi_custom_dataset(hdf5out,csvout)
+# Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
 # Dataset_1.letturacsv(csv, coltot)
 # Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
 # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
