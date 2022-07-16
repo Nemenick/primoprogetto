@@ -162,6 +162,7 @@ class Classe_Dataset:
     def leggi_custom_dataset(self, percorsohdf5, percorsocsv):
         """
         legge TUTTE le tracce di questo dataset
+        le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
 
     def plotta(self, visualizza, namepng):
