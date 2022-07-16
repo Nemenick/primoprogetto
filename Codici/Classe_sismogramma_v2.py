@@ -164,18 +164,20 @@ class Classe_Dataset:
         legge TUTTE le tracce di questo dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
+
         start = time.perf_counter()
+
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
         print("ho caricato hdf5",time.perf_counter()-start)
-        datd = dd.read_csv(percorsocsv) # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
+        datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int}) # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
         print("ho letto csv", time.perf_counter()-start)
         self.metadata = {}
         for key in datd:
             self.metadata[key] = np.array(datd[key])
             print("ho caricato la key ", key, time.perf_counter() - start)
-        # print(self.sismogramma.shape, len(self.sismogramma))
+        print(self.sismogramma.shape, len(self.sismogramma))
 
 
     def plotta(self, visualizza, namepng):
@@ -183,15 +185,16 @@ class Classe_Dataset:
             print("lunghezza sismogramma < visualizza")
             return 1
         for i in range(visualizza):                 # TODO aggiungi qui sotto un # per far printare traccia tutta
+            print(self.metadata["trace_P_arrival_sample"][i])
             plt.plot(range(200), self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - 100:
                                                      self.metadata["trace_P_arrival_sample"][i] + 100])
             plt.axvline(x=100, c="r", ls="--")
             stringa = ""
             for key in self.metadata:
                 stringa = stringa + str(self.metadata[key][i]) + " "
-            stringa = stringa + str(self.indice_csv[i])
+            # stringa = stringa + str(self.indice_csv[i])
             plt.title(stringa)
-            plt.savefig(namepng + "_" + str(self.indice_csv[i]))
+            plt.savefig(namepng + "_" + str(i))
             plt.clf()
             # plt.show()
 
@@ -211,4 +214,4 @@ Dataset_1.leggi_custom_dataset(hdf5out,csvout)
 # Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
 # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
 # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
-# Dataset_1.plotta(visualizza=30, namepng="Old")
+Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
