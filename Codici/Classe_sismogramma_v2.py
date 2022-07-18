@@ -4,6 +4,7 @@ import h5py
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+import json
 
 class Classe_Dataset:
     # TODO aggiungi proprità self.source (nome del file da cui derivano le tracce)
@@ -179,6 +180,15 @@ class Classe_Dataset:
             print("ho caricato la key ", key, time.perf_counter() - start)
         print(self.sismogramma.shape, len(self.sismogramma))
 
+    def to_txt(self,percorsohdf5,percorsocsv,coltot,txt_data,txt_metadata):
+        self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot)
+        print("\n\nVA BENE?", self.sismogramma)aaa
+        np.savetxt(txt_data, self.sismogramma, fmt='%.18e')
+        metadata_txt = pd.DataFrame.from_dict(self.metadata)
+        metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
+        # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
+
+
 
     def plotta(self, visualizza, namepng):
         if len(self.sismogramma) < visualizza:
@@ -199,19 +209,22 @@ class Classe_Dataset:
             # plt.show()
 
 
-csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/data'
+csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
 csvout = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
 hdf5out = '/home/silvia/Desktop/Instance_Data/data_selected_Polarity_Velocimeter.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+txt_data = "/home/silvia/Desktop/txt_tracce.txt"
+txt_metadata = "/home/silvia/Desktop/txt_metadata.txt"
 nomi = "Selezionati.csv"
 # trace_name,station_channels needed
 Dataset_1 = Classe_Dataset()
-Dataset_1.leggi_custom_dataset(hdf5out,csvout)
+Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity", "source_magnitude"],txt_data,txt_metadata)
+# Dataset_1.leggi_custom_dataset(hdf5out,csvout)
 # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
 # Dataset_1.letturacsv(csv, coltot)
 # Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
 # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
 # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
-Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+# Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
