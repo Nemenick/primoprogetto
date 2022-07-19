@@ -4,7 +4,7 @@ import h5py
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
-import json
+
 
 class Classe_Dataset:
     # TODO aggiungi proprità self.source (nome del file da cui derivano le tracce)
@@ -182,7 +182,7 @@ class Classe_Dataset:
 
     def to_txt(self,percorsohdf5,percorsocsv,coltot,txt_data,txt_metadata):
         self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot)
-        print("\n\nVA BENE?", self.sismogramma)aaa
+        print("\n\nVA BENE?", self.sismogramma)
         np.savetxt(txt_data, self.sismogramma, fmt='%.18e')
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
