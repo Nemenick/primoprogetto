@@ -13,7 +13,7 @@ txt_metadata = "/home/silvia/Desktop/txt_metadata.txt"
 
 """
 Lenovo
-csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_10k.csv'
+csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
 hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
 csvout = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
 hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
