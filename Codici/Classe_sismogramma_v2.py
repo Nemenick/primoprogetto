@@ -24,6 +24,7 @@ class Classe_Dataset:
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
         e salva in file csv nomi e indici delle tracce selezionate
+        ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
         """
         self.percorsocsv = percorsocsv
         start = time.perf_counter()
@@ -204,24 +205,25 @@ class Classe_Dataset:
             plt.clf()
             # plt.show()
 
+if __name__ == "main":
+    csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+    hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+    csvout = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+    hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
+    txt_data = "C:/Users/GioCar/Desktop/txt_tracce.txt"
+    txt_metadata = "C:/Users/GioCar/Desktop/txt_metadata.txt"
+    coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+              "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+    nomi = "Selezionati.csv"
 
-csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-csvout = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
-hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
-txt_data = "C:/Users/GioCar/Desktop/txt_tracce.txt"
-txt_metadata = "C:/Users/GioCar/Desktop/txt_metadata.txt"
-coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
-nomi = "Selezionati.csv"
-# trace_name,station_channels needed
-Dataset_1 = Classe_Dataset()
-Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample",
-                                 "trace_polarity", "source_magnitude"], txt_data, txt_metadata)
-# Dataset_1.leggi_custom_dataset(hdf5out,csvout)
-# Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
-# Dataset_1.letturacsv(csv, coltot)
-# Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
-# Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
-# Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
-# Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+    # trace_name,station_channels needed
+    # Dataset_1 = Classe_Dataset()
+    # Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample",
+    #                                  "trace_polarity", "source_magnitude"], txt_data, txt_metadata)
+    # Dataset_1.leggi_custom_dataset(hdf5out,csvout)
+    # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
+    # Dataset_1.letturacsv(csv, coltot)
+    # Dataset_1.acquisisci_new(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot)
+    # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
+    # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
+    # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
