@@ -13,20 +13,32 @@ coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_pol
 nomi = "Selezionati.csv"
 Dati.acquisisci_old(hdf5in, csvin, coltot=coltot, percorso_nomi=nomi)
 
-x = np.zeros((len(Dati.sismogramma), 200))
+x_train = np.zeros((len(Dati.sismogramma)*2, 260))
 for i in range(len(Dati.sismogramma)):
-    x[i] = Dati.sismogramma[i][Dati.metadata["trace_P_arrival_sample"][i] - 100:
-                                              Dati.metadata["trace_P_arrival_sample"][i] + 100]
-print(type(x), x.shape)
+    x_train[i] = Dati.sismogramma[i][Dati.metadata["trace_P_arrival_sample"][i] - 130:
+                                     Dati.metadata["trace_P_arrival_sample"][i] + 130]
+    x_train[i+len(Dati.sismogramma)] = -Dati.sismogramma[i][Dati.metadata["trace_P_arrival_sample"][i] - 130:
+                                        Dati.metadata["trace_P_arrival_sample"][i] + 130]
+
+print(type(x_train), x_train.shape)
+y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati.sismogramma))] +
+                   [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(len(Dati.sismogramma))])
+print("\nsomma ytrain", np.sum(y_train))    # OK si trova
+
+(x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
+(x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
+
 
 model = keras.models.Sequential([
-    Conv1D(16, 3, input_shape=(len(Dati.sismogramma[0]),  1), activation="relu"),
+    Conv1D(64, 3, input_shape=(len(x_train[0]),  1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
+    MaxPooling1D(2),
+    Conv1D(128, 3, activation="relu"),
     MaxPooling1D(2),
     Conv1D(32, 3, activation="relu"),
     MaxPooling1D(2),
     Flatten(),
-    Dense(20, activation="relu"),
-    Dense(10, activation="softmax")
+    Dense(50, activation="relu"),
+    Dense(1, activation="sigmoid")
 ])
 
 model.compile(
@@ -34,3 +46,28 @@ model.compile(
     loss="binary_crossentropy",
     metrics=['accuracy']
 )
+
+epoche = 50
+storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
+model.save("Simple_data_conv_1.0.hdf5")
+print("\n\nQUI\n", storia.history,)
+print(storia.history.keys())
+loss_train = storia.history["loss"]
+loss_val = storia.history["val_loss"]
+acc_train = storia.history["accuracy"]
+acc_val = storia.history["val_accuracy"]
+
+plt.plot(range(1, epoche+1), loss_train, label="loss_train")
+plt.plot(range(1, epoche+1), loss_val, label="loss_val")
+plt.legend()
+plt.show()
+
+plt.plot(range(1, epoche+1), acc_train, label="acc_train")
+plt.plot(range(1, epoche+1), acc_val, label="acc_val")
+plt.legend()
+plt.show()
+
+# predizione = model.evaluate(x_test, y_test)
+#
+# print(len(predizione), y_test.shape, type(predizione), type(y_test))
+# print("predict", predizione)
