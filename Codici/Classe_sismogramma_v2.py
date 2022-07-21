@@ -192,21 +192,21 @@ class Classe_Dataset:
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
 
-    def plotta(self, visualizza, namepng):
+    def plotta(self, visualizza, namepng=None):
         if len(self.sismogramma) < visualizza:
             print("lunghezza sismogramma < visualizza")
             return 1
         for i in range(visualizza):                 # TODO aggiungi qui sotto un # per far printare traccia tutta
             print(self.metadata["trace_P_arrival_sample"][i])
-            plt.plot(range(200), self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - 100:
-                                                     self.metadata["trace_P_arrival_sample"][i] + 100])
-            plt.axvline(x=100, c="r", ls="--")
+            plt.plot(range(400), self.sismogramma[i])#[self.metadata["trace_P_arrival_sample"][i] - 100:
+                                                     #self.metadata["trace_P_arrival_sample"][i] + 100])
+            plt.axvline(x=200, c="r", ls="--")
             stringa = ""
             for key in self.metadata:
                 stringa = stringa + str(self.metadata[key][i]) + " "
             # stringa = stringa + str(self.indice_csv[i])
             plt.title(stringa)
-            plt.savefig(namepng + "_" + str(i))
+            plt.savefig(namepng + "_" + str(i))       # TODO if None non fare niente
             plt.clf()
             # plt.show()
 
@@ -217,6 +217,8 @@ txt_metadata = "/home/silvia/Desktop/txt_metadata_down.txt"
 Dataset_1 = Classe_Dataset()
 Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample","trace_polarity",
                                  "source_magnitude"], "selezionati", txt_data, txt_metadata)
+Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Qualcosa")
+
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
