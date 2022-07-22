@@ -7,7 +7,6 @@ import time
 
 
 class Classe_Dataset:
-
     """def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
         self.percorsocsv = percorsocsv
 
@@ -19,6 +18,9 @@ class Classe_Dataset:
             print(key, self.allmetadata[key])
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])"""
+                            # valore opzionale, karg
+    def __init__(self, Centro=False):               # Funzione di inizzializzazione,chiamata appena chiamo la classe
+        self.centrato = Centro
 
     def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati):
         """
@@ -205,6 +207,8 @@ class Classe_Dataset:
             plt.clf()
             # plt.show()
 
+d=Classe_Dataset()
+print(d.centrato)
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
@@ -219,12 +223,12 @@ if __name__ == "main":
     #
     # # trace_name,station_channels needed
     # Dataset_1 = Classe_Dataset()
-    # # Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample",
-    # #                                  "trace_polarity", "source_magnitude"], txt_data, txt_metadata)
-    # # Dataset_1.leggi_custom_dataset(hdf5out,csvout)
-    # # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
-    # # Dataset_1.letturacsv(csv, coltot)
+    # Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample",
+    #                                  "trace_polarity", "source_magnitude"], txt_data, txt_metadata)
+    # Dataset_1.leggi_custom_dataset(hdf5out,csvout)
+    # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
+    # Dataset_1.letturacsv(csv, coltot)
     # Dataset_1.acquisisci_new(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, nomi_selezionati=nomi)
-    # # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
-    # # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
-    # # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+    # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
+    # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
+    # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
