@@ -1,4 +1,5 @@
 import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
 from keras.utils.np_utils import to_categorical
@@ -6,8 +7,8 @@ from matplotlib import pyplot as plt
 from Classe_sismogramma_v2 import Classe_Dataset
 
 Dati = Classe_Dataset()
-csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
@@ -47,11 +48,12 @@ model.compile(
     metrics=['accuracy']
 )
 
-epoche = 50
+epoche = 1
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 model.save("Simple_data_conv_1.0.hdf5")
-print("\n\nQUI\n", storia.history,)
+print("\n\nQUI\n", storia.history)
 print(storia.history.keys())
+
 loss_train = storia.history["loss"]
 loss_val = storia.history["val_loss"]
 acc_train = storia.history["accuracy"]
@@ -60,12 +62,14 @@ acc_val = storia.history["val_accuracy"]
 plt.plot(range(1, epoche+1), loss_train, label="loss_train")
 plt.plot(range(1, epoche+1), loss_val, label="loss_val")
 plt.legend()
-plt.show()
+plt.savefig("loss")
+plt.clf()
 
 plt.plot(range(1, epoche+1), acc_train, label="acc_train")
 plt.plot(range(1, epoche+1), acc_val, label="acc_val")
 plt.legend()
-plt.show()
+plt.savefig("accuracy")
+plt.clf()
 
 # predizione = model.evaluate(x_test, y_test)
 #
