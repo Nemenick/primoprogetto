@@ -22,11 +22,12 @@ class Classe_Dataset:
     def __init__(self):
         self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
 
-    def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati):
+    def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, **kwargs):
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
         e salva in file csv nomi_selezionati e indici delle tracce selezionate
         ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
+        kwargs per chiamare Finestra    # TODO implementa
         """
         self.percorsocsv = percorsocsv
         start = time.perf_counter()
@@ -111,9 +112,10 @@ class Classe_Dataset:
 
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
-    def crea_custom_dataset(self, percorsohdf5in, percorsocsvin, percorsohdf5out, percorsocsvout_pandas, coltot):
+    def crea_custom_dataset(self, percorsohdf5in, percorsocsvin, percorsohdf5out, percorsocsvout_pandas, coltot, **kwargs):
         """
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
+        kwargs per chiamare Finestra # TODO implementa
         """
         start = time.perf_counter()
         self.percorsocsv = percorsocsvin
@@ -183,23 +185,36 @@ class Classe_Dataset:
             print("ho caricato la key ", key, time.perf_counter() - start)
         print(self.sismogramma.shape, len(self.sismogramma))
 
-    def Finestra(self,semiampiezza):
+    def Finestra(self, semiampiezza=0):
         """
+            taglia e se necessario centra la finestra
             semiampiezza: numero di samples (0.01s) es 100 per finestra di 2 sec
         """
-        if len(self.sismogramma) > 2 * semiampiezza:
-            if self.centrato:
-                centro = len(self.sismogramma) // 2
+        sismogramma = [0 for i in range(len(self.sismogramma))]
+
+        if self.centrato:
+            if len(self.sismogramma[0]) > 2 * semiampiezza:
+                centro = len(self.sismogramma[0]) // 2
                 for i in range(len(self.sismogramma)):
-                    self.sismogramma[i] = self.sismogramma[i][centro - semiampiezza:
-                                                              centro + semiampiezza]
+                    sismogramma[i] = self.sismogramma[i][centro - semiampiezza:
+                                                         centro + semiampiezza]
+                self.sismogramma = np.array(sismogramma)
             else:
-                for i in range(len(self.sismogramma)):
-                    self.sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
-                                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
-                self.centrato = True
+                print("\nE' gia centrato e gia con finsetra + piccola della richiesta")
+                print("Non ho fatto niente\n")
         else:
-            print("finestra troppo grande")
+            for i in range(len(self.sismogramma)):
+                if self.metadata["trace_P_arrival_sample"][i] > semiampiezza:
+                    sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
+                                                         self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
+                else:
+                    print("ATTENTO, SCEGLI FINESTRA PIU PICCOLA!")
+                    print("semiampiezza = ", semiampiezza, "ArrivoP = ", self.metadata["trace_P_arrival_sample"][i])
+                    return 1
+            self.sismogramma = np.array(sismogramma)
+
+            self.centrato = True
+
 
 
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
@@ -210,27 +225,66 @@ class Classe_Dataset:
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
 
-    def plotta(self, visualizza, namepng=None):
+    def plotta(self, visualizza, semiampiezza=None, namepng=None):
         if len(self.sismogramma) < visualizza:
-            print("lunghezza sismogramma < visualizza")
+            print("lunghezza sismogramma < sismogrammi da visualizzare")
             return 1
-        for i in range(visualizza):                 # TODO aggiungi qui sotto un # per far printare traccia tutta
-            print(self.metadata["trace_P_arrival_sample"][i])
-            plt.plot(range(400), self.sismogramma[i])#[self.metadata["trace_P_arrival_sample"][i] - 100:
-                                                     #self.metadata["trace_P_arrival_sample"][i] + 100])
-            plt.axvline(x=200, c="r", ls="--")
-            stringa = ""
-            for key in self.metadata:
-                stringa = stringa + str(self.metadata[key][i]) + " "
-            # stringa = stringa + str(self.indice_csv[i])
-            plt.title(stringa)
-            plt.savefig(namepng + "_" + str(i))       # TODO if None non fare niente
-            plt.clf()
-            # plt.show()
 
-d = Classe_Dataset()
-print(d.centrato)
+        if self.centrato:
+            if semiampiezza is None or semiampiezza > len(self.sismogramma[0])//2:
+                semiampiezza = len(self.sismogramma[0])//2
+            for i in range(visualizza):
+                lung = len(self.sismogramma[0])
+                plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
+                                                                    lung//2 + semiampiezza])
+                plt.axvline(x=semiampiezza, c="r", ls="--")
+                stringa = ""
+                for key in self.metadata:
+                    stringa = stringa + str(self.metadata[key][i]) + " "
+                # stringa = stringa + str(self.indice_csv[i])
+                plt.title(stringa)
+                plt.savefig(namepng + "_" + str(i))  # TODO if name = None non fare niente
+                plt.clf()
+                # plt.show()
+        else:
+            semiampiezza_ori = semiampiezza
+            for i in range(visualizza):
+                if semiampiezza_ori is None or semiampiezza_ori > self.metadata["trace_P_arrival_sample"][i]:
+                    semiampiezza = self.metadata["trace_P_arrival_sample"][i]-1
+                else:
+                    semiampiezza = semiampiezza_ori
+                print(self.metadata["trace_P_arrival_sample"][i])
+                plt.plot(range(2*semiampiezza),
+                         self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
+                                             self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
+                plt.axvline(x=semiampiezza, c="r", ls="--")
+                stringa = ""
+                for key in self.metadata:
+                    stringa = stringa + str(self.metadata[key][i]) + " "
+                # stringa = stringa + str(self.indice_csv[i])
+                plt.title(stringa)
+                plt.savefig(namepng + "_" + str(i))       # TODO if name = None non fare niente
+                plt.clf()
+                # plt.show()
 
+
+
+csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+csvout = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
+txt_data = "C:/Users/GioCar/Desktop/txt_tracce.txt"
+txt_metadata = "C:/Users/GioCar/Desktop/txt_metadata.txt"
+coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+nomi = "Selezionati.csv"
+
+
+Dataset_1 = Classe_Dataset()
+print(Dataset_1.centrato)
+Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
+Dataset_1.Finestra(100)
+Dataset_1.plotta(50,semiampiezza=20000000,namepng="prova")
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
@@ -249,7 +303,6 @@ if __name__ == "main":
     #                                  "trace_polarity", "source_magnitude"], txt_data, txt_metadata)
     # Dataset_1.leggi_custom_dataset(hdf5out,csvout)
     # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
-    # Dataset_1.letturacsv(csv, coltot)
     # Dataset_1.acquisisci_new(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, nomi_selezionati=nomi)
     # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
     # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
