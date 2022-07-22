@@ -4,6 +4,9 @@ import h5py
 import matplotlib.pyplot as plt
 import pandas as pd
 import time
+import warnings
+
+
 
 
 class Classe_Dataset:
@@ -202,20 +205,24 @@ class Classe_Dataset:
             else:
                 print("\nE' gia centrato e gia con finsetra + piccola della richiesta")
                 print("Non ho fatto niente\n")
+
         else:
             for i in range(len(self.sismogramma)):
                 if self.metadata["trace_P_arrival_sample"][i] > semiampiezza:
                     sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                                          self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
                 else:
-                    print("ATTENTO, SCEGLI FINESTRA PIU PICCOLA!")
+                    stringa = "#"
+                    for _ in range(300):
+                        stringa = stringa + "#"
+                    warnings.warn("\n"+stringa+"\nATTENTO, SCEGLI FINESTRA PIU PICCOLA!,"
+                                               "continuo senza centrare nulla\n"+stringa)
                     print("semiampiezza = ", semiampiezza, "ArrivoP = ", self.metadata["trace_P_arrival_sample"][i])
                     return 1
+
             self.sismogramma = np.array(sismogramma)
 
             self.centrato = True
-
-
 
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
         self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot, nomi_selezionati=nomi_selezionati)
@@ -253,7 +260,7 @@ class Classe_Dataset:
                     semiampiezza = self.metadata["trace_P_arrival_sample"][i]-1
                 else:
                     semiampiezza = semiampiezza_ori
-                print(self.metadata["trace_P_arrival_sample"][i])
+                # print(self.metadata["trace_P_arrival_sample"][i])
                 plt.plot(range(2*semiampiezza),
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
@@ -283,8 +290,8 @@ nomi = "Selezionati.csv"
 Dataset_1 = Classe_Dataset()
 print(Dataset_1.centrato)
 Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-Dataset_1.Finestra(100)
-Dataset_1.plotta(50,semiampiezza=20000000,namepng="prova")
+Dataset_1.Finestra(1000000)
+Dataset_1.plotta(50,semiampiezza=100,namepng="prova")
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
