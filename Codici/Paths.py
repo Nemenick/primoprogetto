@@ -20,3 +20,26 @@ hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocim
 txt_data = "C:/Users/GioCar/Desktop/txt_tracce.txt"
 txt_metadata = "C:/Users/GioCar/Desktop/txt_metadata.txt"
 """
+if len(self.sismogramma) > 2 * semiampiezza and not self.centrato:
+    for i in range(len(self.sismogramma)):
+        self.sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
+                                                  self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
+    self.centrato = True
+
+if len(self.sismogramma) > 2 * semiampiezza and self.centrato:
+    centro = len(self.sismogramma) // 2
+    for i in range(len(self.sismogramma)):
+        self.sismogramma[i] = self.sismogramma[i][centro - semiampiezza:
+                                                  centro + semiampiezza]
+if len(self.sismogramma) > 2 * semiampiezza:
+    if self.centrato:
+        centro = len(self.sismogramma) // 2
+        for i in range(len(self.sismogramma)):
+            self.sismogramma[i] = self.sismogramma[i][centro - semiampiezza:
+                                                      centro + semiampiezza]
+    else:
+        for i in range(len(self.sismogramma)):
+            self.sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
+                                                      self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
+        self.centrato = True
+

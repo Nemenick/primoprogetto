@@ -7,7 +7,6 @@ import time
 
 
 class Classe_Dataset:
-
     """def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
         self.percorsocsv = percorsocsv
 
@@ -19,6 +18,9 @@ class Classe_Dataset:
             print(key, self.allmetadata[key])
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])"""
+
+    def __init__(self):
+        self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
 
     def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati):
         """
@@ -54,7 +56,7 @@ class Classe_Dataset:
         for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
-            if self.allmetadata["trace_polarity"][i] == 'negative' \
+            if self.allmetadata["trace_polarity"][i] != 'undecidable' \
                     and (self.allmetadata["station_channels"][i] == "HH" or
                          self.allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
@@ -63,10 +65,6 @@ class Classe_Dataset:
                 for key in self.metadata:
                     self.metadata[key].append(self.allmetadata[key][i])
         print("\nshape_prima di ridimensionare\n",len(self.sismogramma),len(self.sismogramma[0]))
-        for i in range(len(self.sismogramma)):
-            self.sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i]-200:   # TODO windows
-                                                   self.metadata["trace_P_arrival_sample"][i]+200]
-
         self.sismogramma = np.array(self.sismogramma)
         self.indice_csv = np.array(self.indice_csv)
         pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
@@ -78,6 +76,7 @@ class Classe_Dataset:
     def acquisisci_old(self, percorsohdf5, percorsocsv, coltot, percorso_nomi):
         """"
         Acquisisce le tracce presenti in file hdf5 e csv che sono nominate nel file percorso nomi
+        che già sono stati selezionati in precedenza con acquisici_new
         """
 
         self.percorsocsv = percorsocsv
@@ -184,6 +183,25 @@ class Classe_Dataset:
             print("ho caricato la key ", key, time.perf_counter() - start)
         print(self.sismogramma.shape, len(self.sismogramma))
 
+    def Finestra(self,semiampiezza):
+        """
+            semiampiezza: numero di samples (0.01s) es 100 per finestra di 2 sec
+        """
+        if len(self.sismogramma) > 2 * semiampiezza:
+            if self.centrato:
+                centro = len(self.sismogramma) // 2
+                for i in range(len(self.sismogramma)):
+                    self.sismogramma[i] = self.sismogramma[i][centro - semiampiezza:
+                                                              centro + semiampiezza]
+            else:
+                for i in range(len(self.sismogramma)):
+                    self.sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
+                                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
+                self.centrato = True
+        else:
+            print("finestra troppo grande")
+
+
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
         self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot, nomi_selezionati=nomi_selezionati)
         # print("\n\nVA BENE?", self.sismogramma)
@@ -210,14 +228,8 @@ class Classe_Dataset:
             plt.clf()
             # plt.show()
 
-csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
-txt_data = "/home/silvia/Desktop/txt_tracce_down.txt"
-txt_metadata = "/home/silvia/Desktop/txt_metadata_down.txt"
-Dataset_1 = Classe_Dataset()
-Dataset_1.to_txt(hdf5in, csvin, ["trace_name", "station_channels", "trace_P_arrival_sample","trace_polarity",
-                                 "source_magnitude"], "selezionati", txt_data, txt_metadata)
-Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Qualcosa")
+d = Classe_Dataset()
+print(d.centrato)
 
 if __name__ == "main":
     print("ci")
