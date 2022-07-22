@@ -7,8 +7,6 @@ import time
 import warnings
 
 
-
-
 class Classe_Dataset:
     """def letturacsv(self, percorsocsv, coltot):  # coltot = ["trace_name","trace polarity", ...]
         self.percorsocsv = percorsocsv
@@ -68,7 +66,7 @@ class Classe_Dataset:
                 self.indice_csv.append(i)
                 for key in self.metadata:
                     self.metadata[key].append(self.allmetadata[key][i])
-        print("\nshape_prima di ridimensionare\n",len(self.sismogramma),len(self.sismogramma[0]))
+        print("\nshape_prima di ridimensionare\n", len(self.sismogramma), len(self.sismogramma[0]))
         self.sismogramma = np.array(self.sismogramma)
         self.indice_csv = np.array(self.indice_csv)
         pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
@@ -193,7 +191,7 @@ class Classe_Dataset:
             taglia e se necessario centra la finestra
             semiampiezza: numero di samples (0.01s) es 100 per finestra di 2 sec
         """
-        sismogramma = [0 for i in range(len(self.sismogramma))]
+        sismogramma = [0 for _ in range(len(self.sismogramma))]
 
         if self.centrato:
             if len(self.sismogramma[0]) > 2 * semiampiezza:
@@ -227,7 +225,7 @@ class Classe_Dataset:
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
         self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot, nomi_selezionati=nomi_selezionati)
         # print("\n\nVA BENE?", self.sismogramma)
-        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')
+        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning è ok
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
@@ -275,23 +273,6 @@ class Classe_Dataset:
                 # plt.show()
 
 
-
-csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-csvout = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
-hdf5out = 'C:/Users/GioCar/Desktop/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
-txt_data = "C:/Users/GioCar/Desktop/txt_tracce.txt"
-txt_metadata = "C:/Users/GioCar/Desktop/txt_metadata.txt"
-coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
-nomi = "Selezionati.csv"
-
-
-Dataset_1 = Classe_Dataset()
-print(Dataset_1.centrato)
-Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-Dataset_1.Finestra(1000000)
-Dataset_1.plotta(50,semiampiezza=100,namepng="prova")
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
@@ -314,3 +295,5 @@ if __name__ == "main":
     # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
     # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
     # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+    # Dataset_1.Finestra(1000000)
+    # Dataset_1.plotta(50, semiampiezza=100, namepng="prova")
