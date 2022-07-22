@@ -190,6 +190,8 @@ class Classe_Dataset:
         """
             taglia e se necessario centra la finestra
             semiampiezza: numero di samples (0.01s) es 100 per finestra di 2 sec
+            se non è già centrato/tagliato, quando finestra è big -> return 1 e non modifica sellf.sismogramma
+            se  è già centrato/tagliato, quando finestra è big    -> non modifica sellf.sismogramma
         """
         sismogramma = [0 for _ in range(len(self.sismogramma))]
 

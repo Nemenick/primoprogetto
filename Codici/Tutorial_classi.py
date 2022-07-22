@@ -1,5 +1,5 @@
 
-class Classemia:
+"""class Classe1:
 
 
     def __init__(self):
@@ -11,8 +11,24 @@ class Classemia:
     def fun2(self):
         print(self.centrato)
 
-d=Classemia()
+d=Classe1()
 d.fun2()
 d.fun1()
 print(d.b)
-print(d.a)
+print(d.a)"""
+class Classe2:
+    def fun1(self, errore=True):
+        if errore:
+            return 1
+        else:
+            return 0
+
+    def fun2(self, **kargs):
+        esito=self.fun1(kargs)
+
+        print(esito)
+
+
+d = Classe2()
+
+d.fun2(errore=False)
