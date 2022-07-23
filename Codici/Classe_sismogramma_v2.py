@@ -183,19 +183,32 @@ class Classe_Dataset:
 
             self.centrato = True
 
-    def demean(self):
+    def demean(self, metodo):
         """
             scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
-
+            # TODO vedi che media togliere
         """
-        self.calcola_media("con_media")
-        for i in range(len(self.sismogramma)):
-            self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i])
-        self.calcola_media("senza_media")
+        # self.calcola_media("con_media")
+        if metodo == "totale":
+            self.demeaned = "totale"
+            for i in range(len(self.sismogramma)):
+                self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i])
+
+        if metodo == "rumore":
+            self.demeaned = "rumore"
+            if self.centrato:
+                for i in range(len(self.sismogramma)):
+                    lung = len(self.sismogramma[0])
+                    self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i][:lung//2-10])
+            else:
+                for i in range(len(self.sismogramma)):
+                    self.sismogramma[i] = self.sismogramma[i] - \
+                                          np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
+        # self.calcola_media("senza_media")
 
     def calcola_media(self, nome_medie):
         """
-            Calcola media (normalizzata a max) per ciascun sismogramma
+            Calcola le medie (prima dell'onda o tutta traccia) normalizzata a max per ciascun sismogramma
             e le  salva nel file nome_medie
         """
         medie = []
@@ -205,7 +218,7 @@ class Classe_Dataset:
             massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
             medie.append(np.mean(self.sismogramma[i]) / massimo_abs[i])
             if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 10]) / massimo_abs[i])
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]) / massimo_abs[i])
             else:
                 medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
                                     / massimo_abs[i])
@@ -246,7 +259,7 @@ class Classe_Dataset:
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
-        else:
+        else:  # NON E' CENTRATO o TAGLIATO
             semiampiezza_ori = semiampiezza
             for i in range(visualizza):
                 if semiampiezza_ori is None or semiampiezza_ori > self.metadata["trace_P_arrival_sample"][i]:
