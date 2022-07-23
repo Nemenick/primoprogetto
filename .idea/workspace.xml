@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Tutorial_Performance_Time">
+  <component name="RunManager" selected="Python.GPU_test">
     <configuration name="Classe_sismogramma_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -151,10 +151,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.GPU_test" />
         <item itemvalue="Python.Tutorial_Performance_Time" />
         <item itemvalue="Python.Classe_sismogramma_v2" />
         <item itemvalue="Python.Tutorial_classi" />
-        <item itemvalue="Python.GPU_test" />
         <item itemvalue="Python.SimpleDataset_conv" />
       </list>
     </recent_temporary>
@@ -169,16 +169,5 @@
       <updated>1657784223072</updated>
     </task>
     <servers />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" log-message="true" suspend="NONE" type="python-line">
-          <url>file://$PROJECT_DIR$/Codici/Tutorial_classi.py</url>
-          <line>13</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

@@ -204,6 +204,12 @@ class Classe_Dataset:
                 for i in range(len(self.sismogramma)):
                     self.sismogramma[i] = self.sismogramma[i] - \
                                           np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
+
+        if metodo != "rumore" and metodo != "totale":
+            print("attento, metodo demean sbagliato\n rumore o totale? (NON SO SE FUNZIONa ORA)")
+            metodo = input()
+            if metodo == "rumore" or metodo == "totale" :
+                self.demean(metodo)
         # self.calcola_media("senza_media")
 
     def calcola_media(self, nome_medie):
