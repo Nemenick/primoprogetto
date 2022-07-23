@@ -234,26 +234,27 @@ class Classe_Dataset:
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
 
     def demean(self):
+        """
+            scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
+
+        """
         medie = []
         medie_rumore = []
         massimo_abs = []
         nome_medie = "new/medie_4s"
         for i in range(len(self.sismogramma)):
             massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
-            medie.append(np.mean(self.sismogramma[i]))
+            medie.append(np.mean(self.sismogramma[i]) / massimo_abs[i])
             if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i])//2-10]))
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i])//2-10]) / massimo_abs[i])
             else:
-                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i]-10]))
+                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i]-10])
+                                    / massimo_abs[i])
 
-            self.sismogramma[i] = self.sismogramma[i] - self.sismogramma[i].mean()  # TODO scegli media
+            self.sismogramma[i] = self.sismogramma[i] - self.sismogramma[i].mean()  # TODO scegli che media togliere
 
-        pd_medie = pd.DataFrame({nome_medie: medie})
-        pd_medie.to_excel(nome_medie+".xlsx", index=False)
-        pd_medie = pd.DataFrame({nome_medie: medie_rumore})
-        pd_medie.to_excel(nome_medie+"_rumore.xlsx", index=False)
-        pd_massimo = pd.DataFrame({nome_medie: massimo_abs})
-        pd_massimo.to_excel(nome_medie + "_massimo.xlsx", index=False)
+        pd_mean_max = pd.DataFrame({"medie": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
+        pd_mean_max.to_excel(nome_medie+".xlsx", index=False)
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         if len(self.sismogramma) < visualizza:
