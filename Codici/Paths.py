@@ -19,6 +19,7 @@ csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata_Instance_events
 hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
 txt_data = "C:/Users/GioCar/Desktop/Tesi_5/txt_tracce.txt"
 txt_metadata = "C:/Users/GioCar/Desktop/Tesi_5/txt_metadata.txt"
+
 """
 
 
