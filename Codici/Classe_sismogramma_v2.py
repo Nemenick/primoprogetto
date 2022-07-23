@@ -186,7 +186,8 @@ class Classe_Dataset:
     def demean(self, metodo):
         """
             scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
-            # TODO vedi che media togliere
+            metodo totale -> toglie tutta la media
+            metodo rumore -> toglie la media calcolata su valori prima dell'arrivo dell'onda P
         """
         # self.calcola_media("con_media")
         if metodo == "totale":
