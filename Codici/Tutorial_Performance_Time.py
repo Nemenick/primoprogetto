@@ -5,7 +5,7 @@ import dask.dataframe as dd
 
 Nprove= 100
 
-# TODO append vs acess previouslu created list
+"""# TODO append vs acess previouslu created list
 lung = 10**6
 start = time.perf_counter()
 for _ in range(Nprove):
@@ -19,9 +19,7 @@ for _ in range(Nprove):
     a = []
     for i in range(lung):
         a.append(i)
-print("tempo append", time.perf_counter()-start)
-
-
+print("tempo append", time.perf_counter()-start)"""
 
 """# start = time.perf_counter()
 # for _ in range(Nprove):
