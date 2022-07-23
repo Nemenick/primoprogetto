@@ -3,8 +3,27 @@ import numpy as np
 import time
 import dask.dataframe as dd
 
-Nprove= 10
-# start = time.perf_counter()
+Nprove= 100
+
+# TODO append vs acess previouslu created list
+lung = 10**6
+start = time.perf_counter()
+for _ in range(Nprove):
+    a = [0 for __ in range(lung)]
+    for i in range(len(a)):
+        a[i] = i
+print("tempo previously created", time.perf_counter()-start)
+
+start = time.perf_counter()
+for _ in range(Nprove):
+    a = []
+    for i in range(lung):
+        a.append(i)
+print("tempo append", time.perf_counter()-start)
+
+
+
+"""# start = time.perf_counter()
 # for _ in range(Nprove):
 #     datd = dd.read_csv('C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv', usecols=["source_id", "trace_P_arrival_sample", "trace_polarity"])
 #     #print(np.array(datd["source_id"]))
@@ -16,7 +35,9 @@ Nprove= 10
 # filehdf5 = h5py.File('C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5', 'r')
 # dataset = filehdf5.get("data")
 # nomidata = list(dataset.keys())
-# Todo Mi sono salvato i nomi di tutti i dataset
+"""
+
+"""# Todo Mi sono salvato i nomi di tutti i dataset
 # start1 = time.perf_counter()                                               # PRIMO METODO
 # for _ in range(Nprove):
 #     sismogramma = []
@@ -45,8 +66,9 @@ Nprove= 10
 #     sismogramma = np.array(sismogramma)
 # end3 = time.perf_counter()
 # print("terzo metodo", end3 - start3, sismogramma.shape)
-# print(sismogramma[2])
+# print(sismogramma[2])"""
 
+"""
 # Todo comparison while , for scorrere una lista
 # a = [0 for i in range(10**7)]
 # print("ciao")
@@ -65,3 +87,4 @@ Nprove= 10
 #         i = i + 1
 # end = time.perf_counter()
 # print("tempo while", end-start)
+"""

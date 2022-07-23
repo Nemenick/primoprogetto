@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import time
 import warnings
+import openpyxl
 
 
 class Classe_Dataset:
@@ -232,6 +233,28 @@ class Classe_Dataset:
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
 
+    def demean(self):
+        medie = []
+        medie_rumore = []
+        massimo_abs = []
+        nome_medie = "new/medie_4s"
+        for i in range(len(self.sismogramma)):
+            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
+            medie.append(np.mean(self.sismogramma[i]))
+            if self.centrato:
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i])//2-10]))
+            else:
+                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i]-10]))
+
+            self.sismogramma[i] = self.sismogramma[i] - self.sismogramma[i].mean()  # TODO scegli media
+
+        pd_medie = pd.DataFrame({nome_medie: medie})
+        pd_medie.to_excel(nome_medie+".xlsx", index=False)
+        pd_medie = pd.DataFrame({nome_medie: medie_rumore})
+        pd_medie.to_excel(nome_medie+"_rumore.xlsx", index=False)
+        pd_massimo = pd.DataFrame({nome_medie: massimo_abs})
+        pd_massimo.to_excel(nome_medie + "_massimo.xlsx", index=False)
+
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         if len(self.sismogramma) < visualizza:
             print("lunghezza sismogramma < sismogrammi da visualizzare")
@@ -245,14 +268,18 @@ class Classe_Dataset:
                 plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
                                                                     lung//2 + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
-                stringa = ""
-                for key in self.metadata:
-                    stringa = stringa + str(self.metadata[key][i]) + " "
-                # stringa = stringa + str(self.indice_csv[i])
-                plt.title(stringa)
-                plt.savefig(namepng + "_" + str(i))  # TODO if name = None non fare niente
-                plt.clf()
-                # plt.show()
+                plt.axhline(y=0, color='k')
+                if namepng is None:
+                    plt.show()
+                else:
+                    stringa = ""
+                    for key in self.metadata:
+                        stringa = stringa + str(self.metadata[key][i]) + " "
+                    # stringa = stringa + str(self.indice_csv[i])
+                    plt.title(stringa)
+                    plt.savefig(namepng + "_" + str(i))
+                    plt.clf()
+
         else:
             semiampiezza_ori = semiampiezza
             for i in range(visualizza):
@@ -265,16 +292,30 @@ class Classe_Dataset:
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
-                stringa = ""
-                for key in self.metadata:
-                    stringa = stringa + str(self.metadata[key][i]) + " "
-                # stringa = stringa + str(self.indice_csv[i])
-                plt.title(stringa)
-                plt.savefig(namepng + "_" + str(i))       # TODO if name = None non fare niente
-                plt.clf()
-                # plt.show()
+                plt.axhline(y=0, color='k')
+                if namepng is None:
+                    plt.show()
+                else:
+                    stringa = ""
+                    for key in self.metadata:
+                        stringa = stringa + str(self.metadata[key][i]) + " "
+                    # stringa = stringa + str(self.indice_csv[i])
+                    plt.title(stringa)
+                    plt.savefig(namepng + "_" + str(i))
+                    plt.clf()
 
 
+csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+nomi = "Selezionati.csv"
+Dataset_1 = Classe_Dataset()
+Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
+Dataset_1.Finestra(200)
+Dataset_1.plotta(50, namepng="mean")
+Dataset_1.demean()
+Dataset_1.plotta(50, namepng="demean")
 if __name__ == "main":
     print("ci")
     # csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
@@ -295,7 +336,7 @@ if __name__ == "main":
     # Dataset_1.crea_custom_dataset(hdf5in,csvin,hdf5out,csvout,coltot=coltot)
     # Dataset_1.acquisisci_new(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, nomi_selezionati=nomi)
     # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
-    # Dataset_1.acquisisci_old(percorsohdf5=hdf5, percorsocsv=csv, coltot=coltot, percorso_nomi=nomi)
+    # Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsvin=csv, coltot=coltot, percorso_nomi=nomi)
     # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
     # Dataset_1.Finestra(1000000)
     # Dataset_1.plotta(50, semiampiezza=100, namepng="prova")

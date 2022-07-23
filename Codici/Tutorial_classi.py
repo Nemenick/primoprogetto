@@ -16,7 +16,8 @@ d.fun2()
 d.fun1()
 print(d.b)
 print(d.a)"""
-class Classe2:
+"""class Classe2:
+
     def fun1(self, errore=True):
         if errore:
             return 1
@@ -24,11 +25,10 @@ class Classe2:
             return 0
 
     def fun2(self, **kargs):
+        print("questo è kargs", kargs)
         esito=self.fun1(kargs)
-
+        esito = self.fun1(kargs["errore"])   # PERCHE' VA COSI'?
         print(esito)
 
-
 d = Classe2()
-
-d.fun2(errore=False)
+d.fun2(errore=False)"""
