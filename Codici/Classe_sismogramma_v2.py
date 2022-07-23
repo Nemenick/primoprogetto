@@ -34,9 +34,10 @@ class Classe_Dataset:
         self.percorsocsv = percorsocsv
         start = time.perf_counter()
         # FIXME engine"python" (lentissimo): dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
-        # datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip", sample=10**8, assume_missing=True)
+        # datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip",
+        #                    sample=10 ** 8, assume_missing=True)
         datd = dd.read_csv(self.percorsocsv, usecols=coltot)
-        print(time.perf_counter() - start)
+
         self.allmetadata = {}
         for i in coltot:  # genera metadata["colname"] = np.array["colname"]
             self.allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
@@ -59,6 +60,8 @@ class Classe_Dataset:
         for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
+            if i % 10000 == 0:
+                print("sto analizzando il sismogramma ", i)
             if self.allmetadata["trace_polarity"][i] != 'undecidable' \
                     and (self.allmetadata["station_channels"][i] == "HH" or
                          self.allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
@@ -69,12 +72,14 @@ class Classe_Dataset:
                     self.metadata[key].append(self.allmetadata[key][i])
         print("\nshape_prima di ridimensionare\n", len(self.sismogramma), len(self.sismogramma[0]))
         self.sismogramma = np.array(self.sismogramma)
+        print("shape dopo", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
+        filehdf5.close()
         self.indice_csv = np.array(self.indice_csv)
         pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
                                  "indice_csv": self.indice_csv})  # basta indice_csv
         pd_names.to_csv(nomi_selezionati, index=False)
         # pd_names = tracenames':[], 'indice file csv'
-        print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
+        print("HO creato il file nomi_selezionati")
 
     def acquisisci_old(self, percorsohdf5, percorsocsv, coltot, percorso_nomi):
         """"
@@ -117,51 +122,13 @@ class Classe_Dataset:
 
     def crea_custom_dataset(self, percorsohdf5in, percorsocsvin, percorsohdf5out, percorsocsvout_pandas, coltot, **kwargs):
         """
-        legge dai file in ingresso e
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
         # TODO implementa modo di scrivere su file metadata se è già centrato e/o demeaned
-        # TODO togli la parte in cui leggo (la faccio con acquisisci new e qui solo creo il dataset a "parire da RAM")
         """
-        start = time.perf_counter()
-        self.percorsocsv = percorsocsvin
-        datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip",
-                           sample=10**8, assume_missing=True)
-        self.allmetadata = {}
-        for i in coltot:  # genera metadata["colname"] = np.array["colname"]
-            self.allmetadata[i] = np.array(datd[i])  # LEGGO CSV
-            print(i, time.perf_counter() - start)
-        for key in self.allmetadata:
-            print(key, self.allmetadata[key])
-        # creo il dizionario metadata["tracename"][1] etc
-        # print(self.metadata["trace_name"])
-
-        filehdf5 = h5py.File(percorsohdf5in, 'r')
-        dataset = filehdf5.get("data")
-        print("\ndatasetORI", dataset)
-        # nomidata = list(dataset.keys())                             # Mi sono salvato i nomi di tutti i dataset
-        nomidata = self.allmetadata["trace_name"]  # Presi dal file CSV
-        print(nomidata)
-        self.sismogramma = []
-        self.metadata = {}
-        for key in self.allmetadata:  # creo dataset selezionato ma che ha gli stessi metadata del completo
-            self.metadata[key] = []
-        for i in range(len(nomidata)):
-            if self.allmetadata["trace_polarity"][i] != 'undecidable' \
-                    and (self.allmetadata["station_channels"][i] == "HH" or
-                         self.allmetadata["station_channels"][i] == "EH"):  # TODO condizione da aggiornare
-                if i % 5000 == 0:
-                    print("sto caricando il sismogramma ", i)
-                self.sismogramma.append(dataset.get(nomidata[i]))
-                self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
-                for key in self.metadata:
-                    self.metadata[key].append(self.allmetadata[key][i])
-        self.sismogramma = np.array(self.sismogramma)
-        print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
-        filehdf5.close()
-        print("\n\nFINE CARICAMENTODATI", time.perf_counter() - start)
 
         startp = time.perf_counter()
         filehdf5 = h5py.File(percorsohdf5out, 'w')
+        print("sto creando hdf5")
         filehdf5.create_dataset(name='dataset1', data=self.sismogramma)
         print("ho creato hdf5")
         datapandas = pd.DataFrame.from_dict(self.metadata)
