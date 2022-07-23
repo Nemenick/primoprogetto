@@ -1,7 +1,6 @@
 
 """class Classe1:
 
-
     def __init__(self):
         self.centrato = False
         a=3
@@ -16,8 +15,10 @@ d.fun2()
 d.fun1()
 print(d.b)
 print(d.a)"""
+
 """class Classe2:
 
+    # TODO NON  funziona ancora
     def fun1(self, errore=True):
         if errore:
             return 1
