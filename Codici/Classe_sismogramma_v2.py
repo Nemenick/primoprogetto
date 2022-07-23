@@ -230,7 +230,7 @@ class Classe_Dataset:
                 medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
                                     / massimo_abs[i])
 
-        pd_mean_max = pd.DataFrame({"media_totale": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
+        pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
         pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
 
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
@@ -273,7 +273,11 @@ class Classe_Dataset:
                     semiampiezza = self.metadata["trace_P_arrival_sample"][i]-1
                 else:
                     semiampiezza = semiampiezza_ori
-                # print(self.metadata["trace_P_arrival_sample"][i])
+                # FIXME
+                """
+                da errore
+                Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
+                """
                 plt.plot(range(2*semiampiezza),
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
@@ -299,7 +303,8 @@ nomi = "Selezionati.csv"
 Dataset_1 = Classe_Dataset()
 Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
 # Dataset_1.Finestra(200)
-Dataset_1.calcola_media("medie_originali_simpledataset")
+#Dataset_1.calcola_media("medie_originali_simpledataset")
+Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
 if __name__ == "main":
     print("ci")
 
