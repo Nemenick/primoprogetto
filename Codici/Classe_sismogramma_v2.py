@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import time
 import warnings
-import openpyxl
+# import openpyxl
 
 
 class Classe_Dataset:
@@ -116,8 +116,9 @@ class Classe_Dataset:
 
     def crea_custom_dataset(self, percorsohdf5in, percorsocsvin, percorsohdf5out, percorsocsvout_pandas, coltot, **kwargs):
         """
+        legge dai file in ingresso e
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
-        kwargs per chiamare Finestra # TODO implementa
+        kwargs per chiamare Finestra, Demean # TODO implementa
         """
         start = time.perf_counter()
         self.percorsocsv = percorsocsvin
@@ -168,12 +169,11 @@ class Classe_Dataset:
 
     def leggi_custom_dataset(self, percorsohdf5, percorsocsv):
         """
-        legge TUTTE le tracce di questo dataset
+        legge TUTTE le tracce di questo custom_dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
 
         start = time.perf_counter()
-
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
@@ -225,6 +225,36 @@ class Classe_Dataset:
 
             self.centrato = True
 
+    def demean(self):
+        """
+            scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
+
+        """
+        self.calcola_media("con_media")
+        for i in range(len(self.sismogramma)):
+            self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i])
+        self.calcola_media("senza_media")
+
+    def calcola_media(self, nome_medie):
+        """
+            Calcola media (normalizzata a max) per ciascun sismogramma
+            e le  salva nel file nome_medie
+        """
+        medie = []
+        medie_rumore = []
+        massimo_abs = []
+        for i in range(len(self.sismogramma)):
+            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
+            medie.append(np.mean(self.sismogramma[i]) / massimo_abs[i])
+            if self.centrato:
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 10]) / massimo_abs[i])
+            else:
+                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
+                                    / massimo_abs[i])
+
+        pd_mean_max = pd.DataFrame({"medie": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
+        pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
+
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
         self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot, nomi_selezionati=nomi_selezionati)
         # print("\n\nVA BENE?", self.sismogramma)
@@ -232,29 +262,6 @@ class Classe_Dataset:
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
-
-    def demean(self):
-        """
-            scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
-
-        """
-        medie = []
-        medie_rumore = []
-        massimo_abs = []
-        nome_medie = "new/medie_4s"
-        for i in range(len(self.sismogramma)):
-            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
-            medie.append(np.mean(self.sismogramma[i]) / massimo_abs[i])
-            if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i])//2-10]) / massimo_abs[i])
-            else:
-                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i]-10])
-                                    / massimo_abs[i])
-
-            self.sismogramma[i] = self.sismogramma[i] - self.sismogramma[i].mean()  # TODO scegli che media togliere
-
-        pd_mean_max = pd.DataFrame({"medie": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
-        pd_mean_max.to_excel(nome_medie+".xlsx", index=False)
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         if len(self.sismogramma) < visualizza:
@@ -306,8 +313,8 @@ class Classe_Dataset:
                     plt.clf()
 
 
-csvin = 'C:/Users/GioCar/Desktop/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
