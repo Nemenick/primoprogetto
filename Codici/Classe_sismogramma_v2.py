@@ -23,13 +23,13 @@ class Classe_Dataset:
 
     def __init__(self):
         self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
+        self.demeaned = False           # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
 
     def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, **kwargs):
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
         e salva in file csv nomi_selezionati e indici delle tracce selezionate
         ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
-        kwargs per chiamare Finestra    # TODO implementa
         """
         self.percorsocsv = percorsocsv
         start = time.perf_counter()
@@ -80,6 +80,7 @@ class Classe_Dataset:
         """"
         Acquisisce le tracce presenti in file hdf5 e csv che sono nominate nel file percorso nomi
         che già sono stati selezionati in precedenza con acquisici_new
+        secondo la "sintassi" dettata da INSTANCE, non sono custom_dataset
         """
 
         self.percorsocsv = percorsocsv
@@ -118,7 +119,8 @@ class Classe_Dataset:
         """
         legge dai file in ingresso e
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
-        kwargs per chiamare Finestra, Demean # TODO implementa
+        # TODO implementa modo di scrivere su file metadata se è già centrato e/o demeaned
+        # TODO togli la parte in cui leggo (la faccio con acquisisci new e qui solo creo il dataset a "parire da RAM")
         """
         start = time.perf_counter()
         self.percorsocsv = percorsocsvin
@@ -172,7 +174,7 @@ class Classe_Dataset:
         legge TUTTE le tracce di questo custom_dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
-
+        # TODO aggiungi lettura self.centrato, self.demeaned
         start = time.perf_counter()
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
