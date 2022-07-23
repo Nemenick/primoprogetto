@@ -230,7 +230,7 @@ class Classe_Dataset:
                 medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
                                     / massimo_abs[i])
 
-        pd_mean_max = pd.DataFrame({"medie": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
+        pd_mean_max = pd.DataFrame({"media_totale": medie, "medie_rumore": medie_rumore, "max": massimo_abs})
         pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
 
     def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
@@ -298,11 +298,8 @@ coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_pol
 nomi = "Selezionati.csv"
 Dataset_1 = Classe_Dataset()
 Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-Dataset_1.Finestra(200)
-Dataset_1.plotta(50, namepng="mean")
-Dataset_1.demean()
-Dataset_1.plotta(50, namepng="demean")
-
+# Dataset_1.Finestra(200)
+Dataset_1.calcola_media("medie_originali_simpledataset")
 if __name__ == "main":
     print("ci")
 
