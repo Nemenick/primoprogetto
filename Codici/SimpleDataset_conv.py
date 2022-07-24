@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 from Classe_sismogramma_v2 import Classe_Dataset
 
 Dati = Classe_Dataset()
-csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
@@ -31,15 +31,16 @@ print("\nsomma ytrain", np.sum(y_train))    # OK si trova
 (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
 (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
 
-
+# input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
+# batch size omitted ... boh .. (len(timeseries),1 (channels)) funziona
 model = keras.models.Sequential([
-    Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
+    Conv1D(64, 3, input_shape=(len(x_train[0]),1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
     MaxPooling1D(2),
     Conv1D(128, 3, activation="relu"),
     MaxPooling1D(2),
-    Conv1D(32, 3, activation="relu"),
+    Conv1D(32, 3, activation="relu"),                   # Mi sembra che loss vada a caso,
     MaxPooling1D(2),
-    Flatten(),
+    Flatten(),                                          # prova a fare batch normalizzation e learning rate piccolo
     Dense(50, activation="relu"),
     Dense(1, activation="sigmoid")
 ])
@@ -49,33 +50,33 @@ model.compile(
     loss="binary_crossentropy",
     metrics=['accuracy']
 )
-
-epoche = 50
-start = time.perf_counter()
-storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
-print("\n\n\nTEMPOOOOOOOOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
-model.save("Simple_data_conv_1.0.hdf5")
-print("\n\nQUI\n", storia.history)
-print(storia.history.keys())
-
-loss_train = storia.history["loss"]
-loss_val = storia.history["val_loss"]
-acc_train = storia.history["accuracy"]
-acc_val = storia.history["val_accuracy"]
-
-plt.plot(range(1, epoche+1), loss_train, label="loss_train")
-plt.plot(range(1, epoche+1), loss_val, label="loss_val")
-plt.legend()
-plt.savefig("loss")
-plt.clf()
-
-plt.plot(range(1, epoche+1), acc_train, label="acc_train")
-plt.plot(range(1, epoche+1), acc_val, label="acc_val")
-plt.legend()
-plt.savefig("accuracy")
-plt.clf()
-
-# predizione = model.evaluate(x_test, y_test)
+model.summary()
+# epoche = 50
+# start = time.perf_counter()
+# storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
+# print("\n\n\nTEMPOOOOOOOOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
+# model.save("Simple_data_conv_1.0.hdf5")
+# print("\n\nQUI\n", storia.history)
+# print(storia.history.keys())
 #
-# print(len(predizione), y_test.shape, type(predizione), type(y_test))
-# print("predict", predizione)
+# loss_train = storia.history["loss"]
+# loss_val = storia.history["val_loss"]
+# acc_train = storia.history["accuracy"]
+# acc_val = storia.history["val_accuracy"]
+#
+# plt.plot(range(1, epoche+1), loss_train, label="loss_train")
+# plt.plot(range(1, epoche+1), loss_val, label="loss_val")
+# plt.legend()
+# plt.savefig("loss")
+# plt.clf()
+#
+# plt.plot(range(1, epoche+1), acc_train, label="acc_train")
+# plt.plot(range(1, epoche+1), acc_val, label="acc_val")
+# plt.legend()
+# plt.savefig("accuracy")
+# plt.clf()
+#
+# # predizione = model.evaluate(x_test, y_test)
+# #
+# # print(len(predizione), y_test.shape, type(predizione), type(y_test))
+# # print("predict", predizione)
