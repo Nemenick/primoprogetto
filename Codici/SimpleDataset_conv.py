@@ -9,8 +9,8 @@ from matplotlib import pyplot as plt
 from Classe_sismogramma_v2 import Classe_Dataset
 
 Dati = Classe_Dataset()
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
