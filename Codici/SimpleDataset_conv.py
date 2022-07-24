@@ -1,3 +1,5 @@
+import time
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -7,8 +9,8 @@ from matplotlib import pyplot as plt
 from Classe_sismogramma_v2 import Classe_Dataset
 
 Dati = Classe_Dataset()
-csvin = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 nomi = "Selezionati.csv"
@@ -31,7 +33,7 @@ print("\nsomma ytrain", np.sum(y_train))    # OK si trova
 
 
 model = keras.models.Sequential([
-    Conv1D(64, 3, input_shape=(len(x_train[0]),  1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
+    Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
     MaxPooling1D(2),
     Conv1D(128, 3, activation="relu"),
     MaxPooling1D(2),
@@ -48,8 +50,10 @@ model.compile(
     metrics=['accuracy']
 )
 
-epoche = 1
+epoche = 50
+start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
+print("\n\n\nTEMPOOOOOOOOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
 model.save("Simple_data_conv_1.0.hdf5")
 print("\n\nQUI\n", storia.history)
 print(storia.history.keys())

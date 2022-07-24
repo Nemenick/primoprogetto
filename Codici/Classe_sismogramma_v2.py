@@ -295,16 +295,16 @@ class Classe_Dataset:
                     plt.clf()
 
 
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
-nomi = "Selezionati.csv"
-Dataset_1 = Classe_Dataset()
-Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
+# csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+# hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+# coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+#           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+# nomi = "Selezionati.csv"
+# Dataset_1 = Classe_Dataset()
+# Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
 # Dataset_1.Finestra(200)
-#Dataset_1.calcola_media("medie_originali_simpledataset")
-Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
+# Dataset_1.calcola_media("medie_originali_simpledataset")
+# Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
 if __name__ == "main":
     print("ci")
 
