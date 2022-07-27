@@ -112,7 +112,6 @@ class Classe_Dataset:
     def crea_custom_dataset(self, percorsohdf5out, percorsocsvout_pandas, coltot):
         """
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
-        # TODO implementa modo di scrivere su file metadata se è già centrato e/o demeaned
         """
 
         startp = time.perf_counter()
@@ -120,7 +119,10 @@ class Classe_Dataset:
         print("sto creando hdf5")
         filehdf5.create_dataset(name='dataset1', data=self.sismogramma)
         print("ho creato hdf5")
-        datapandas = pd.DataFrame.from_dict(self.metadata)
+        dizio = self.metadata
+        dizio["centrato"] = self.centrato
+        dizio["demeaned"] = self.demeaned
+        datapandas = pd.DataFrame.from_dict(dizio)
         datapandas.to_csv(percorsocsvout_pandas, index=False)
         filehdf5.close()
         print("\n\n PANDAS HA AGITO", time.perf_counter() - startp)
@@ -130,7 +132,6 @@ class Classe_Dataset:
         legge TUTTE le tracce di questo custom_dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
-        # TODO aggiungi lettura self.centrato, self.demeaned
         start = time.perf_counter()
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
@@ -143,6 +144,8 @@ class Classe_Dataset:
         for key in datd:
             self.metadata[key] = np.array(datd[key])
             print("ho caricato la key ", key, time.perf_counter() - start)
+        self.centrato = self.metadata["centrato"][1]
+        self.demeaned = self.metadata["demeaned"][1]
         print(self.sismogramma.shape, len(self.sismogramma))
 
     def Finestra(self, semiampiezza=0):
@@ -209,7 +212,7 @@ class Classe_Dataset:
         if metodo != "rumore" and metodo != "totale":
             print("attento, metodo demean sbagliato\n rumore o totale? (NON SO SE FUNZIONa ORA)")
             metodo = input()
-            if metodo == "rumore" or metodo == "totale" :
+            if metodo == "rumore" or metodo == "totale":
                 self.demean(metodo)
         # self.calcola_media("senza_media")
 
@@ -294,17 +297,16 @@ class Classe_Dataset:
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
+hdf5in = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
 
-# csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-# hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-# coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-#           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
-# nomi = "Selezionati.csv"
-# Dataset_1 = Classe_Dataset()
-# Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-# Dataset_1.Finestra(200)
-# Dataset_1.calcola_media("medie_originali_simpledataset")
-# Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
+Dataset_1 = Classe_Dataset()
+Dataset_1.leggi_custom_dataset(percorsohdf5=hdf5in, percorsocsv=csvin)
+Dataset_1.Finestra(400)
+Dataset_1.calcola_media("medie_originali_simpledataset")
+Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
 if __name__ == "main":
     print("ci")
 

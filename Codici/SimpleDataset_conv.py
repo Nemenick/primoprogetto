@@ -34,7 +34,7 @@ print("\nsomma ytrain", np.sum(y_train))    # OK si trova
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... boh .. (len(timeseries),1 (channels)) funziona
 model = keras.models.Sequential([
-    Conv1D(64, 3, input_shape=(len(x_train[0]),1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
+    Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),           # FIXME attento (len,1) o (len,) ???
     MaxPooling1D(2),
     Conv1D(128, 3, activation="relu"),
     MaxPooling1D(2),
