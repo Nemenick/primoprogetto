@@ -20,6 +20,9 @@ hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data_selected_Polarity_
 txt_data = "C:/Users/GioCar/Desktop/Tesi_5/txt_tracce.txt"
 txt_metadata = "C:/Users/GioCar/Desktop/Tesi_5/txt_metadata.txt"
 
+hdf5in = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+
 """
 
 

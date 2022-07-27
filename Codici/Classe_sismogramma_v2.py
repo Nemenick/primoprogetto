@@ -226,12 +226,11 @@ class Classe_Dataset:
         massimo_abs = []
         for i in range(len(self.sismogramma)):
             massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
-            medie.append(np.mean(self.sismogramma[i]) / massimo_abs[i])
+            medie.append(np.mean(self.sismogramma[i]))
             if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]) / massimo_abs[i])
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]))
             else:
-                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
-                                    / massimo_abs[i])
+                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10]))
 
         pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
         pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
@@ -245,14 +244,14 @@ class Classe_Dataset:
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
-        if len(self.sismogramma) < visualizza:
+        if len(self.sismogramma) < len(visualizza):
             print("lunghezza sismogramma < sismogrammi da visualizzare")
             return 1
 
         if self.centrato:
             if semiampiezza is None or semiampiezza > len(self.sismogramma[0])//2:
                 semiampiezza = len(self.sismogramma[0])//2
-            for i in range(visualizza):
+            for i in visualizza:
                 lung = len(self.sismogramma[0])
                 plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
                                                                     lung//2 + semiampiezza])
@@ -263,7 +262,8 @@ class Classe_Dataset:
                 else:
                     stringa = ""
                     for key in self.metadata:
-                        stringa = stringa + str(self.metadata[key][i]) + " "
+                        if key != "centrato" and key != "demeaned":
+                            stringa = stringa + str(self.metadata[key][i]) + " "
                     # stringa = stringa + str(self.indice_csv[i])
                     plt.title(stringa)
                     plt.savefig(namepng + "_" + str(i))
@@ -271,7 +271,7 @@ class Classe_Dataset:
 
         else:  # NON E' CENTRATO o TAGLIATO
             semiampiezza_ori = semiampiezza
-            for i in range(visualizza):
+            for i in visualizza:
                 if semiampiezza_ori is None or semiampiezza_ori > self.metadata["trace_P_arrival_sample"][i]:
                     semiampiezza = self.metadata["trace_P_arrival_sample"][i]-1
                 else:
@@ -291,22 +291,29 @@ class Classe_Dataset:
                 else:
                     stringa = ""
                     for key in self.metadata:
-                        stringa = stringa + str(self.metadata[key][i]) + " "
+                        if key != "centrato" and key != "demeaned":
+                            stringa = stringa + str(self.metadata[key][i]) + " "
                     # stringa = stringa + str(self.indice_csv[i])
                     plt.title(stringa)
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
+
 hdf5in = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+medieprima = '/home/silvia/Desktop/Instance_Data/Due/medieprima'
+mediedopo = '/home/silvia/Desktop/Instance_Data/Due/mediedopo'
+
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+hdf5out = '/home/silvia/Desktop/Instance_Data/Due/data_selected_Polarity_Velocimeter_4s.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Due/metadata_Instance_events_selected_Polarity_Velocimeter_4s.csv'
 
 Dataset_1 = Classe_Dataset()
-Dataset_1.leggi_custom_dataset(percorsohdf5=hdf5in, percorsocsv=csvin)
-Dataset_1.Finestra(400)
-Dataset_1.calcola_media("medie_originali_simpledataset")
-Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
+Dataset_1.leggi_custom_dataset(percorsohdf5=hdf5out, percorsocsv=csvout)
+
+Dataset_1.plotta(visualizza=[83911,26410,22696], semiampiezza=200, namepng="/home/silvia/Desktop/Instance_Data/Due/visione1")
+
 if __name__ == "main":
     print("ci")
 
@@ -329,6 +336,6 @@ if __name__ == "main":
     # Dataset_1.acquisisci_new(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, nomi_selezionati=nomi)
     # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
     # Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-    # Dataset_1.plotta(visualizza=5, namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+    # Dataset_1.plotta(visualizza=range(5), namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
     # Dataset_1.Finestra(1000000)
     # Dataset_1.plotta(50, semiampiezza=100, namepng="prova")

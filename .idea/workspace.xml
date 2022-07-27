@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.SimpleDataset_conv">
+  <component name="RunManager" selected="Python.Classe_sismogramma_v2">
     <configuration name="Classe_sismogramma_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -128,7 +128,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tutorial_classi" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="aggiungi_centrato" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -140,7 +140,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Tutorial_classi.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/aggiungi_centrato.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -151,11 +151,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.SimpleDataset_conv" />
         <item itemvalue="Python.Classe_sismogramma_v2" />
+        <item itemvalue="Python.aggiungi_centrato" />
+        <item itemvalue="Python.SimpleDataset_conv" />
         <item itemvalue="Python.GPU_test" />
         <item itemvalue="Python.Tutorial_Performance_Time" />
-        <item itemvalue="Python.Tutorial_classi" />
       </list>
     </recent_temporary>
   </component>
