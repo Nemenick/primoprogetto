@@ -310,6 +310,16 @@ class Classe_Dataset:
         # TODO implementa giusta normalizzazione (da decidere)
         """
 
+    def leggi_classi_txt(self, percorsoclassi):
+        """
+        Legge le classi SOM a cui sono assegnate le tracce
+        ATTENTO mi serve sapere da quale aataset provengono: Posso ricavare solo l'indice della traccia
+        ATTENTISSIMO l'indice corrisponde all'indice nel file dei metadata, non in quello hdf5 delle tracce!
+        """
+        f = open(percorsoclassi, "r")
+        self.classi = f.readlines()
+        for i in range(len(self.classi)):
+            self.classi[i] = int(self.classi[i])
 
 
 if __name__ == "main":
