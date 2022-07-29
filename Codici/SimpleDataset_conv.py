@@ -8,12 +8,14 @@ from matplotlib import pyplot as plt
 from Classe_sismogramma_v2 import Classe_Dataset
 
 Dati = Classe_Dataset()
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'   # dove sono contenuti i metadata
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'       # Dove sono contenute le tracce
+
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'   # percorso di dove sono contenuti i metadata
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'       # percorso di Dove sono contenute le tracce
 coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]                     # seleziono i metadata di mio interesse
-nomi = "Selezionati.csv"
-Dati.acquisisci_old(hdf5in, csvin, coltot=coltot, percorso_nomi=nomi)
+nomi = "Selezionati.csv"                                                                            # percorso che dice quali tracce caricare (non carico undecidable)
+
+Dati.acquisisci_old(hdf5in, csvin, coltot=coltot, percorso_nomi=nomi)   # Leggo il dataset
 
 x_train = np.zeros((len(Dati.sismogramma)*2, 260))
 for i in range(len(Dati.sismogramma)):
@@ -57,9 +59,9 @@ model.summary()
 epoche = 50
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
-print("\n\n\nTEMPOOOOOOOOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
+print("\n\n\nTEMPOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
 model.save("Simple_data_conv_1.0.hdf5")
-print("\n\nQUI\n", storia.history)
+print("\n\nControlla qui\n", storia.history)
 print(storia.history.keys())
 
 loss_train = storia.history["loss"]

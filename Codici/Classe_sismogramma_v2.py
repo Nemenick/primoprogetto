@@ -305,6 +305,10 @@ class Classe_Dataset:
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
+    def normalizza(self):
+        """
+        # TODO implementa giusta normalizzazione (da decidere)
+        """
 
 
 
