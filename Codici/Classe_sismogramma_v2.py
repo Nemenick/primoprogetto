@@ -316,10 +316,12 @@ class Classe_Dataset:
         ATTENTO mi serve sapere da quale aataset provengono: Posso ricavare solo l'indice della traccia
         ATTENTISSIMO l'indice corrisponde all'indice nel file dei metadata, non in quello hdf5 delle tracce!
         """
-        f = open(percorsoclassi, "r")
-        self.classi = f.readlines()
-        for i in range(len(self.classi)):
-            self.classi[i] = int(self.classi[i])
+
+        self.classi = []
+        with open(percorsoclassi, 'r') as f:
+            for line in f:
+                if line:  # avoid blank lines
+                    self.classi.append(int(float(line.strip())))
 
 
 if __name__ == "main":
