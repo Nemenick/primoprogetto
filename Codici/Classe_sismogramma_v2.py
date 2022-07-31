@@ -247,7 +247,7 @@ class ClasseDataset:
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
-        np.savetxt()
+
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         """
         visualizza:     lista di indici delle tracce da visualizzare
@@ -355,7 +355,7 @@ class ClasseDataset:
         """
         print("lemetadat",  type(self.metadata))
         self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
-        self.metadata = np.delete(self.metadata, vettore_indici, axis=0)
+        self.metadata = np.delete(self.metadata, vettore_indici, axis=0)  # FIXME
 
 
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
