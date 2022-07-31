@@ -11,12 +11,15 @@ import warnings
 class ClasseDataset:
 
     def __init__(self):
+        """
+        inserisci qui tutte le proprietà di classe con i ripsettivi tipi
+        """
         self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
         self.demeaned = False           # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
 
-        self.sismogramma = np.array([])
-        self.metadata = {}
-        self.classi = []
+        self.sismogramma = np.array([])     # np.array (,)
+        self.metadata = {}                  # dizionario di lista, non np.array (non so come li tratta pandas)
+        self.classi = []                    # lista di int
 
     def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati):
         """
@@ -355,7 +358,10 @@ class ClasseDataset:
         """
         print("lemetadat",  type(self.metadata))
         self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
-        self.metadata = np.delete(self.metadata, vettore_indici, axis=0)  # FIXME
+        for key in self.metadata:   # controlla tutorial_dizionari, funziona ok
+            self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
+            self.metadata[key] = list(self.metadata[key])
+
 
 
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
