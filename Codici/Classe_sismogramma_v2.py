@@ -8,31 +8,35 @@ import warnings
 # import openpyxl
 
 
-class Classe_Dataset:
+class ClasseDataset:
 
     def __init__(self):
         self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
         self.demeaned = False           # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
 
-    def acquisisci_new(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati):
+        self.sismogramma = np.array([])
+        self.metadata = {}
+        self.classi = []
+
+    def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati):
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
         e salva in file csv i nomi_selezionati e indici delle tracce selezionate
         ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
         """
-        self.percorsocsv = percorsocsv
+        percorsocsv = percorsocsv
         start = time.perf_counter()
         # FIXME engine"python" (lentissimo): dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
         # datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip",
         #                    sample=10 ** 8, assume_missing=True)
-        datd = dd.read_csv(self.percorsocsv, usecols=coltot)
+        datd = dd.read_csv(percorsocsv, usecols=col_tot)
 
-        self.allmetadata = {}
-        for i in coltot:  # genera metadata["colname"] = np.array["colname"]
-            self.allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
+        allmetadata = {}
+        for i in col_tot:  # genera metadata["colname"] = np.array["colname"]
+            allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
             print(i, time.perf_counter() - start)
-        for key in self.allmetadata:
-            print(key, self.allmetadata[key])
+        for key in allmetadata:
+            print(key, allmetadata[key])
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])
         print(time.perf_counter() - start)
@@ -41,49 +45,48 @@ class Classe_Dataset:
         dataset = filehdf5.get("data")
         # print("\ndatasetORI", dataset)
         # nomidata = list(dataset.keys())                             # Mi sono salvato i nomi di tutti i dataset
-        nomidata = self.allmetadata["trace_name"]                     # Presi dal file CSV
+        nomidata = allmetadata["trace_name"]                     # Presi dal file CSV
         # print(nomidata)
         self.sismogramma = []
         self.metadata = {}
-        self.indice_csv = []
-        for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
+        indice_csv = []
+        for key in allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
             if i % 10000 == 0:
                 print("sto analizzando il sismogramma ", i)
-            if self.allmetadata["trace_polarity"][i] != 'undecidable' \
-                    and (self.allmetadata["station_channels"][i] == "HH" or
-                         self.allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
+            if allmetadata["trace_polarity"][i] != 'undecidable' \
+                    and (allmetadata["station_channels"][i] == "HH" or
+                         allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
                 self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
-                self.indice_csv.append(i)
+                indice_csv.append(i)
                 for key in self.metadata:
-                    self.metadata[key].append(self.allmetadata[key][i])
+                    self.metadata[key].append(allmetadata[key][i])
         print("\nshape_prima di ridimensionare\n", len(self.sismogramma), len(self.sismogramma[0]))
         self.sismogramma = np.array(self.sismogramma)
         print("shape dopo", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
         filehdf5.close()
-        self.indice_csv = np.array(self.indice_csv)
+        indice_csv = np.array(indice_csv)
         pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
-                                 "indice_csv": self.indice_csv})  # basta indice_csv
+                                 "indice_csv": indice_csv})  # basta indice_csv
         pd_names.to_csv(nomi_selezionati, index=False)
         # pd_names = tracenames':[], 'indice file csv'
         print("HO creato il file nomi_selezionati")
 
-    def acquisisci_old(self, percorsohdf5, percorsocsv, coltot, percorso_nomi):
+    def acquisisci_old(self, percorsohdf5, percorsocsv, col_tot, percorso_nomi):
         """"
         Acquisisce le tracce presenti in file hdf5 e csv che sono nominate nel file percorso nomi
         che già sono stati selezionati in precedenza con acquisici_new
         secondo la "sintassi" dettata da INSTANCE, non sono custom_dataset
         """
 
-        self.percorsocsv = percorsocsv
-        datd = dd.read_csv(self.percorsocsv, usecols=coltot)
-        self.allmetadata = {}
-        for i in coltot:  # genera metadata["colname"] = np.array["colname"]
-            self.allmetadata[i] = np.array(datd[i])                                 # LEGGO CSV
-        for key in self.allmetadata:
-            print(key, self.allmetadata[key])
+        datd = dd.read_csv(percorsocsv, usecols=col_tot)
+        allmetadata = {}
+        for i in col_tot:  # genera metadata["colname"] = np.array["colname"]
+            allmetadata[i] = np.array(datd[i])                                 # LEGGO CSV
+        for key in allmetadata:
+            print(key, allmetadata[key])
         # creo il dizionario metadata["tracename"][1] etc
         # print(self.metadata["trace_name"])
 
@@ -93,23 +96,23 @@ class Classe_Dataset:
         # nomidata = list(dataset.keys())                                  # Mi sono salvato i nomi di tutti i dataset
         datnomi = dd.read_csv(percorso_nomi, usecols=["trace_name", "indice_csv"])
         nomidata = np.array(datnomi["trace_name"])
-        self.indice_csv = np.array(datnomi["indice_csv"])
+        indice_csv = np.array(datnomi["indice_csv"])
         print(nomidata)
         self.sismogramma = []
         self.metadata = {}
 
-        for key in self.allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
+        for key in allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
             self.sismogramma.append(dataset.get(nomidata[i]))
             self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
             for key in self.metadata:
-                self.metadata[key].append(self.allmetadata[key][self.indice_csv[i]])
+                self.metadata[key].append(allmetadata[key][indice_csv[i]])
         self.sismogramma = np.array(self.sismogramma)
 
         print("shape", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
 
-    def crea_custom_dataset(self, percorsohdf5out, percorsocsvout_pandas, coltot):
+    def crea_custom_dataset(self, percorsohdf5out, percorsocsvout_pandas):
         """
         creo il dataset che mi piace, selezionando alcune tracce di hdf5,csv in e mettendole in out
         serve per non caricare ogni volta tutte le tracce
@@ -149,7 +152,7 @@ class Classe_Dataset:
         self.demeaned = self.metadata["demeaned"][1]
         print(self.sismogramma.shape, len(self.sismogramma))
 
-    def Finestra(self, semiampiezza=0):
+    def finestra(self, semiampiezza=0):
         """
             taglia e se necessario centra la finestra
             semiampiezza: numero di samples (0.01s) es 100 per finestra di 2 sec
@@ -237,14 +240,14 @@ class Classe_Dataset:
         pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
         pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
 
-    def to_txt(self, percorsohdf5, percorsocsv, coltot, nomi_selezionati, txt_data, txt_metadata):
-        self.acquisisci_new(percorsohdf5, percorsocsv, coltot=coltot, nomi_selezionati=nomi_selezionati)
+    def to_txt(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati, txt_data, txt_metadata):
+        self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
         # print("\n\nVA BENE?", self.sismogramma)
-        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning è ok
+        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
         metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
         # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
-
+        np.savetxt()
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         """
         visualizza:     lista di indici delle tracce da visualizzare
@@ -265,15 +268,15 @@ class Classe_Dataset:
                                                                     lung//2 + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
                 plt.axhline(y=0, color='k')
+                stringa = ""
+                for key in self.metadata:
+                    if key != "centrato" and key != "demeaned":
+                        stringa = stringa + str(self.metadata[key][i]) + " "
+                # stringa = stringa + str(self.indice_csv[i])
+                plt.title(stringa)
                 if namepng is None:
                     plt.show()
                 else:
-                    stringa = ""
-                    for key in self.metadata:
-                        if key != "centrato" and key != "demeaned":
-                            stringa = stringa + str(self.metadata[key][i]) + " "
-                    # stringa = stringa + str(self.indice_csv[i])
-                    plt.title(stringa)
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
@@ -294,15 +297,15 @@ class Classe_Dataset:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
                 plt.axhline(y=0, color='k')
+                stringa = ""
+                for key in self.metadata:
+                    if key != "centrato" and key != "demeaned":
+                        stringa = stringa + str(self.metadata[key][i]) + " "
+                # stringa = stringa + str(self.indice_csv[i])
+                plt.title(stringa)
                 if namepng is None:
                     plt.show()
                 else:
-                    stringa = ""
-                    for key in self.metadata:
-                        if key != "centrato" and key != "demeaned":
-                            stringa = stringa + str(self.metadata[key][i]) + " "
-                    # stringa = stringa + str(self.indice_csv[i])
-                    plt.title(stringa)
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
 
@@ -350,15 +353,32 @@ class Classe_Dataset:
         se voglio eliminare tracce in altra maniera selezionate
          a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
         """
+        print("lemetadat",  type(self.metadata))
         self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
         self.metadata = np.delete(self.metadata, vettore_indici, axis=0)
+
+
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+nomi = "Selezionati.csv"
+
+Dataset_1 = ClasseDataset()
+Dataset_1.acquisisci_old(hdf5in, csvin, coltot, nomi)
+# classi = [0 for i in range(len(Dataset_1.sismogramma))]
+# for i in [0, 1, 2, 3]:
+#     classi[i] = 1
+# Dataset_1.plotta(range(5))
+Dataset_1.elimina_tacce(range(4))
+Dataset_1.plotta(range(5))
 
 if __name__ == "main":
     print("ciao")
 
     # csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
     # hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-    # csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+# csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
     # hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data_selected_Polarity_Velocimeter.hdf5'
     # txt_data = "C:/Users/GioCar/Desktop/Tesi_5/txt_tracce.txt"
     # txt_metadata = "C:/Users/GioCar/Desktop/Tesi_5/txt_metadata.txt"
@@ -375,7 +395,7 @@ if __name__ == "main":
     # Dataset_1.acquisisci_new(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, nomi_selezionati=nomi)
     # Dataset_1.plotta(visualizza=30, namepng="Dataset_counts")
     # Dataset_1.acquisisci_old(percorsohdf5=hdf5in, percorsocsv=csvin, coltot=coltot, percorso_nomi=nomi)
-    # Dataset_1.plotta(visualizza=range(5), namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
+# Dataset_1.plotta(visualizza=range(5), namepng="/home/silvia/Desktop/Figure_Large_Custom_dataset/Custom_Large_dataset")
     # Dataset_1.Finestra(1000000)
     # Dataset_1.plotta(50, semiampiezza=100, namepng="prova")
 

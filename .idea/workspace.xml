@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Tutorial_Funzioni">
+  <component name="RunManager" selected="Python.Tutorial_txt">
     <configuration name="Classe_sismogramma_v2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -151,9 +151,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Tutorial_Funzioni" />
         <item itemvalue="Python.Tutorial_txt" />
         <item itemvalue="Python.Classe_sismogramma_v2" />
+        <item itemvalue="Python.Tutorial_Funzioni" />
         <item itemvalue="Python.aggiungi_centrato" />
         <item itemvalue="Python.SimpleDataset_conv" />
       </list>

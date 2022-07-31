@@ -5,9 +5,9 @@ from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
 from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
-from Classe_sismogramma_v2 import Classe_Dataset
+from Classe_sismogramma_v2 import ClasseDataset
 
-Dati = Classe_Dataset()
+Dati = ClasseDataset()
 
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'   # percorso di dove sono contenuti i metadata
 hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'       # percorso di Dove sono contenute le tracce
@@ -15,7 +15,7 @@ coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_pol
           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]                     # seleziono i metadata di mio interesse
 nomi = "Selezionati.csv"                                                                            # percorso che dice quali tracce caricare (non carico undecidable)
 
-Dati.acquisisci_old(hdf5in, csvin, coltot=coltot, percorso_nomi=nomi)   # Leggo il dataset
+Dati.acquisisci_old(hdf5in, csvin, col_tot=coltot, percorso_nomi=nomi)   # Leggo il dataset
 
 x_train = np.zeros((len(Dati.sismogramma)*2, 260))
 for i in range(len(Dati.sismogramma)):
