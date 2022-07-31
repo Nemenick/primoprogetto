@@ -181,6 +181,7 @@ class Classe_Dataset:
                     warnings.warn("\n"+stringa+"\nATTENTO, SCEGLI FINESTRA PIU PICCOLA!,"
                                                "continuo senza centrare nulla\n"+stringa)
                     print("semiampiezza = ", semiampiezza, "ArrivoP = ", self.metadata["trace_P_arrival_sample"][i])
+                    input()
                     return 1
 
             self.sismogramma = np.array(sismogramma)
@@ -313,8 +314,8 @@ class Classe_Dataset:
     def leggi_classi_txt(self, percorsoclassi):
         """
         Legge le classi SOM a cui sono assegnate le tracce
-        ATTENTO mi serve sapere da quale aataset provengono: Posso ricavare solo l'indice della traccia
-        ATTENTISSIMO l'indice corrisponde all'indice nel file dei metadata, non in quello hdf5 delle tracce!
+        self.classi[i] = k --> la traccia i-esima appartiene alla classe k-esima della som
+        ATTENTO mi serve sapere da quale dataset provengono: Posso ricavare solo l'indice della traccia
         """
         self.classi = []
         with open(percorsoclassi, 'r') as f:
@@ -322,11 +323,35 @@ class Classe_Dataset:
                 if line:  # avoid blank lines
                     self.classi.append(int(float(line.strip())))
 
-    def elimina_tacce(self, trace_names):
+    def ricava_indici_classi(self, classi_da_selezionare, vettore_indici):
         """
-         a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1
+         metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
+         classi_da_selezionare
         """
+        if len(self.sismogramma) != len(self.classi):
+            stringa = "#"
+            for _ in range(300):
+                stringa = stringa + "#"
+            warnings.warn("\n" + stringa + "\nATTENTO, CLASSI e SISMOGRAMMA LUNGHEZZA DIFFERENTE"
+                                           "continuo senza centrare nulla\n" + stringa)
+            print("classi length = ", len(self.classi), "sismogrammma len = ", len(self.sismogramma))
+            input()
+            return 1
 
+        for i in range(len(self.metadata)):
+            for j in classi_da_selezionare:
+                if self.classi[i] == j:
+                    vettore_indici.append(i)
+
+    def elimina_tacce(self, vettore_indici):
+        """
+        vettore_indici è la lista degli indici del file csv da eliminare
+        info proviene da leggi_classi_txt, che legge le classi della SOM o
+        se voglio eliminare tracce in altra maniera selezionate
+         a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
+        """
+        self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
+        self.metadata = np.delete(self.metadata, vettore_indici, axis=0)
 
 if __name__ == "main":
     print("ciao")
