@@ -358,10 +358,9 @@ class ClasseDataset:
         """
         print("lemetadat",  type(self.metadata))
         self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
-        for key in self.metadata:   # controlla tutorial_dizionari, funziona ok
+        for key in self.metadata:   # controlla tutorial_dizionari, funziona ok #TODO verifica che è buono
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
             self.metadata[key] = list(self.metadata[key])
-
 
 
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
@@ -375,7 +374,7 @@ Dataset_1.acquisisci_old(hdf5in, csvin, coltot, nomi)
 # classi = [0 for i in range(len(Dataset_1.sismogramma))]
 # for i in [0, 1, 2, 3]:
 #     classi[i] = 1
-# Dataset_1.plotta(range(5))
+Dataset_1.plotta(range(5))
 Dataset_1.elimina_tacce(range(4))
 Dataset_1.plotta(range(5))
 
