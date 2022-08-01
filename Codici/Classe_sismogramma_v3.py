@@ -155,6 +155,65 @@ class ClasseDataset:
         self.demeaned = self.metadata["demeaned"][1]
         print(self.sismogramma.shape, len(self.sismogramma))
 
+    def to_txt(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati, txt_data, txt_metadata):
+        self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
+        # print("\n\nVA BENE?", self.sismogramma)
+        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok
+        metadata_txt = pd.DataFrame.from_dict(self.metadata)
+        metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
+        # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
+
+    def leggi_classi_txt(self, percorsoclassi):
+        """
+        Legge le classi SOM a cui sono assegnate le tracce
+        self.classi[i] = k --> la traccia i-esima appartiene alla classe k-esima della som
+        ATTENTO mi serve sapere da quale dataset provengono: Posso ricavare solo l'indice della traccia
+        """
+        self.classi = []
+        with open(percorsoclassi, 'r') as f:
+            for line in f:
+                if line:  # avoid blank lines
+                    self.classi.append(int(float(line.strip())))
+
+    def ricava_indici_classi(self, classi_da_selezionare, vettore_indici):
+        """
+         metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
+         classi_da_selezionare
+        """
+        if len(self.sismogramma) != len(self.classi):
+            stringa = "#"
+            for _ in range(300):
+                stringa = stringa + "#"
+            warnings.warn("\n" + stringa + "\nATTENTO, CLASSI e SISMOGRAMMA LUNGHEZZA DIFFERENTE"
+                                           "continuo senza centrare nulla\n" + stringa)
+            print("classi length = ", len(self.classi), "sismogrammma len = ", len(self.sismogramma))
+            input()
+            return 1
+
+        for i in range(len(self.metadata)):
+            for j in classi_da_selezionare:
+                if self.classi[i] == j:
+                    vettore_indici.append(i)
+
+    def calcola_media(self, nome_medie):
+        """
+            Calcola le medie (prima dell'onda o tutta traccia) max per ciascun sismogramma
+            e le  salva nel file nome_medie
+        """
+        medie = []
+        medie_rumore = []
+        massimo_abs = []
+        for i in range(len(self.sismogramma)):
+            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
+            medie.append(np.mean(self.sismogramma[i]))
+            if self.centrato:
+                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]))
+            else:
+                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10]))
+
+        pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
+        pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
+
     def finestra(self, semiampiezza=0):
         """
             taglia e se necessario centra la finestra
@@ -224,32 +283,23 @@ class ClasseDataset:
                 self.demean(metodo)
         # self.calcola_media("senza_media")
 
-    def calcola_media(self, nome_medie):
+    def normalizza(self):
         """
-            Calcola le medie (prima dell'onda o tutta traccia) max per ciascun sismogramma
-            e le  salva nel file nome_medie
+        # TODO implementa giusta normalizzazione (da decidere)
         """
-        medie = []
-        medie_rumore = []
-        massimo_abs = []
-        for i in range(len(self.sismogramma)):
-            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
-            medie.append(np.mean(self.sismogramma[i]))
-            if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]))
-            else:
-                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10]))
 
-        pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
-        pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
-
-    def to_txt(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati, txt_data, txt_metadata):
-        self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
-        # print("\n\nVA BENE?", self.sismogramma)
-        np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok
-        metadata_txt = pd.DataFrame.from_dict(self.metadata)
-        metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
-        # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
+    def elimina_tacce(self, vettore_indici):
+        """
+        vettore_indici è la lista degli indici del file csv da eliminare
+        info proviene da leggi_classi_txt, che legge le classi della SOM o
+        se voglio eliminare tracce in altra maniera selezionate
+         a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
+        """
+        print("lemetadat",  type(self.metadata))
+        self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
+        for key in self.metadata:   # controlla tutorial_dizionari, funziona ok #TODO verifica che è buono
+            self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
+            self.metadata[key] = list(self.metadata[key])
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None):
         """
@@ -311,56 +361,6 @@ class ClasseDataset:
                 else:
                     plt.savefig(namepng + "_" + str(i))
                     plt.clf()
-
-    def normalizza(self):
-        """
-        # TODO implementa giusta normalizzazione (da decidere)
-        """
-
-    def leggi_classi_txt(self, percorsoclassi):
-        """
-        Legge le classi SOM a cui sono assegnate le tracce
-        self.classi[i] = k --> la traccia i-esima appartiene alla classe k-esima della som
-        ATTENTO mi serve sapere da quale dataset provengono: Posso ricavare solo l'indice della traccia
-        """
-        self.classi = []
-        with open(percorsoclassi, 'r') as f:
-            for line in f:
-                if line:  # avoid blank lines
-                    self.classi.append(int(float(line.strip())))
-
-    def ricava_indici_classi(self, classi_da_selezionare, vettore_indici):
-        """
-         metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
-         classi_da_selezionare
-        """
-        if len(self.sismogramma) != len(self.classi):
-            stringa = "#"
-            for _ in range(300):
-                stringa = stringa + "#"
-            warnings.warn("\n" + stringa + "\nATTENTO, CLASSI e SISMOGRAMMA LUNGHEZZA DIFFERENTE"
-                                           "continuo senza centrare nulla\n" + stringa)
-            print("classi length = ", len(self.classi), "sismogrammma len = ", len(self.sismogramma))
-            input()
-            return 1
-
-        for i in range(len(self.metadata)):
-            for j in classi_da_selezionare:
-                if self.classi[i] == j:
-                    vettore_indici.append(i)
-
-    def elimina_tacce(self, vettore_indici):
-        """
-        vettore_indici è la lista degli indici del file csv da eliminare
-        info proviene da leggi_classi_txt, che legge le classi della SOM o
-        se voglio eliminare tracce in altra maniera selezionate
-         a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
-        """
-        print("lemetadat",  type(self.metadata))
-        self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
-        for key in self.metadata:   # controlla tutorial_dizionari, funziona ok #TODO verifica che è buono
-            self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
-            self.metadata[key] = list(self.metadata[key])
 
 
 
