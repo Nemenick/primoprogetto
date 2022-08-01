@@ -96,7 +96,7 @@ class ClasseDataset:
 
         filehdf5 = h5py.File(percorsohdf5, 'r')
         dataset = filehdf5.get("data")
-        print("\ndatasetORI", dataset)
+        # print("\ndatasetORI", dataset)
         # nomidata = list(dataset.keys())                                  # Mi sono salvato i nomi di tutti i dataset
         datnomi = dd.read_csv(percorso_nomi, usecols=["trace_name", "indice_csv"])
         nomidata = np.array(datnomi["trace_name"])
