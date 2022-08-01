@@ -195,7 +195,7 @@ class ClasseDataset:
             for j in classi_da_selezionare:
                 if self.classi[i] == j:
                     vettore_indici.append(i)
-        print("vettore indici interno funzione", vettore_indici)
+        # print("vettore indici interno funzione", vettore_indici)
 
     def calcola_media(self, nome_medie):
         """
@@ -327,8 +327,8 @@ class ClasseDataset:
                 lung = len(self.sismogramma[0])
                 plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
                                                                     lung//2 + semiampiezza])
-                plt.axvline(x=semiampiezza, c="r", ls="--")
-                plt.axhline(y=0, color='k', ls = 'dashed', lw = 1)
+                plt.axvline(x=semiampiezza, c="r", ls="--",lw=1)
+                plt.axhline(y=0, color='k', ls = 'dashed', lw=1)
                 stringa = ""
                 for key in self.metadata:
                     if key != "centrato" and key != "demeaned":
@@ -358,8 +358,8 @@ class ClasseDataset:
                 plt.plot(range(2*semiampiezza),
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
-                plt.axvline(x=semiampiezza, c="r", ls="--")
-                plt.axhline(y=0, color='k', ls='dashed', lw=1)
+                plt.axvline(x=semiampiezza, c="r", ls="--", lw="1")
+                plt.axhline(y=0, color='k', ls='--', lw=1)
                 stringa = ""
                 for key in self.metadata:
                     if key != "centrato" and key != "demeaned":

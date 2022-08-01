@@ -128,7 +128,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Tutorial_txt" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Tutorial_Funzioni" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -140,7 +140,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Tutorial_txt.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Tutorial_Funzioni.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -152,10 +152,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.Drive_sismogramma" />
+        <item itemvalue="Python.Tutorial_Funzioni" />
         <item itemvalue="Python.Classe_sismogramma_v3" />
         <item itemvalue="Python.SimpleDataset_conv" />
         <item itemvalue="Python.Tutorial_Dizionari" />
-        <item itemvalue="Python.Tutorial_txt" />
       </list>
     </recent_temporary>
   </component>
