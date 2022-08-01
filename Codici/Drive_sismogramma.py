@@ -27,13 +27,10 @@ Dataset_u.leggi_classi_txt(classiup_path)
 print(Dataset_u.classi)
 Dataset_d.leggi_classi_txt(classidown_path)
 
-
-
-
-# som down controlla [12, 17, 18, 22]
-classiup_indici = [19, 20, 15]
 # som up controlla [2, 17, 22, 23]
-classidown_indici = [20, 15]
+classiup_indici = [2, 17, 22, 23]
+# som down controlla [12, 17, 18, 22]
+classidown_indici = [12, 17, 18, 22]
 
 semiampiezza_ = 100
 print("\n\n\n\n")
