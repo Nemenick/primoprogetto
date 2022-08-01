@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import time
 import warnings
+import os
 # import openpyxl
 
 
@@ -190,10 +191,11 @@ class ClasseDataset:
             input()
             return 1
 
-        for i in range(len(self.metadata)):
+        for i in range(len(self.classi)):
             for j in classi_da_selezionare:
                 if self.classi[i] == j:
                     vettore_indici.append(i)
+        print("vettore indici interno funzione", vettore_indici)
 
     def calcola_media(self, nome_medie):
         """
@@ -301,16 +303,22 @@ class ClasseDataset:
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
             self.metadata[key] = list(self.metadata[key])
 
-    def plotta(self, visualizza, semiampiezza=None, namepng=None):
+    def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5/'):
         """
-        visualizza:     lista di indici delle tracce da visualizzare
-        semiampiezza:   della finestra da visualizzare
-        namepng:        se è passato divanta il nome del file in cui salvo i plot
+        visualizza:                 lista di indici delle tracce da visualizzare
+        semiampiezza:               della finestra da visualizzare
+        namepng:                    se è passato divanta il nome del file in cui salvo i plot
+        percorso_cartella           salva in 'C:/Users/GioCar/Desktop/Tesi_5/'+namepng se non è passato
+
         # TODO migliora algoritmo, rendilo più legibbile
+        # TODO crea cartella in cui metto le iimagini una volta plottate
         """
         if len(self.sismogramma) < len(visualizza):
             print("lunghezza sismogramma < sismogrammi da visualizzare")
             return 1
+        if namepng is not None:
+            nome_cartella = percosro_cartellla + namepng
+            os.mkdir(nome_cartella)
 
         if self.centrato:
             if semiampiezza is None or semiampiezza > len(self.sismogramma[0])//2:
@@ -320,7 +328,7 @@ class ClasseDataset:
                 plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
                                                                     lung//2 + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
-                plt.axhline(y=0, color='k')
+                plt.axhline(y=0, color='k', ls = 'dashed', lw = 1)
                 stringa = ""
                 for key in self.metadata:
                     if key != "centrato" and key != "demeaned":
@@ -330,7 +338,8 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    plt.savefig(namepng + "_" + str(i))
+                    nome_cartella = percosro_cartellla + namepng
+                    plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
         else:  # NON E' CENTRATO o TAGLIATO
@@ -344,12 +353,13 @@ class ClasseDataset:
                 """
                 da errore, non so perchè
                 Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
+                per sismogramma non centrato ed semiampiezza superiore tracearrivalp
                 """
                 plt.plot(range(2*semiampiezza),
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
                                              self.metadata["trace_P_arrival_sample"][i] + semiampiezza])
                 plt.axvline(x=semiampiezza, c="r", ls="--")
-                plt.axhline(y=0, color='k')
+                plt.axhline(y=0, color='k', ls='dashed', lw=1)
                 stringa = ""
                 for key in self.metadata:
                     if key != "centrato" and key != "demeaned":
@@ -359,7 +369,8 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    plt.savefig(namepng + "_" + str(i))
+                    nome_cartella = percosro_cartellla + namepng
+                    plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
 
@@ -413,17 +424,12 @@ if __name__ == "main":
     #           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
     # classiup = 'C:/Users/GioCar/Desktop/Tesi_5/SOM/3classes_up.txt'
     # classidown = 'C:/Users/GioCar/Desktop/Tesi_5/SOM/4classes_down.txt'
-    # nomi_up = "Selezionati_up.csv"
+    #
     # nomi_down = "Selezionati_down.csv"
     #
     # Dataset_d = ClasseDataset()
-    # Dataset_u = ClasseDataset()
-    #
     # Dataset_d.acquisisci_old(hdf5in, csvin, coltot, nomi_down)
-    # Dataset_u.acquisisci_old(hdf5in, csvin, coltot, nomi_up)
-    #
-    # Dataset_u.leggi_classi_txt(classiup)
-    # Dataset_d.leggi_classi_txt(classidown)
+    # Dataset_d.plotta([1, 2, 3, 4], semiampiezza=150, namepng="funziona")
 
     # classi = [0 for i in range(len(Dataset_1.sismogramma))]
     # for i in [0, 1, 2, 3]:

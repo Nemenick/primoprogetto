@@ -8,6 +8,3 @@ with open(percorsoclassi, 'r') as f:
             x.append(int(float(line.strip())))
 print(x)
 """
-
-coso = np.array([[3*i,3*i+1,3*i+2] for i in range(4)]+[[10000000000,5555555555,666666666]])
-np.savetxt("Testo.txt",coso , fmt='%d')
