@@ -175,7 +175,7 @@ class ClasseDataset:
                 if line:  # avoid blank lines
                     self.classi.append(int(float(line.strip())))
 
-    def ricava_indici_classi(self, classi_da_selezionare, vettore_indici):
+    def ricava_indici_classi(self, classi_da_selezionare: list, vettore_indici: list):
         """
          metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
          classi_da_selezionare
@@ -431,4 +431,3 @@ if __name__ == "main":
     # Dataset_1.plotta(range(5))
     # Dataset_1.elimina_tacce(range(4))
     # Dataset_1.plotta(range(5))
-
