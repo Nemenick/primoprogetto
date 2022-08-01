@@ -27,10 +27,13 @@ Dataset_u.leggi_classi_txt(classiup_path)
 print(Dataset_u.classi)
 Dataset_d.leggi_classi_txt(classidown_path)
 
-# som down controlla 17 18 22 12
-classiup_indici = [12, 17, 18, 22]
-# som up controlla 22 17 23 2
-classidown_indici = [2, 17, 22, 23]
+
+
+
+# som down controlla [12, 17, 18, 22]
+classiup_indici = [19, 20, 15]
+# som up controlla [2, 17, 22, 23]
+classidown_indici = [20, 15]
 
 semiampiezza_ = 100
 print("\n\n\n\n")
@@ -45,3 +48,6 @@ for i in classidown_indici:
     Dataset_d.ricava_indici_classi([i], vettore_indici)
     nomepng = "classe_down" + str(i)
     Dataset_d.plotta(vettore_indici, semiampiezza_, nomepng)
+
+
+
