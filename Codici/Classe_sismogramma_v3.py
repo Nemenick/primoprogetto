@@ -58,7 +58,7 @@ class ClasseDataset:
         for i in range(len(nomidata)):
             if i % 10000 == 0:
                 print("sto analizzando il sismogramma ", i)
-            if allmetadata["trace_polarity"][i] != 'undecidable' \
+            if allmetadata["trace_polarity"][i] == 'undecidable' \
                     and (allmetadata["station_channels"][i] == "HH" or
                          allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
@@ -363,20 +363,8 @@ class ClasseDataset:
             self.metadata[key] = list(self.metadata[key])
 
 
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
-coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-          "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
-nomi = "Selezionati.csv"
 
-Dataset_1 = ClasseDataset()
-Dataset_1.acquisisci_old(hdf5in, csvin, coltot, nomi)
-# classi = [0 for i in range(len(Dataset_1.sismogramma))]
-# for i in [0, 1, 2, 3]:
-#     classi[i] = 1
-Dataset_1.plotta(range(5))
-Dataset_1.elimina_tacce(range(4))
-Dataset_1.plotta(range(5))
+
 
 if __name__ == "main":
     print("ciao")
@@ -419,3 +407,28 @@ if __name__ == "main":
     #
     # Dataset_1.plotta(visualizza=[83911, 26410, 22696], semiampiezza=200,
     #                  namepng="/home/silvia/Desktop/Instance_Data/Due/visione1")
+    # csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/metadata_Instance_events_10k.csv'
+    # hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Instance_events_counts_10k.hdf5'
+    # coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+    #           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+    # classiup = 'C:/Users/GioCar/Desktop/Tesi_5/SOM/3classes_up.txt'
+    # classidown = 'C:/Users/GioCar/Desktop/Tesi_5/SOM/4classes_down.txt'
+    # nomi_up = "Selezionati_up.csv"
+    # nomi_down = "Selezionati_down.csv"
+    #
+    # Dataset_d = ClasseDataset()
+    # Dataset_u = ClasseDataset()
+    #
+    # Dataset_d.acquisisci_old(hdf5in, csvin, coltot, nomi_down)
+    # Dataset_u.acquisisci_old(hdf5in, csvin, coltot, nomi_up)
+    #
+    # Dataset_u.leggi_classi_txt(classiup)
+    # Dataset_d.leggi_classi_txt(classidown)
+
+    # classi = [0 for i in range(len(Dataset_1.sismogramma))]
+    # for i in [0, 1, 2, 3]:
+    #     classi[i] = 1
+    # Dataset_1.plotta(range(5))
+    # Dataset_1.elimina_tacce(range(4))
+    # Dataset_1.plotta(range(5))
+

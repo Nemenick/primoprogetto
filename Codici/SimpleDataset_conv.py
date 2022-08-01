@@ -5,7 +5,7 @@ from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
 from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
-from Classe_sismogramma_v2 import ClasseDataset
+from Classe_sismogramma_v3 import ClasseDataset
 
 Dati = ClasseDataset()
 
@@ -55,8 +55,8 @@ model.compile(
 model.summary()
 
 # Inizio il train
-"""
-epoche = 50
+
+epoche = 100
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 print("\n\n\nTEMPOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
@@ -69,20 +69,21 @@ loss_val = storia.history["val_loss"]
 acc_train = storia.history["accuracy"]
 acc_val = storia.history["val_accuracy"]
 
-plt.plot(range(1, epoche+1), loss_train, label="loss_train")
-plt.plot(range(1, epoche+1), loss_val, label="loss_val")
-plt.legend()
-plt.savefig("loss")
-plt.clf()
-
 plt.plot(range(1, epoche+1), acc_train, label="acc_train")
 plt.plot(range(1, epoche+1), acc_val, label="acc_val")
 plt.legend()
 plt.savefig("accuracy")
 plt.clf()
 
+
+plt.yscale("log")
+plt.plot(range(1, epoche+1), loss_train, label="loss_train")
+plt.plot(range(1, epoche+1), loss_val, label="loss_val")
+plt.legend()
+plt.savefig("loss")
+plt.clf()
+
 # predizione = model.evaluate(x_test, y_test)
 #
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))
 # print("predict", predizione)
-"""
