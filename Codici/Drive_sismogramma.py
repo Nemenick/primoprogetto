@@ -32,9 +32,15 @@ csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_
 txt_data = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione_data.txt'
 txt_metadata = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione_metadata.txt'
 Dataset.leggi_custom_dataset(hdf5, csv)
-Dataset.finestra(200)
-Dataset.to_txt(txt_data, txt_metadata)
-print("1",Dataset.sismogramma.shape,"2", len(Dataset.metadata["trace_name"]))
+
+ Dataset_d.leggi_classi_txt(classidown_path)
+# classidown_buone = []
+# vettore_indici = []
+# Dataset_d.ricava_indici_classi(classidown_buone, vettore_indici)
+# Dataset_d.elimina_tacce(vettore_indici)
+# Dataset.finestra(200)
+# Dataset.to_txt(txt_data, txt_metadata)
+# print("1",Dataset.sismogramma.shape,"2", len(Dataset.metadata["trace_name"]))
 
 # semiampiezza_ = 100
 # print("\n\n\n\n")
