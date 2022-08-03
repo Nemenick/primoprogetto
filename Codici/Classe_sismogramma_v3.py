@@ -156,8 +156,8 @@ class ClasseDataset:
         self.demeaned = self.metadata["demeaned"][1]
         print(self.sismogramma.shape, len(self.sismogramma))
 
-    def to_txt(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati, txt_data, txt_metadata):
-        self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
+    def to_txt(self, txt_data, txt_metadata):
+        # self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
         # print("\n\nVA BENE?", self.sismogramma)
         np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok
         metadata_txt = pd.DataFrame.from_dict(self.metadata)
