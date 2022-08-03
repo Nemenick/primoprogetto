@@ -154,7 +154,7 @@ class ClasseDataset:
             print("ho caricato la key ", key, time.perf_counter() - start)
         self.centrato = self.metadata["centrato"][1]
         self.demeaned = self.metadata["demeaned"][1]
-        print(self.sismogramma.shape, len(self.sismogramma))
+        # print(self.sismogramma.shape, len(self.sismogramma))
 
     def to_txt(self, txt_data, txt_metadata):
         # self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
