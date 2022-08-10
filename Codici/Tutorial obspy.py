@@ -22,5 +22,7 @@ print("\nkeys", cosa[0].stats.keys)
 """
 
 # Plot
-cosa = read("C:/Users/GioCar/Desktop/Tesi_5/20100722022024_M2.0/20100722022012.MGR.HHZ.sac")
-cosa[0].plot()
+"""
+cosa = read("C:/Users/GioCar/Desktop/Tesi_5/20100722022024_M2.0/*Z.sac") # plotta tutte le tracce 
+cosa.plot()
+"""
