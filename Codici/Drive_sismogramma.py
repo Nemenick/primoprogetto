@@ -33,7 +33,7 @@ txt_data = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_
 txt_metadata = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione_metadata.txt'
 Dataset.leggi_custom_dataset(hdf5, csv)
 
- Dataset_d.leggi_classi_txt(classidown_path)
+Dataset_d.leggi_classi_txt(classidown_path)
 # classidown_buone = []
 # vettore_indici = []
 # Dataset_d.ricava_indici_classi(classidown_buone, vettore_indici)
