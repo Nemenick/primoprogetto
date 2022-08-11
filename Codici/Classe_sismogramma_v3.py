@@ -312,6 +312,7 @@ class ClasseDataset:
             for i in range(len(self.sismogramma)):
                 if vettore_nomi[j] == self.metadata["trace_name"][i]:
                     indici_eliminare.append(i)
+                    break               # TODO mi sembra buono (tutorial_break)
 
         self.elimina_tacce_indici(vettore_indici=indici_eliminare)
 
@@ -324,7 +325,6 @@ class ClasseDataset:
         percorso_cartella           salva in 'C:/Users/GioCar/Desktop/Tesi_5/'+namepng se non è passato
 
         # TODO migliora algoritmo, rendilo più legibbile
-        # TODO crea cartella in cui metto le iimagini una volta plottate
         """
         if len(self.sismogramma) < len(visualizza):
             print("lunghezza sismogramma < sismogrammi da visualizzare")
@@ -351,7 +351,7 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    nome_cartella = percosro_cartellla + "/" + namepng  ## FIXME cambiato
+                    nome_cartella = percosro_cartellla + "/" + namepng
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
@@ -382,7 +382,7 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    nome_cartella = percosro_cartellla + "/" + namepng # FIXME cambiato
+                    nome_cartella = percosro_cartellla + "/" + namepng
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
