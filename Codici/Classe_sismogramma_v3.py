@@ -292,7 +292,7 @@ class ClasseDataset:
 
     def elimina_tacce_indici(self, vettore_indici):
         """
-        vettore_indici è la lista degli indici del file csv da eliminare
+        vettore_indici è la lista degli indici (in accordo con file csv) da eliminare
         info proviene da leggi_classi_txt, che legge le classi della SOM o
         se voglio eliminare tracce in altra maniera selezionate
          a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
@@ -302,6 +302,19 @@ class ClasseDataset:
         for key in self.metadata:   # controlla tutorial_dizionari, funziona ok #TODO verifica che è buono
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
             self.metadata[key] = list(self.metadata[key])
+
+    def elimina_tacce_nomi(self, vettore_nomi):
+        """
+        vettore_nomi è la lista dei nomi delle tracce da eliminare
+        """
+        indici_eliminare = []
+        for j in range(len(vettore_nomi)):
+            for i in range(len(self.sismogramma)):
+                if vettore_nomi[j] == self.metadata["trace_name"][i]:
+                    indici_eliminare.append(i)
+
+        self.elimina_tacce_indici(vettore_indici=indici_eliminare)
+
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5'):
         """
