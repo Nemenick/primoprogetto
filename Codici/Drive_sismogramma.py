@@ -28,6 +28,7 @@ nomi_down = "Selezionati_down.csv"
 # Dataset_d.crea_custom_dataset('C:/Users/GioCar/Desktop/SOM_solo_down_2a_iterazione.hdf5','C:/Users/GioCar/Desktop/SOM_solo_down_2a_iterazione.csv')
 
 # visualizza classi
+"""
 hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
 csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
 txt_data = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione_data.txt'
@@ -39,14 +40,15 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.leggi_classi_txt(classidown_path)
 
 semiampiezza_ = 100
-classi_indici = [i for i in range(1, 17)]
-cartella = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som'
+classi_indici = [i for i in range(1, 17)]  # TODO da cambiare
+cartella = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/Immagini_classi'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
-    nomepng = "classe_2a_iterazione" + str(i)
-    print("up", vettore_indici, [i])
+    nomepng = "2a_iterazione_classe" + str(i)
+    print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
+"""
 
 # classidown_buone = []
 # vettore_indici = []

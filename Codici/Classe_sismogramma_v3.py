@@ -303,7 +303,7 @@ class ClasseDataset:
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
             self.metadata[key] = list(self.metadata[key])
 
-    def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5/'):
+    def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5'):
         """
         visualizza:                 lista di indici delle tracce da visualizzare
         semiampiezza:               della finestra da visualizzare
@@ -317,7 +317,7 @@ class ClasseDataset:
             print("lunghezza sismogramma < sismogrammi da visualizzare")
             return 1
         if namepng is not None:
-            nome_cartella = percosro_cartellla + namepng
+            nome_cartella = percosro_cartellla + "/" + namepng
             os.mkdir(nome_cartella)
 
         if self.centrato:
@@ -338,7 +338,7 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    nome_cartella = percosro_cartellla + namepng
+                    nome_cartella = percosro_cartellla + "/" + namepng  ## FIXME cambiato
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
@@ -369,7 +369,7 @@ class ClasseDataset:
                 if namepng is None:
                     plt.show()
                 else:
-                    nome_cartella = percosro_cartellla + namepng
+                    nome_cartella = percosro_cartellla + "/" + namepng # FIXME cambiato
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
 
