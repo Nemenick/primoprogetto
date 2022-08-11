@@ -290,7 +290,7 @@ class ClasseDataset:
         # TODO implementa giusta normalizzazione (da decidere)
         """
 
-    def elimina_tacce(self, vettore_indici):
+    def elimina_tacce_indici(self, vettore_indici):
         """
         vettore_indici è la lista degli indici del file csv da eliminare
         info proviene da leggi_classi_txt, che legge le classi della SOM o
