@@ -318,7 +318,6 @@ class ClasseDataset:
 
         self.elimina_tacce_indici(vettore_indici=indici_eliminare)
 
-
     def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5'):
         """
         visualizza:                 lista di indici delle tracce da visualizzare
