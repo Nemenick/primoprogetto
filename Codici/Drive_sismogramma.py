@@ -9,7 +9,7 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 
 # TODO  visualizza classi
-# """
+"""
 hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.hdf5'
 csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.csv'
 classidown_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/classes_Buoni_down.txt'
@@ -28,7 +28,7 @@ for i in classi_indici:
     nomepng = "2a_iterazione_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
 """
