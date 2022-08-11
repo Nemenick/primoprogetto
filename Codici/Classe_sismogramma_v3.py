@@ -307,7 +307,7 @@ class ClasseDataset:
         """
         visualizza:                 lista di indici delle tracce da visualizzare
         semiampiezza:               della finestra da visualizzare
-        namepng:                    se è passato divanta il nome del file in cui salvo i plot
+        namepng:                    se è passato diventa il nome del file in cui salvo i plot
         percorso_cartella           salva in 'C:/Users/GioCar/Desktop/Tesi_5/'+namepng se non è passato
 
         # TODO migliora algoritmo, rendilo più legibbile
