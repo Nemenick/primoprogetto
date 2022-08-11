@@ -9,25 +9,26 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 
 # TODO  visualizza classi
-"""
-hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
-csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
-classidown_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/4classes_down_1a_iterazione.txt'
+# """
+hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.hdf5'
+csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.csv'
+classidown_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/classes_Buoni_down.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.leggi_classi_txt(classidown_path)
 
 semiampiezza_ = 100
-classi_indici = [i for i in range(1, 17)]  # TODO da cambiare
-cartella = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/Immagini_classi'
+classi_indici = [i for i in range(1, 26)]  # TODO da cambiare
+# TODO crea la cartella Immagini_classi
+cartella = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/Immagini_classi'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
     nomepng = "2a_iterazione_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-"""
+# """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
 """
@@ -57,7 +58,7 @@ Dataset_ori.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO genera txt per SOM
-# ""
+"""
 hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.hdf5'
 csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.csv'
 txt_data = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN_data.txt'
@@ -66,7 +67,7 @@ txt_metadata = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.to_txt(txt_data, txt_metadata)
-# """
+"""
 
 
 
