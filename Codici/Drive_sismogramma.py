@@ -50,17 +50,33 @@ for i in classi_indici:
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
 """
 
-# TODO seleziona classi
-
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
-hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
-csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
+# TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
+"""
+hdf5in_1a_iter = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
+csvin_1a_iter = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
+hdf5in_ori = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Simple_velocity_down.hdf5'
+csvin_ori = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/Simple_velocity_down.csv'
+hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/BUONI_DOWN.hdf5'
+csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/BUONI_DOWN.csv'
 classi_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/4classes_down_1a_iterazione.txt'
 
 Dataset = ClasseDataset()
-Dataset.leggi_custom_dataset(hdf5in, csvin)
+Dataset.leggi_custom_dataset(hdf5in_1a_iter, csvin_1a_iter)
 Dataset.leggi_classi_txt(classi_path)
+classi_buone = [1, 7, 8, 9, 10, 11, 12, 14, 16]
+indici_buone = []
+Dataset.ricava_indici_classi(classi_buone, vettore_indici=indici_buone)
+Dataset.elimina_tacce_indici(indici_buone)   # ho selezionato solo i cattivi della 1a iterazione
+
+nomi_cattivi = Dataset.metadata["trace_name"]
+print("\n\nQUI", type(nomi_cattivi), len(nomi_cattivi))
+
+Dataset_ori = ClasseDataset()
+Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
+Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
+Dataset_ori.crea_custom_dataset(hdf5out, csvout)
+"""
+
 
 # classidown_buone = []
 # vettore_indici = []

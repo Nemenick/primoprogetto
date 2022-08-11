@@ -59,7 +59,7 @@ class ClasseDataset:
         for i in range(len(nomidata)):
             if i % 10000 == 0:
                 print("sto analizzando il sismogramma ", i)
-            if allmetadata["trace_polarity"][i] == 'undecidable' \
+            if allmetadata["trace_polarity"][i] == 'positive' \
                     and (allmetadata["station_channels"][i] == "HH" or
                          allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
@@ -180,6 +180,8 @@ class ClasseDataset:
         """
          metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
          classi_da_selezionare
+
+         ATTENTO vettore indici deve essere fornito come LISTA vuota
         """
         if len(self.sismogramma) != len(self.classi):
             stringa = "#"
@@ -290,7 +292,7 @@ class ClasseDataset:
         # TODO implementa giusta normalizzazione (da decidere)
         """
 
-    def elimina_tacce_indici(self, vettore_indici):
+    def elimina_tacce_indici(self, vettore_indici: list):
         """
         vettore_indici è la lista degli indici (in accordo con file csv) da eliminare
         info proviene da leggi_classi_txt, che legge le classi della SOM o
@@ -303,7 +305,7 @@ class ClasseDataset:
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
             self.metadata[key] = list(self.metadata[key])
 
-    def elimina_tacce_nomi(self, vettore_nomi):
+    def elimina_tacce_nomi(self, vettore_nomi: list):
         """
         vettore_nomi è la lista dei nomi delle tracce da eliminare
         """
