@@ -7,6 +7,27 @@ import time
 import warnings"""
 from Classe_sismogramma_v3 import ClasseDataset
 
+# TODO seleziona classi
+"""
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
+classi_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_down/classes_down.txt'
+
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5, csv)
+Data.leggi_classi_txt(classi_path)
+
+classi_buone = [i+1 for i in range(25)]
+classi_buone.remove(7)
+classi_buone.remove(9)
+
+indici = []
+Data.ricava_indici_classi(classi_buone, indici)
+Data.elimina_tacce_indici(indici)
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/data_clas_7_9.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/metadata_clas_7_9.csv'
+Data.crea_custom_dataset(hdf5out, csvout)
+"""
 
 # TODO  visualizza classi
 """
@@ -59,15 +80,15 @@ Dataset_ori.crea_custom_dataset(hdf5out, csvout)
 
 # TODO genera txt per SOM
 # """
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_8s/data_down_Velocimeter_8s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_8s/metadata_down_Velocimeter_8s.csv'
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
 
-txt_data = '/home/silvia/Desktop/Instance_Data/Tre_8s/data_down_Velocimeter_8s.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_8s/metadata_down_Velocimeter_8s.txt'
+txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_down_5_21_23.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_down_5_21_23.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
-Dataset.finestra(200)
+# Dataset.finestra(200)
 Dataset.to_txt(txt_data, txt_metadata)
 # """
 
