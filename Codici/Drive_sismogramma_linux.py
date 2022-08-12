@@ -79,7 +79,7 @@ Dataset_ori.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO genera txt per SOM
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
 
@@ -90,7 +90,7 @@ Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 # Dataset.finestra(200)
 Dataset.to_txt(txt_data, txt_metadata)
-# """
+"""
 
 # Todo Dividui up/down
 """
