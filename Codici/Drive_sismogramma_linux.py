@@ -8,7 +8,7 @@ import warnings"""
 from Classe_sismogramma_v3 import ClasseDataset
 
 # TODO seleziona classi
-
+"""
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
 classi_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_up/classes_up.txt'
@@ -32,12 +32,12 @@ Data.crea_custom_dataset(hdf5out, csvout)
 txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/data_up_2_5_25.txt'
 txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
 Data.to_txt(txt_data, txt_metadata)
-
+"""
 # TODO  visualizza classi
 """
-hdf5 = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.hdf5'
-csv = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/BUONI_DOWN.csv'
-classidown_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/classes_Buoni_down.txt'
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/data_clas_2_5_25.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_clas_2_5_25.csv'
+classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/2_5_25_post_7_classes.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
@@ -46,7 +46,7 @@ Dataset.leggi_classi_txt(classidown_path)
 semiampiezza_ = 100
 classi_indici = [i for i in range(1, 26)]  # TODO da cambiare
 # TODO crea la cartella Immagini_classi
-cartella = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/Buoni_Down_simple/Immagini_classi'
+cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/Immagini_up_2_5_25'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
