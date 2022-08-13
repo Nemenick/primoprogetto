@@ -8,26 +8,30 @@ import warnings"""
 from Classe_sismogramma_v3 import ClasseDataset
 
 # TODO seleziona classi
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
-classi_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_down/classes_down.txt'
+
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
+classi_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_up/classes_up.txt'
 
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5, csv)
 Data.leggi_classi_txt(classi_path)
 
 classi_buone = [i+1 for i in range(25)]
-classi_buone.remove(7)
-classi_buone.remove(9)
+classi_buone.remove(2)
+classi_buone.remove(5)
+classi_buone.remove(25)
 
 indici = []
 Data.ricava_indici_classi(classi_buone, indici)
 Data.elimina_tacce_indici(indici)
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/data_clas_7_9.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/metadata_clas_7_9.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/data_clas_2_5_25.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/metadata_clas_2_5_25.csv'
 Data.crea_custom_dataset(hdf5out, csvout)
-"""
+
+txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/data_up_2_5_25.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
+Data.to_txt(txt_data, txt_metadata)
 
 # TODO  visualizza classi
 """
