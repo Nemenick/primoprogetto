@@ -34,10 +34,10 @@ txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25
 Data.to_txt(txt_data, txt_metadata)
 """
 # TODO  visualizza classi
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/data_clas_2_5_25.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_clas_2_5_25.csv'
-classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/2_5_25_post_7_classes.txt'
+# """
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/data_clas_7_9.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/metadata_clas_7_9.csv'
+classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/7_9_post_7_5x5_classes.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
@@ -46,14 +46,14 @@ Dataset.leggi_classi_txt(classidown_path)
 semiampiezza_ = 100
 classi_indici = [i for i in range(1, 26)]  # TODO da cambiare
 # TODO crea la cartella Immagini_classi
-cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/Immagini_up_2_5_25'
+cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/Immagini_down_7_9'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
     nomepng = "2a_iterazione_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-"""
+# """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
 """
