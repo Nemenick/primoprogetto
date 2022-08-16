@@ -33,11 +33,12 @@ txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/dat
 txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
 Data.to_txt(txt_data, txt_metadata)
 """
+
 # TODO  visualizza classi
-# """
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/data_clas_7_9.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/metadata_clas_7_9.csv'
-classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/7_9_post_7_5x5_classes.txt'
+"""
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
+classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/5_21_23_post_7_classes.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
@@ -46,41 +47,63 @@ Dataset.leggi_classi_txt(classidown_path)
 semiampiezza_ = 100
 classi_indici = [i for i in range(1, 26)]  # TODO da cambiare
 # TODO crea la cartella Immagini_classi
-cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/7_9/Immagini_down_7_9'
+cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/Immagini_down_5_21_23'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
     nomepng = "2a_iterazione_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
-"""
-hdf5in_1a_iter = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.hdf5'
-csvin_1a_iter = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/SOM_solo_down_1a_iterazione.csv'
-hdf5in_ori = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/data/Simple_velocity_down.hdf5'
-csvin_ori = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/metadata/Simple_velocity_down.csv'
-hdf5out = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/BUONI_DOWN.hdf5'
-csvout = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/BUONI_DOWN.csv'
-classi_path = 'C:/Users/GioCar/Desktop/Tesi_5/Simple_dataset/cattivi_down_1Som/4classes_down_1a_iterazione.txt'
+# """
+hdf5in_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
+csvin_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
-Dataset = ClasseDataset()
-Dataset.leggi_custom_dataset(hdf5in_1a_iter, csvin_1a_iter)
-Dataset.leggi_classi_txt(classi_path)
-classi_buone = [1, 7, 8, 9, 10, 11, 12, 14, 16]
-indici_buone = []
-Dataset.ricava_indici_classi(classi_buone, vettore_indici=indici_buone)
-Dataset.elimina_tacce_indici(indici_buone)   # ho selezionato solo i cattivi della 1a iterazione
+sto_qui = '/home/silvia/Desktop/Instance_Data/Tre_4s'
+hdf_list = ['/Down_1_iterazione/4_8_10/data_clas_4_8_10', '/Down_1_iterazione/5_21_23/data_clas_5_21_23',
+            '/Down_1_iterazione/7_9/data_clas_7_9', '/Up_1_iterazione/4/data_clas_4',
+            '/Up_1_iterazione/24/data_clas_24', '/Up_1_iterazione/2_5_25/data_clas_2_5_25']
+csv_list = ['/Down_1_iterazione/4_8_10/metadata_clas_4_8_10', '/Down_1_iterazione/5_21_23/metadata_clas_5_21_23',
+            '/Down_1_iterazione/7_9/metadata_clas_7_9', '/Up_1_iterazione/4/metadata_clas_4',
+            '/Up_1_iterazione/24/metadata_clas_24', '/Up_1_iterazione/2_5_25/metadata_clas_2_5_25']
+classi_list = ['/Down_1_iterazione/4_8_10/4_8_10_post_5_classes', '/Down_1_iterazione/5_21_23/5_21_23_post_7_classes',
+               '/Down_1_iterazione/7_9/7_9_post_7_classes', '/Up_1_iterazione/4/4_post_10_classes',
+               '/Up_1_iterazione/24/24_post_10_classes', '/Up_1_iterazione/2_5_25/2_5_25_post_7_classes']
 
-nomi_cattivi = Dataset.metadata["trace_name"]
-print("\n\nQUI", type(nomi_cattivi), len(nomi_cattivi))
+for i in range(6):
+    hdf_list[i] = sto_qui + hdf_list[i] + '.hdf5'
+    csv_list[i] = sto_qui + csv_list[i] + '.csv'
+    classi_list[i] = sto_qui + classi_list[i] + '.txt'
+
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_BUONE_4s.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_BUONE_4s.csv'
+
+classi_buone = [[19, 25, 20],
+                [11, 18, 20, 21, 15, 16, 23, 19, 5, 24],
+                [5, 9, 12, 15, 10, 18, 20, 1, 6, 11, 16, 17, 21, 22, 23, 24, 25],
+                [10, 14, 15, 16, 17, 18, 19, 20, 22, 23, 25],
+                [3, 4, 13, 14, 18, 1, 5, 8, 9, 10, 15, 16, 17, 19, 20, 21, 22, 23, 24, 25],
+                [2, 4, 9, 14, 18, 24, 5, 10, 11, 19, 21, 22, 25]]
+
+nomi_cattivi = []
+for i in range(6):
+    Dataset = ClasseDataset()
+    Dataset.leggi_custom_dataset(hdf_list[i], csv_list[i])
+    Dataset.leggi_classi_txt(classi_list[i])
+    indici_buone = []
+    Dataset.ricava_indici_classi(classi_buone[i], vettore_indici=indici_buone)
+    Dataset.elimina_tacce_indici(indici_buone)   # ho selezionato solo i cattivi della 1a iterazione
+    nomi_cattivi.append(Dataset.metadata["trace_name"])
+    print("\n\n\nQUIQUI", len(Dataset.metadata))
+    print("\nQUI", type(nomi_cattivi), len(nomi_cattivi))
 
 Dataset_ori = ClasseDataset()
 Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
 Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
 Dataset_ori.crea_custom_dataset(hdf5out, csvout)
-"""
+# """
 
 # TODO genera txt per SOM
 """
