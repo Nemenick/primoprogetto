@@ -95,9 +95,9 @@ for i in range(6):
     indici_buone = []
     Dataset.ricava_indici_classi(classi_buone[i], vettore_indici=indici_buone)
     Dataset.elimina_tacce_indici(indici_buone)   # ho selezionato solo i cattivi della 1a iterazione
-    nomi_cattivi.append(Dataset.metadata["trace_name"])
+    nomi_cattivi = nomi_cattivi + Dataset.metadata["trace_name"]
     print("\n\n\nQUIQUI", len(Dataset.metadata))
-    print("\nQUI", type(nomi_cattivi), len(nomi_cattivi))
+    print("QUI", type(nomi_cattivi), len(nomi_cattivi), nomi_cattivi)
 
 Dataset_ori = ClasseDataset()
 Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)

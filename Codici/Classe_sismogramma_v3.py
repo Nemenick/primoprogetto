@@ -144,14 +144,14 @@ class ClasseDataset:
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
-        print("ho caricato hdf5", time.perf_counter()-start)
+        # print("ho caricato hdf5", time.perf_counter()-start)
         datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int})
         # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
-        print("ho letto csv", time.perf_counter()-start)
+        # print("ho letto csv", time.perf_counter()-start)
         self.metadata = {}
         for key in datd:
             self.metadata[key] = np.array(datd[key])
-            print("ho caricato la key ", key, time.perf_counter() - start)
+            # print("ho caricato la key ", key, time.perf_counter() - start)
         self.centrato = self.metadata["centrato"][1]
         self.demeaned = self.metadata["demeaned"][1]
         # print(self.sismogramma.shape, len(self.sismogramma))
@@ -299,7 +299,7 @@ class ClasseDataset:
         se voglio eliminare tracce in altra maniera selezionate
          a = np.delete(a,[2,1],axis=0) elimina le righe 2 e 1 del vettore
         """
-        print("lemetadat",  type(self.metadata))
+        # print("lemetadat",  type(self.metadata))
         self.sismogramma = np.delete(self.sismogramma, vettore_indici, axis=0)
         for key in self.metadata:   # controlla tutorial_dizionari, funziona ok #TODO verifica che è buono
             self.metadata[key] = np.array(np.delete(self.metadata[key], vettore_indici, axis=0))
