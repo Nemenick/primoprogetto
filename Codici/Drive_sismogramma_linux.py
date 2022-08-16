@@ -57,7 +57,7 @@ for i in classi_indici:
 """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
-# """
+"""
 hdf5in_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 csvin_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
@@ -95,15 +95,15 @@ for i in range(6):
     indici_buone = []
     Dataset.ricava_indici_classi(classi_buone[i], vettore_indici=indici_buone)
     Dataset.elimina_tacce_indici(indici_buone)   # ho selezionato solo i cattivi della 1a iterazione
-    nomi_cattivi = nomi_cattivi + Dataset.metadata["trace_name"]
-    print("\n\n\nQUIQUI", len(Dataset.metadata))
-    print("QUI", type(nomi_cattivi), len(nomi_cattivi), nomi_cattivi)
+    nomi_cattivi = nomi_cattivi + list(Dataset.metadata["trace_name"])  
+    print("elimino tracce in numero ", len(Dataset.metadata["trace_name"]), "da", classi_list[i])
+    # print("QUI", type(nomi_cattivi), len(nomi_cattivi))
 
 Dataset_ori = ClasseDataset()
 Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
 Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
 Dataset_ori.crea_custom_dataset(hdf5out, csvout)
-# """
+"""
 
 # TODO genera txt per SOM
 """
