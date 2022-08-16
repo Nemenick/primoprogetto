@@ -120,20 +120,25 @@ Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividui up/down
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Due_8s/data_selected_Polarity_Velocimeter_8s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Due_8s/metadata_Instance_events_selected_Polarity_Velocimeter_8s.csv'
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_8s/data_down_Velocimeter_8s.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_8s/metadata_down_Velocimeter_8s.csv'
+# """
+hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_up_4s.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_up_4s.csv'
+
+txt_data = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_up_4s.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_up_4s.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 elimina = []
 for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_polarity"][i] == "positive":
+    if Dataset.metadata["trace_polarity"][i] == "negative":
         elimina.append(i)
 Dataset.elimina_tacce_indici(elimina)
 
 Dataset.crea_custom_dataset(hdf5out, csvout)
+Dataset.to_txt(txt_data, txt_metadata)
 
-"""
+# """
