@@ -35,7 +35,7 @@ Data.to_txt(txt_data, txt_metadata)
 """
 
 # TODO  visualizza classi
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/data_Velocimeter_Buone_up_4s.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/metadata_Velocimeter_Buone_up_4s.csv'
 classidown_path = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/Som_up_buoni_classes.txt'
@@ -55,7 +55,7 @@ for i in classi_indici:
     nomepng = "Up_buoni_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
 """
@@ -142,4 +142,21 @@ Dataset.elimina_tacce_indici(elimina)
 Dataset.crea_custom_dataset(hdf5out, csvout)
 Dataset.to_txt(txt_data, txt_metadata)
 
+"""
+
+# TODO visualizza
+"""
+hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+Dataset = ClasseDataset()
+Dataset.leggi_custom_dataset(hdf5, csv)
+semiampiezza_ = 100
+
+cartella = '/home/silvia/Desktop/Instance_Data/Z_Figure_Large_Custom_dataset'
+
+vettore_indici = [i for i in range(9000, 9500)]
+
+nomepng = "1_ciclo_Som"
+Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
 """
