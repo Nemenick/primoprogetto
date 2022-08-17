@@ -35,10 +35,10 @@ Data.to_txt(txt_data, txt_metadata)
 """
 
 # TODO  visualizza classi
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
-classidown_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/5_21_23_post_7_classes.txt'
+# """
+hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/data_Velocimeter_Buone_up_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/metadata_Velocimeter_Buone_up_4s.csv'
+classidown_path = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/Som_up_buoni_classes.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
@@ -47,14 +47,15 @@ Dataset.leggi_classi_txt(classidown_path)
 semiampiezza_ = 100
 classi_indici = [i for i in range(1, 26)]  # TODO da cambiare
 # TODO crea la cartella Immagini_classi
-cartella = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/Immagini_down_5_21_23'
+cartella = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Som_up/Immagini_up_buoni'
 for i in classi_indici:
     vettore_indici = []
     Dataset.ricava_indici_classi([i], vettore_indici)
-    nomepng = "2a_iterazione_classe" + str(i)
+    # vettore_indici = vettore_indici[0:200]
+    nomepng = "Up_buoni_classe" + str(i)
     print("classe "+str(i), vettore_indici, [i])
     Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-"""
+# """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
 """
@@ -120,7 +121,7 @@ Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividui up/down
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
@@ -141,4 +142,4 @@ Dataset.elimina_tacce_indici(elimina)
 Dataset.crea_custom_dataset(hdf5out, csvout)
 Dataset.to_txt(txt_data, txt_metadata)
 
-# """
+"""
