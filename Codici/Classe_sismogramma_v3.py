@@ -287,10 +287,21 @@ class ClasseDataset:
                 self.demean(metodo)
         # self.calcola_media("senza_media")
 
-    def normalizza(self):
+    def normalizza(self, soglia=20):
         """
         # TODO implementa giusta normalizzazione (da decidere)
+        Metodo 1, prova
         """
+        lung_traccia = len(self.sismogramma[0])
+        for i in range(len(self.sismogramma)):
+            max_rumore = np.max(self.sismogramma[i][0:lung_traccia-5])
+            min_rumore = np.min(self.sismogramma[i][0:lung_traccia-5])
+            self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
+            if i % 1000 == 0:
+                print("normalizzo, sto alla ", i)
+            for j in range(lung_traccia):
+                self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
+                self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
 
     def elimina_tacce_indici(self, vettore_indici: list):
         """
