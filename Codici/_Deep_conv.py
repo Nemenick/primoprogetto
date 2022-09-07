@@ -30,10 +30,10 @@ y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in ra
 (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
 (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
 
-for j in range(5):
+"""for j in range(5):
     plt.plot(x_train[j+10], label=str(y_train[j+10]))
 plt.legend()
-plt.show()
+plt.show()"""
 
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... (len(timeseries),1 (channels)) funziona

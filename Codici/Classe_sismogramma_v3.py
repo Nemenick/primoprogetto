@@ -293,15 +293,17 @@ class ClasseDataset:
         Metodo 1, prova
         """
         lung_traccia = len(self.sismogramma[0])
+        self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO
         for i in range(len(self.sismogramma)):
-            max_rumore = np.max(self.sismogramma[i][0:lung_traccia-5])
-            min_rumore = np.min(self.sismogramma[i][0:lung_traccia-5])
+            max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
+            min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
             self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
-            if i % 1000 == 0:
-                print("normalizzo, sto alla ", i)
             for j in range(lung_traccia):
                 self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
                 self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
+
+            if i % 1000 == 0:
+                print("normalizzo, sto alla ", i)
 
     def elimina_tacce_indici(self, vettore_indici: list):
         """

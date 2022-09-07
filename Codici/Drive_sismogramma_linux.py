@@ -160,3 +160,16 @@ vettore_indici = [i for i in range(9000, 9500)]
 nomepng = "1_ciclo_Som"
 Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
 """
+
+# TODO genera Custom Normalizzato
+Dati = ClasseDataset()
+
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+
+Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
+Dati.normalizza()
+Dati.crea_custom_dataset(hdf5out, csvout)
