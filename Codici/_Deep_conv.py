@@ -9,12 +9,12 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 Dati = ClasseDataset()
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'   # percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'       # percorso di Dove sono contenute le tracce
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'   # percorso di dove sono contenuti i metadata
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'       # percorso di Dove sono contenute le tracce
 
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
-semiampiezza = 130
+semiampiezza = 50
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])
 
@@ -63,6 +63,7 @@ model.summary()
 epoche = 10
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
+# vedi validation come evolve durante la stessa epoca
 print("\n\n\nTEMPOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
 model.save("Simple_data_conv_1.0.hdf5")
 print("\n\nControlla qui\n", storia.history)
