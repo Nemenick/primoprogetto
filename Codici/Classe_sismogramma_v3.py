@@ -293,7 +293,7 @@ class ClasseDataset:
         Metodo 1, prova
         """
         lung_traccia = len(self.sismogramma[0])
-        self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO
+        self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
         for i in range(len(self.sismogramma)):
             max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
             min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])

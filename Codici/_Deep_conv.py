@@ -15,6 +15,7 @@ hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_B
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 semiampiezza = 130
+# Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])
 
 x_train = np.zeros((len(Dati.sismogramma)*2, semiampiezza*2))
