@@ -9,11 +9,11 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 Dati = ClasseDataset()
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'   # percorso di dove sono contenuti i metadata
+"""csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'   # percorso di dove sono contenuti i metadata
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'       # percorso di Dove sono contenute le tracce
-
-"""csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate1_4s.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'"""
+"""
+csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate1_4s.csv'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'
 
 
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
@@ -26,7 +26,10 @@ x_train = np.zeros((len(Dati.sismogramma)*2, semiampiezza*2))
 for i in range(len(Dati.sismogramma)):
     x_train[i] = Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
     x_train[i+len(Dati.sismogramma)] = -Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-
+# print(x_train[0])
+# x_train.reshape(x_train.shape[0], x_train.shape[1], 1)
+# print("\n\n E MO CHE SI FAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n\n", x_train.shape)
+# print(x_train[0])
 # print(type(x_train), x_train.shape)
 y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati.sismogramma))] +
                    [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(len(Dati.sismogramma))])
