@@ -69,6 +69,15 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.to_txt(txt_data, txt_metadata)
 """
 
+# TODO  normalizza
 
+hdf5 = "C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_4s.hdf5"
+csv = "C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_4s.csv"
 
+hdf5out = "C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate1_4s.hdf5"
+csvout = "C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate1_4s.csv"
 
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5, csv)
+Data.normalizza()
+Data.crea_custom_dataset(hdf5out, csvout)

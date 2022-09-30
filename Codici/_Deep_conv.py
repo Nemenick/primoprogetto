@@ -9,12 +9,16 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 Dati = ClasseDataset()
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'   # percorso di dove sono contenuti i metadata
+"""csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'   # percorso di dove sono contenuti i metadata
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'       # percorso di Dove sono contenute le tracce
+"""
+csvin = "C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate1_4s.csv"
+hdf5in = "C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5"
+
 
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
-
-semiampiezza = 50
+Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan
+semiampiezza = 130
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])
 

@@ -152,10 +152,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python._Deep_conv" />
+        <item itemvalue="Python.Drive_sismogramma" />
         <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python.GPU_test" />
         <item itemvalue="Python.tutorial_classe sismogramma" />
-        <item itemvalue="Python.Drive_sismogramma" />
       </list>
     </recent_temporary>
   </component>
@@ -180,5 +180,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py</url>
+          <line>166</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -297,6 +297,8 @@ class ClasseDataset:
         for i in range(len(self.sismogramma)):
             max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
             min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
+            if soglia*max(max_rumore, -min_rumore) == 0:
+                print("questa è la traccia in cui divido per 0\t", i)
             self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
             for j in range(lung_traccia):
                 self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
