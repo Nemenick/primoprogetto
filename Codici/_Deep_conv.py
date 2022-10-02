@@ -34,7 +34,7 @@ for i in range(len(Dati.sismogramma)):
 y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati.sismogramma))] +
                    [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(len(Dati.sismogramma))])
 # print("\nsomma ytrain", np.sum(y_train))    # OK si trova, posso implementare to_categorical
-
+y_train = y_train + 0
 (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
 (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
 
@@ -67,7 +67,7 @@ model.summary()
 
 # Inizio il train
 
-epoche = 10
+epoche = 2
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
