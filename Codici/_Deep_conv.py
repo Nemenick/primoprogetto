@@ -1,5 +1,6 @@
 import time
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
@@ -9,11 +10,11 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 Dati = ClasseDataset()
 
-"""csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'   # percorso di dove sono contenuti i metadata
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'   # percorso di dove sono contenuti i metadata
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'       # percorso di Dove sono contenute le tracce
 """
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate1_4s.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'
+hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'"""
 
 
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
@@ -71,7 +72,7 @@ epoche = 2
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
-print("\n\n\nTEMPOO per ",epoche,"epoche: ", time.perf_counter()-start,"\n\n\n")
+print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
 model.save("Simple_data_conv_1.0.hdf5")
 print("\n\nControlla qui\n", storia.history)
 print(storia.history.keys())
@@ -95,6 +96,13 @@ plt.legend()
 plt.savefig("loss")
 plt.clf()
 
+N_test = 500
+yp = np.array(model.predict(x_val[0:N_test]))
+yp.reshape(len(yp))
+print(y_train, "\n", yp)
+dizio = {"y_INGV": y_val[0:N_test], "y_predict": yp}
+datapandas = pd.DataFrame.from_dict(dizio)
+datapandas.to_csv('/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Predizioni.csv', index=False)
 # predizione = model.evaluate(x_test, y_test)
 #
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))
