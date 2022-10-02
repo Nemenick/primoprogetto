@@ -68,7 +68,7 @@ model.summary()
 
 # Inizio il train
 
-epoche = 2
+epoche = 1
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
@@ -97,10 +97,10 @@ plt.savefig("loss")
 plt.clf()
 
 N_test = 500
-yp = np.array(model.predict(x_val[0:N_test]))
-yp.reshape(len(yp))
-print(y_train, "\n", yp)
-dizio = {"y_INGV": y_val[0:N_test], "y_predict": yp}
+yp = model.predict(x_val[0:N_test])
+yp_new = [val[0] for val in yp]
+print(y_train, "\n", yp_new)
+dizio = {"y_INGV": y_val[0:N_test], "y_predict": yp_new}
 datapandas = pd.DataFrame.from_dict(dizio)
 datapandas.to_csv('/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Predizioni.csv', index=False)
 # predizione = model.evaluate(x_test, y_test)
