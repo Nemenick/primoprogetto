@@ -32,4 +32,15 @@ cosa.plot()
 sia cosa[0]  <class 'obspy.core.trace.Trace'>
 inizio = cosa[0].stats['starttime']
 print(inizio.datetime, type(inizio.datetime))
+inizio.year
+inizio.month
+inizio.day
+
+
+data_list = ['nzyear', 'nzjday', 'nzhour', 'nzmin', 'nzsec', 'nzmsec']
+d = []
+for i in data_list:
+    print(cosa[0].stats['sac'][i])
+    d.append(cosa[0].stats['sac'][i])
+# Attento in cosa[0].stats['sac']['nzmsec']  è in MILLIsecondi mentre per obspy.UTCDateTime è in MICROsecondi
 """
