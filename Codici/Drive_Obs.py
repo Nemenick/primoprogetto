@@ -7,8 +7,8 @@ from matplotlib import pyplot as plt
 
 
 # path = "/home/silvia/Desktop/Pollino/*/*Z.sac"
-path = "/home/silvia/Desktop/v3/*/*Z.sac"
-path_pandas = "/home/silvia/Desktop"
+path = "/home/silvia/Desktop/viste_buone/*/*Z.sac"
+path_pandas = "/home/silvia/Desktop/Arrivals.csv"
 tracce_sac = read(path, format="SAC")  # legge tutti i sac non zippati
 # cosa = read("/home/silvia/Desktop/Pollino/20101015010010_M1.9/20101015005956.CUC.HHZ.sac")
 print(tracce_sac, type(tracce_sac))
@@ -19,19 +19,34 @@ print("\nkeys", tracce_sac[0].stats.keys)
 # for traccia in tracce_sac:
 #     print(traccia.stats['npts'], traccia.stats['sampling_rate'], traccia.stats['channel'], traccia.stats['delta'])
 
-#TODO np.concatenate (()) DOPPIA PARENTESI!
-
-# TODO per polarity
-# tracce_sac[0].stats['sac']['ka']
-
-# TODO per arrival sample
-# """
-arrivals = []
-lengths = []
+# coltot = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+    #           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type", ]
+trace_name = []
+station_channels = []                   # ok
+trace_P_arrival_sample = []             # ok
+trace_polarity = []
+trace_P_uncertainty_s = []              # ok
+source_magnitude = []                   # ok
+source_magnitude_type = []              # ok
+sampling_rate = []                      # ok
+data_list = ['nzyear', 'nzjday', 'nzhour', 'nzmin', 'nzsec', 'nzmsec']
 for i in range(len(tracce_sac)):
+    station_channels.append(tracce_sac[i].stats['channel'])
+    source_magnitude.append(tracce_sac[i].stats['sac']['mag'])
+    source_magnitude_type.append("unknown")                             # FIXME
+    sampling_rate.append(tracce_sac[i].stats['sampling_rate'])
+    trace_P_uncertainty_s.append(tracce_sac[i].stats['delta'])
+    trace_name.append()
+    #TODO np.concatenate (()) DOPPIA PARENTESI!
+
+    # TODO per polarity
+    # tracce_sac[i].stats['sac']['ka']
+
+    # TODO per arrival sample
+    # """
     start = tracce_sac[i].stats['starttime']
     # print(start.datetime, type(start.datetime), type(start))
-    data_list = ['nzyear', 'nzjday', 'nzhour', 'nzmin', 'nzsec', 'nzmsec']
+
     d = []
     for j in data_list:
         # print(tracce_sac[i].stats['sac'][j])
@@ -40,13 +55,10 @@ for i in range(len(tracce_sac)):
 
     # print(reference.datetime, type(reference.datetime), type(reference))
     arrival = (reference.datetime-start.datetime).total_seconds() + tracce_sac[i].stats['sac']['a']
-    if i% 200 == 0:
+    if i % 200 == 0:
         print(arrival, tracce_sac[i].stats['npts'], " sto alla ", i)
-    arrivals.append(arrival)
-    lengths.append(tracce_sac[i].stats['npts'])
-dizio = {"arrivals": arrivals, "lenghts": lengths}
-data_pandas = pd.DataFrame.from_dict(dizio)
-data_pandas.to_csv(path_pandas)
+    trace_P_arrival_sample.append(int(arrival * 100))
+
 # plt.plot(tracce_sac[0].data)
 # plt.axvline(x=int(arrival*100), c="r", ls="--", lw="1")
 # plt.show()

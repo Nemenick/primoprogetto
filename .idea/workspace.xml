@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python._Sposta_cartelle">
+  <component name="RunManager" selected="Python.Drive_Obs">
     <configuration name="Drive_Obs" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -151,8 +151,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python._Sposta_cartelle" />
         <item itemvalue="Python.Drive_Obs" />
+        <item itemvalue="Python._Sposta_cartelle" />
         <item itemvalue="Python._Deep_conv" />
         <item itemvalue="Python.Drive_sismogramma" />
         <item itemvalue="Python.Drive_sismogramma_linux" />
