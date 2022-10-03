@@ -26,3 +26,10 @@ print("\nkeys", cosa[0].stats.keys)
 cosa = read("C:/Users/GioCar/Desktop/Tesi_5/20100722022024_M2.0/*Z.sac") # plotta tutte le tracce 
 cosa.plot()
 """
+
+# Tempi arrivo
+"""
+sia cosa[0]  <class 'obspy.core.trace.Trace'>
+inizio = cosa[0].stats['starttime']
+print(inizio.datetime, type(inizio.datetime))
+"""
