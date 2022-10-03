@@ -2,14 +2,17 @@ import obspy
 from obspy import read
 
 # TODO Read single flile
-"""
-cosa = read("C:/Users/GioCar/Desktop/Tesi_5/20100722022024_M2.0/20100722022012.MGR.HHZ.sac")
+# """
+path = "/home/silvia/Desktop/Pollino/*/*Z.sac"
+cosa = read(path, format="SAC")
 print(cosa, type(cosa))
 print("\n", cosa[0], "\n", type(cosa[0]))
 print("\ndata", cosa[0].data, "\ntype", type(cosa[0].data))
 print("\nstats", cosa[0].stats, "\ntype", type(cosa[0].stats))
-print("\nkeys", cosa[0].stats.keys)"""
+print("\nkeys", cosa[0].stats.keys)
+print("Ciao", cosa[0].stats['starttime'], str(cosa[0].stats['starttime']))
 
+# """
 # TODO Read folder with wildcards (wildcards sarebbe read *Z.sac)
 """
 
