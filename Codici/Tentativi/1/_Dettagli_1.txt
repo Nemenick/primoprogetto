@@ -1,0 +1,3 @@
+semiampiezza 	130s
+dati (data_Velocimeter_Buone_4s.hdf5)
+ancora non normalizzato e y_train era Tue,False non 1,0
