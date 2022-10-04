@@ -257,7 +257,7 @@ class ClasseDataset:
 
             self.centrato = True
 
-    def demean(self, metodo):
+    def demean(self, metodo: str):
         """
             scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
             metodo totale -> toglie tutta la media
@@ -339,7 +339,7 @@ class ClasseDataset:
         semiampiezza:               della finestra da visualizzare
         namepng:                    se è passato diventa il nome del file in cui salvo i plot
         percorso_cartella           salva in 'C:/Users/GioCar/Desktop/Tesi_5/'+namepng se non è passato
-
+                                    cioè creo la cartella percorso_cartella + namepng e ci metto i file dentro
         # TODO migliora algoritmo, rendilo più legibbile
         """
         if len(self.sismogramma) < len(visualizza):
@@ -363,7 +363,7 @@ class ClasseDataset:
                     if key != "centrato" and key != "demeaned":
                         stringa = stringa + str(self.metadata[key][i]) + " "
                 # stringa = stringa + str(self.indice_csv[i])
-                plt.title(stringa)
+                plt.title(stringa, wrap=True, loc='center')
                 if namepng is None:
                     plt.show()
                 else:
@@ -394,7 +394,7 @@ class ClasseDataset:
                     if key != "centrato" and key != "demeaned":
                         stringa = stringa + str(self.metadata[key][i]) + " "
                 # stringa = stringa + str(self.indice_csv[i])
-                plt.title(stringa)
+                plt.title(stringa, wrap=True, loc='center')
                 if namepng is None:
                     plt.show()
                 else:
