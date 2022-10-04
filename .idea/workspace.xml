@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Tutorial obspy">
+  <component name="RunManager" selected="Python.Drive_sismogramma_linux">
     <configuration name="Drive_Obs" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -65,7 +65,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Drive_sismogramma" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="Drive_sismogramma_linux" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -77,7 +77,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Drive_sismogramma.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -151,11 +151,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Tutorial obspy" />
+        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python.Drive_Obs" />
+        <item itemvalue="Python.Tutorial obspy" />
         <item itemvalue="Python._Sposta_cartelle" />
         <item itemvalue="Python._Deep_conv" />
-        <item itemvalue="Python.Drive_sismogramma" />
       </list>
     </recent_temporary>
   </component>

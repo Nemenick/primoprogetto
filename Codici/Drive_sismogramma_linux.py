@@ -162,6 +162,7 @@ Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartel
 """
 
 # TODO genera Custom Normalizzato
+"""
 Dati = ClasseDataset()
 
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
@@ -173,3 +174,4 @@ hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.normalizza()
 Dati.crea_custom_dataset(hdf5out, csvout)
+"""

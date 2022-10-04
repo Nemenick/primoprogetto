@@ -8,7 +8,7 @@ from matplotlib import pyplot as plt
 
 # path = "/home/silvia/Desktop/Pollino/*/*Z.sac"
 path = "/home/silvia/Desktop/viste_buone/*/*Z.sac"
-path_pandas = "/home/silvia/Desktop/Arrivals.csv"
+path_pandas = "/home/silvia/Desktop/polarity.csv"
 tracce_sac = read(path, format="SAC")  # legge tutti i sac non zippati
 # cosa = read("/home/silvia/Desktop/Pollino/20101015010010_M1.9/20101015005956.CUC.HHZ.sac")
 print(tracce_sac, type(tracce_sac))
@@ -35,10 +35,15 @@ for i in range(len(tracce_sac)):
     # TODO np.concatenate (()) DOPPIA PARENTESI!
     # per append Classedataset.data
     # TODO per polarity
-    # tracce_sac[i].stats['sac']['ka']
-
+    pol = tracce_sac[i].stats['sac']['ka']
+    if pol.find("U") >= 0:
+        trace_polarity.append("positive")
+    elif pol.find("D") >= 0:
+        trace_polarity.append("negative")
+    else:
+        trace_polarity.append("undecidable")
     # TODO per arrival sample
-    # """
+    """
     start = tracce_sac[i].stats['starttime']
     # print(start.datetime, type(start.datetime), type(start))
 
@@ -60,7 +65,7 @@ for i in range(len(tracce_sac)):
     trace_P_uncertainty_s.append(tracce_sac[i].stats['delta'])
     trace_name.append(str(tracce_sac[i].stats['starttime']) + "." +
                       tracce_sac[i].stats['station'] + "." + tracce_sac[i].stats['channel'])
-
+    
 # plt.plot(tracce_sac[0].data)
 # plt.axvline(x=int(arrival*100), c="r", ls="--", lw="1")
 # plt.show()
@@ -71,3 +76,4 @@ for i in range(len(tracce_sac)):
 # plt.axvline(x=int(arrival*100), c="r", ls="--", lw="1")
 # plt.show()
 # """
+
