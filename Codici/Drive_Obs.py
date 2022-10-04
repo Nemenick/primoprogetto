@@ -69,7 +69,7 @@ for i in range(len(tracce_sac)):
     else:
         source_magnitude.append("unknown")
     if 'imagtyp' in tracce_sac[i].stats['sac'].keys():
-        source_magnitude_type.append(tracce_sac[i].stats['sac']['imagtyp'])
+        source_magnitude_type.append("mB")      # FIXME str(tracce_sac[i].stats['sac']['imagtyp'])
     else:
         source_magnitude_type.append("unknown")
     sampling_rate.append(tracce_sac[i].stats['sampling_rate'])

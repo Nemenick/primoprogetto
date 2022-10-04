@@ -145,7 +145,7 @@ class ClasseDataset:
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
         # print("ho caricato hdf5", time.perf_counter()-start)
-        datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int})
+        datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int, "source_magnitude": 'object'})
         # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
         # print("ho letto csv", time.perf_counter()-start)
         self.metadata = {}

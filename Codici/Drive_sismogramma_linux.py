@@ -120,13 +120,13 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.to_txt(txt_data, txt_metadata)
 """
 
-# Todo Dividui up/down
+# Todo Dividui up/down o altro
 """
-hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+hdf5 = '/home/silvia/Desktop/Pollino_data.hdf5'
+csv = '/home/silvia/Desktop/Pollino_metadata.csv'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_up_4s.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_up_4s.csv'
+hdf5out = '/home/silvia/Desktop/Pollino_not_100Hz_data.hdf5'
+csvout = '/home/silvia/Desktop/Pollino_not_100Hz_metadata.csv'
 
 txt_data = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_up_4s.txt'
 txt_metadata = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_up_4s.txt'
@@ -135,12 +135,12 @@ Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 elimina = []
 for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_polarity"][i] == "negative":
+    if Dataset.metadata["sampling_rate"][i] == 100:
         elimina.append(i)
 Dataset.elimina_tacce_indici(elimina)
 
 Dataset.crea_custom_dataset(hdf5out, csvout)
-Dataset.to_txt(txt_data, txt_metadata)
+# Dataset.to_txt(txt_data, txt_metadata)
 
 """
 
