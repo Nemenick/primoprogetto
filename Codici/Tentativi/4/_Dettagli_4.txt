@@ -1,0 +1,4 @@
+semiampiezza 	130s
+dati normalizzati con primo metodo (data_Velocimeter_Buone_normalizzate_4s.hdf5)
+y_train ora è 1,0 
+
