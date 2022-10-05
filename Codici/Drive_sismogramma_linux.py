@@ -145,21 +145,21 @@ Dataset.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO visualizza
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+# """
+hdf5 = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
+csv = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 semiampiezza_ = 100
 
-cartella = '/home/silvia/Desktop/Instance_Data/Z_Figure_Large_Custom_dataset'
+cartella = '/home/silvia/Desktop/Pollino'
 
-vettore_indici = [i for i in range(9000, 9500)]
+vettore_indici = range(len(Dataset.sismogramma))
 
-nomepng = "1_ciclo_Som"
+nomepng = 'Pollino_figure_100Hz'
 Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-"""
+# """
 
 # TODO genera Custom Normalizzato
 """
