@@ -1,0 +1,3 @@
+semiampiezza = 80
+dati normalizzati con primo metodo /home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5
+epoche = 6

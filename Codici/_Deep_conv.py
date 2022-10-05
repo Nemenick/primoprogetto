@@ -21,7 +21,7 @@ hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan per buone_normalizzate_Instance
 
-semiampiezza = 80
+semiampiezza = 15
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
 
@@ -83,7 +83,7 @@ start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
 print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
-model.save("Tentativo_5.hdf5")
+model.save("Tentativo_7.hdf5")
 print("\n\nControlla qui\n", storia.history)
 print(storia.history.keys())
 
@@ -95,7 +95,7 @@ acc_val = storia.history["val_accuracy"]
 plt.plot(range(1, epoche+1), acc_train, label="acc_train")
 plt.plot(range(1, epoche+1), acc_val, label="acc_val")
 plt.legend()
-plt.savefig("accuracy5")
+plt.savefig("accuracy7")
 plt.clf()
 
 
@@ -103,9 +103,9 @@ plt.yscale("log")
 plt.plot(range(1, epoche+1), loss_train, label="loss_train")
 plt.plot(range(1, epoche+1), loss_val, label="loss_val")
 plt.legend()
-plt.savefig("loss5")
+plt.savefig("loss7")
 plt.clf()
-file = open("_Dettagli_5.txt", "w")
+file = open("_Dettagli_7.txt", "w")
 dettagli = "semiampiezza = " + str(semiampiezza) + \
            "\ndati normalizzati con primo metodo " + hdf5in +\
            "\nepoche = " + str(epoche)
