@@ -21,7 +21,7 @@ hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan per buone_normalizzate_Instance
 
-semiampiezza = 10
+semiampiezza = 11
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
 
@@ -105,7 +105,7 @@ plt.plot(range(1, epoche+1), loss_val, label="loss_val")
 plt.legend()
 plt.savefig("loss8")
 plt.clf()
-file = open("_Dettagli_7.txt", "w")
+file = open("_Dettagli_8.txt", "w")
 dettagli = "semiampiezza = " + str(semiampiezza) + \
            "\ndati normalizzati con primo metodo " + hdf5in +\
            "\nepoche = " + str(epoche)
