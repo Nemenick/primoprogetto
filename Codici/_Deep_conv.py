@@ -22,8 +22,8 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan per buone_normalizzate_Instance
 
 semiampiezza = 80
-sample_train = 135000                     # num di tracce da dare come train (il resto è validation)
-tentativo = "9"
+sample_train = len(Dati.sismogramma)                     # num di tracce da dare come train (il resto è validation)
+tentativo = "10"
 
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
@@ -38,17 +38,29 @@ y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in ra
                    [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(sample_train)])
 y_train = y_train + 0
 
-
-sample_val = len(Dati.sismogramma) - sample_train
-x_val = np.zeros((sample_val, semiampiezza*2))
-for i in range(sample_val):
-    x_val[i] = Dati.sismogramma[i+sample_train][lung//2 - semiampiezza:lung//2 + semiampiezza]
-y_val = np.array(
-    [Dati.metadata["trace_polarity"][i+sample_train] == "positive" for i in range(sample_val)]                )
+Dati_validation = ClasseDataset()
+hdf5val = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
+csvval = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
+Dati_validation.leggi_custom_dataset(hdf5val, csvval)
+lung_val = len(Dati_validation.sismogramma[0])
+x_val = np.zeros((len(Dati_validation.sismogramma), semiampiezza*2))
+for i in range(len(Dati_validation.sismogramma)):
+    x_val[i] = Dati_validation.sismogramma[i][lung // 2 - semiampiezza:lung // 2 + semiampiezza]
+y_val = np.array([Dati_validation.metadata["trace_polarity"][i] == "positive"
+                  for i in range(len(Dati_validation.sismogramma))])
 y_val = y_val + 0
-# (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
-# (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
-# """
+# TODO uso Pollino come validation
+# sample_val = len(Dati.sismogramma) - sample_train
+# x_val = np.zeros((sample_val, semiampiezza*2))
+# for i in range(sample_val):
+#     x_val[i] = Dati.sismogramma[i+sample_train][lung//2 - semiampiezza:lung//2 + semiampiezza]
+# y_val = np.array(
+#     [Dati.metadata["trace_polarity"][i+sample_train] == "positive" for i in range(sample_val)]                )
+# y_val = y_val + 0
+# # (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
+# # (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
+# # """
+
 
 # TODO NON Agumentation
 """
@@ -90,7 +102,7 @@ model.summary()
 
 # Inizio il train
 
-epoche = 35
+epoche = 50
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
@@ -122,22 +134,38 @@ file = open("_Dettagli_"+tentativo+".txt", "w")
 dettagli = "semiampiezza = " + str(semiampiezza) + \
            "\ndati normalizzati con primo metodo " + hdf5in +\
            "\nepoche = " + str(epoche) +\
-           "\nsample_train = " + str(sample_train)
+           "\nsample_train = " + str(sample_train) +\
+           "\nIn questo train la validation sono i dai del Pollino, il train è tutto instance dataset"
 file.write(dettagli)
 file.close()
 
 dizio = {"loss_train": loss_train, "loss_val": loss_val, "acc_train": acc_train, "acc_val": acc_val}
 data_pandas = pd.DataFrame.from_dict(dizio)
 data_pandas.to_csv('/home/silvia/Documents/GitHub/primoprogetto/Codici/Risultati_' + tentativo + '.cvs')
-"""
-N_test = len(x_val)
-yp = model.predict(x_val[0:N_test])
-yp_new = [val[0] for val in yp]
-print(y_train, "\n", yp_new)
-dizio = {"y_INGV": y_val[0:N_test], "y_predict": yp_new}
-datapandas = pd.DataFrame.from_dict(dizio)
-datapandas.to_csv('/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/Predizioni_nonAgumented.csv', index=False)
-"""
+# TODO predict
+# """
+yp = model.predict(x_val)
+print(y_val, len(y_val), "\n", yp, len(yp))
+yp_ok = []
+for i in yp:
+    yp_ok.append(i[0])
+yp_ok = np.array(yp_ok)
+delta_y = np.abs(y_val-yp_ok)
+
+tracce_previsione_errata = []
+tracce_previsione_incerta = []
+for i in range(len(delta_y)):
+    if delta_y[i] > 0.5:
+        tracce_previsione_errata.append(i)
+    if 0.2 < delta_y[i] < 0.5:
+        tracce_previsione_incerta.append(i)
+Dati_validation.plotta(tracce_previsione_errata, 130, "figure_previsione_errata_tentativo_10", "/home/silvia/Desktop/Pollino")
+Dati_validation.plotta(tracce_previsione_incerta, 130, "figure_previsione_incerta_tentativo_10", "/home/silvia/Desktop/Pollino")  # TODO
+dizio_val = {"traccia": Dati_validation.metadata["trace_name"], "y_a_Mano": y_val, "y_predict": yp_ok, "delta": delta_y}
+datapandas = pd.DataFrame.from_dict(dizio_val)
+datapandas.to_csv('/home/silvia/Documents/GitHub/primoprogetto/Codici/'
+                  'Predizioni_Pollino_semiampiezza_tentativo_10.csv', index=False)                # TODO
+# """
 # predizione = model.evaluate(x_test, y_test)
 #
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))
