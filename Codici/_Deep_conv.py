@@ -21,21 +21,33 @@ hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan per buone_normalizzate_Instance
 
-semiampiezza = 11
+semiampiezza = 80
+sample_train = 135000                     # num di tracce da dare come train (il resto è validation)
+tentativo = "9"
+
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
 
 # TODO Agumentation
 # """
-x_train = np.zeros((len(Dati.sismogramma)*2, semiampiezza*2))
-for i in range(len(Dati.sismogramma)):
+x_train = np.zeros((sample_train*2, semiampiezza*2))
+for i in range(sample_train):
     x_train[i] = Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-    x_train[i+len(Dati.sismogramma)] = -Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati.sismogramma))] +
-                   [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(len(Dati.sismogramma))])
+    x_train[i+sample_train] = -Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
+y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(sample_train)] +
+                   [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(sample_train)])
 y_train = y_train + 0
-(x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
-(x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
+
+
+sample_val = len(Dati.sismogramma) - sample_train
+x_val = np.zeros((sample_val, semiampiezza*2))
+for i in range(sample_val):
+    x_val[i] = Dati.sismogramma[i+sample_train][lung//2 - semiampiezza:lung//2 + semiampiezza]
+y_val = np.array(
+    [Dati.metadata["trace_polarity"][i+sample_train] == "positive" for i in range(sample_val)]                )
+y_val = y_val + 0
+# (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
+# (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
 # """
 
 # TODO NON Agumentation
@@ -78,12 +90,12 @@ model.summary()
 
 # Inizio il train
 
-epoche = 6
+epoche = 35
 start = time.perf_counter()
 storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
 print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
-model.save("Tentativo_8.hdf5")
+model.save("Tentativo_"+tentativo+".hdf5")
 print("\n\nControlla qui\n", storia.history)
 print(storia.history.keys())
 
@@ -95,7 +107,7 @@ acc_val = storia.history["val_accuracy"]
 plt.plot(range(1, epoche+1), acc_train, label="acc_train")
 plt.plot(range(1, epoche+1), acc_val, label="acc_val")
 plt.legend()
-plt.savefig("accuracy8")
+plt.savefig("accuracy_"+tentativo)
 plt.clf()
 
 
@@ -103,14 +115,20 @@ plt.yscale("log")
 plt.plot(range(1, epoche+1), loss_train, label="loss_train")
 plt.plot(range(1, epoche+1), loss_val, label="loss_val")
 plt.legend()
-plt.savefig("loss8")
+plt.savefig("loss_"+tentativo)
 plt.clf()
-file = open("_Dettagli_8.txt", "w")
+
+file = open("_Dettagli_"+tentativo+".txt", "w")
 dettagli = "semiampiezza = " + str(semiampiezza) + \
            "\ndati normalizzati con primo metodo " + hdf5in +\
-           "\nepoche = " + str(epoche)
+           "\nepoche = " + str(epoche) +\
+           "\nsample_train = " + str(sample_train)
 file.write(dettagli)
 file.close()
+
+dizio = {"loss_train": loss_train, "loss_val": loss_val, "acc_train": acc_train, "acc_val": acc_val}
+data_pandas = pd.DataFrame.from_dict(dizio)
+data_pandas.to_csv('/home/silvia/Documents/GitHub/primoprogetto/Codici/Risultati_' + tentativo + '.cvs')
 """
 N_test = len(x_val)
 yp = model.predict(x_val[0:N_test])
