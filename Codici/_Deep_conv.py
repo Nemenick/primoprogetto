@@ -22,8 +22,9 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan per buone_normalizzate_Instance
 
 semiampiezza = 80
+batchs = 512                               # TODO
 sample_train = len(Dati.sismogramma)                     # num di tracce da dare come train (il resto è validation)
-tentativo = "10"
+tentativo = "12"
 
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
@@ -81,6 +82,9 @@ plt.show()"""
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... (len(timeseries),1 (channels)) funziona
 # Creo la mia rete deep con i layer
+#  TODO Prima rete
+"""
+rete = 1
 model = keras.models.Sequential([
     Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
     MaxPooling1D(2),
@@ -98,13 +102,38 @@ model.compile(
     loss="binary_crossentropy",
     metrics=['accuracy']
 )
+"""
+#  TODO Seconda rete
+# """
+rete = 2
+model = keras.models.Sequential([
+    Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+    Conv1D(64, 4, activation="relu"),
+    MaxPooling1D(2),
+    Conv1D(128, 3, activation="relu"),
+    MaxPooling1D(2),
+    Conv1D(256, 5, activation="relu", padding="same"),
+    Conv1D(128, 3, activation="relu"),
+    MaxPooling1D(2),
+    Flatten(),
+    Dense(50, activation="softsign"),
+    Dense(1, activation="sigmoid")
+])
+
+model.compile(
+    optimizer="adam",
+    loss="binary_crossentropy",
+    metrics=['accuracy']
+)
+# """
+
 model.summary()
 
 # Inizio il train
 
-epoche = 50
+epoche = 350
 start = time.perf_counter()
-storia = model.fit(x_train, y_train, batch_size=16, epochs=epoche, validation_data=(x_val, y_val))
+storia = model.fit(x_train, y_train, batch_size=batchs, epochs=epoche, validation_data=(x_val, y_val))
 # vedi validation come evolve durante la stessa epoca
 print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
 model.save("Tentativo_"+tentativo+".hdf5")
@@ -131,11 +160,13 @@ plt.savefig("loss_"+tentativo)
 plt.clf()
 
 file = open("_Dettagli_"+tentativo+".txt", "w")
-dettagli = "semiampiezza = " + str(semiampiezza) + \
-           "\ndati normalizzati con primo metodo " + hdf5in +\
-           "\nepoche = " + str(epoche) +\
-           "\nsample_train = " + str(sample_train) +\
-           "\nIn questo train la validation sono i dai del Pollino, il train è tutto instance dataset"
+dettagli = "Rete numero " + str(rete) + \
+            "\nbatchsize = " + str(batchs) + \
+            "\nsemiampiezza = " + str(semiampiezza) + \
+            "\ndati normalizzati con primo metodo " + hdf5in +\
+            "\nepoche = " + str(epoche) +\
+            "\nsample_train = " + str(sample_train) +\
+            "\nIn questo train la validation sono i dai del Pollino, il train è tutto instance dataset"
 file.write(dettagli)
 file.close()
 
@@ -144,6 +175,7 @@ data_pandas = pd.DataFrame.from_dict(dizio)
 data_pandas.to_csv('/home/silvia/Documents/GitHub/primoprogetto/Codici/Risultati_' + tentativo + '.cvs')
 # TODO predict
 # """
+
 yp = model.predict(x_val)
 print(y_val, len(y_val), "\n", yp, len(yp))
 yp_ok = []
@@ -159,13 +191,14 @@ for i in range(len(delta_y)):
         tracce_previsione_errata.append(i)
     if 0.2 < delta_y[i] < 0.5:
         tracce_previsione_incerta.append(i)
-Dati_validation.plotta(tracce_previsione_errata, 130, "figure_previsione_errata_tentativo_10", "/home/silvia/Desktop/Pollino")
-Dati_validation.plotta(tracce_previsione_incerta, 130, "figure_previsione_incerta_tentativo_10", "/home/silvia/Desktop/Pollino")  # TODO
+Dati_validation.plotta(tracce_previsione_errata, 130, "figure_previsione_errata_tentativo_"+str(tentativo), "/home/silvia/Desktop/Pollino")
+Dati_validation.plotta(tracce_previsione_incerta, 130, "figure_previsione_incerta_tentativo_"+str(tentativo), "/home/silvia/Desktop/Pollino")  # TODO
 dizio_val = {"traccia": Dati_validation.metadata["trace_name"], "y_a_Mano": y_val, "y_predict": yp_ok, "delta": delta_y}
 datapandas = pd.DataFrame.from_dict(dizio_val)
 datapandas.to_csv('/home/silvia/Documents/GitHub/primoprogetto/Codici/'
-                  'Predizioni_Pollino_semiampiezza_tentativo_10.csv', index=False)                # TODO
+                  'Predizioni_Pollino_semiampiezza_tentativo_'+str(tentativo)+'.csv', index=False)                # TODO
 # """
+
 # predizione = model.evaluate(x_test, y_test)
 #
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))
