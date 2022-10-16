@@ -22,18 +22,21 @@ class ClasseDataset:
         self.metadata = {}                  # dizionario di lista, non np.array (non so come li tratta pandas)
         self.classi = []                    # lista di int
 
-    def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati):
+    def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati=None):
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
         e salva in file csv i nomi_selezionati e indici delle tracce selezionate
         ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
         """
-        percorsocsv = percorsocsv
+
         start = time.perf_counter()
         # FIXME engine"python" (lentissimo): dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
-        # datd = dd.read_csv(self.percorsocsv, usecols=coltot, engine="python", on_bad_lines="skip",
-        #                    sample=10 ** 8, assume_missing=True)
-        datd = dd.read_csv(percorsocsv, usecols=col_tot)
+        datd = dd.read_csv(percorsocsv, usecols=col_tot, engine="python", on_bad_lines="skip",
+                           sample=10 ** 8, assume_missing=True,
+                           dtype={'source_latitude_deg': 'object',
+                                  'source_longitude_deg': 'object',
+                                  'source_origin_time': 'object'})
+        # datd = dd.read_csv(percorsocsv, usecols=col_tot)
 
         allmetadata = {}
         for i in col_tot:  # genera metadata["colname"] = np.array["colname"]
@@ -59,7 +62,7 @@ class ClasseDataset:
         for i in range(len(nomidata)):
             if i % 10000 == 0:
                 print("sto analizzando il sismogramma ", i)
-            if allmetadata["trace_polarity"][i] == 'positive' \
+            if allmetadata["trace_polarity"][i] != 'undecidable' \
                     and (allmetadata["station_channels"][i] == "HH" or
                          allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
@@ -72,11 +75,12 @@ class ClasseDataset:
         print("shape dopo", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
         filehdf5.close()
         indice_csv = np.array(indice_csv)
-        pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
-                                 "indice_csv": indice_csv})  # basta indice_csv
-        pd_names.to_csv(nomi_selezionati, index=False)
-        # pd_names = tracenames':[], 'indice file csv'
-        print("HO creato il file nomi_selezionati")
+        if nomi_selezionati is not None:
+            pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
+                                     "indice_csv": indice_csv})  # basta indice_csv
+            pd_names.to_csv(nomi_selezionati, index=False)
+            # pd_names = tracenames':[], 'indice file csv'
+            print("HO creato il file nomi_selezionati")
 
     def acquisisci_old(self, percorsohdf5, percorsocsv, col_tot, percorso_nomi):
         """"

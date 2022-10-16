@@ -121,31 +121,31 @@ Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividui up/down o altro
-"""
-hdf5 = '/home/silvia/Desktop/Pollino_data.hdf5'
-csv = '/home/silvia/Desktop/Pollino_metadata.csv'
+# """
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
-hdf5out = '/home/silvia/Desktop/Pollino_not_100Hz_data.hdf5'
-csvout = '/home/silvia/Desktop/Pollino_not_100Hz_metadata.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_copia.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
 
-txt_data = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_up_4s.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_up_4s.txt'
+txt_data = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_down_4s.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_down_4s.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 elimina = []
 for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["sampling_rate"][i] == 100:
+    if Dataset.metadata["trace_polarity"][i] != 'negative':
         elimina.append(i)
 Dataset.elimina_tacce_indici(elimina)
 
 Dataset.crea_custom_dataset(hdf5out, csvout)
 # Dataset.to_txt(txt_data, txt_metadata)
 
-"""
+# """
 
 # TODO visualizza
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 csv = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
 
@@ -159,7 +159,7 @@ vettore_indici = range(len(Dataset.sismogramma))
 
 nomepng = 'Pollino_figure_100Hz'
 Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO genera Custom Normalizzato
 """
@@ -174,4 +174,22 @@ hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.normalizza()
 Dati.crea_custom_dataset(hdf5out, csvout)
+"""
+
+# TODO ricava longitudine, latitudine
+"""
+hdf5in = '/home/silvia/Desktop/Instance_Data/data'
+csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
+col_sel = ['trace_name', 'source_latitude_deg', 'source_longitude_deg', 'source_origin_time', 'station_code',
+           'station_channels', 'trace_start_time', 'trace_P_arrival_sample',
+           'trace_polarity', 'trace_P_uncertainty_s', 'source_magnitude', 'source_magnitude_type'
+           ]
+
+hdf5out = '/home/silvia/Desktop/data_buttare.hdf5'
+csvout = '/home/silvia/Desktop/metadata_pol_veloc_more_metadata.csv'
+
+Datain = ClasseDataset()
+Datain.acquisisci_new(hdf5in, csvin, col_sel)
+
+Datain.crea_custom_dataset(hdf5out, csvout)
 """
