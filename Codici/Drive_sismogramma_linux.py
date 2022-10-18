@@ -1,6 +1,7 @@
 # import dask.dataframe as dd
 # import h5py
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+from matplotlib import colors
 # import pandas as pd
 # import time
 # import warnings
@@ -197,8 +198,33 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 
 # TODO statistica
 # """
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in, csvin)
+figura, grafico_lon = plt.subplots()
+hb = grafico_lon.hexbin(x=Data.metadata['source_longitude_deg'],
+                        y=Data.metadata['source_latitude_deg'],
+                        gridsize=200,
+                        cmap='inferno',
+                        bins="log")
+min_lat = np.min(Data.metadata['source_latitude_deg'])
+max_lat = np.max(Data.metadata['source_latitude_deg'])
+min_lon = np.min(Data.metadata['source_longitude_deg'])
+max_lon = np.max(Data.metadata['source_longitude_deg'])
+grafico_lon.axis([min_lon, max_lon, min_lat, max_lat])
+grafico_lon.set_title("Hexagon binning")
+grafico_lon.set_title("Hexagon binning")
+cb = figura.colorbar(hb, ax=grafico_lon)
+cb.set_label('counts')
+# plt.axvline(min_lat, c='navy')
+print(min_lon, max_lon)
+print(min_lat, max_lat)
+# plt.colorbar()
+plt.show()
 # """
+
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
