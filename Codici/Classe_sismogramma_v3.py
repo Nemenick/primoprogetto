@@ -327,6 +327,7 @@ class ClasseDataset:
     def elimina_tacce_nomi(self, vettore_nomi: list):
         """
         vettore_nomi è la lista dei nomi delle tracce da eliminare
+        # TODO è veramente lentissimo, pensa a come migliorare
         """
         indici_eliminare = []
         for j in range(len(vettore_nomi)):
@@ -336,6 +337,27 @@ class ClasseDataset:
                     break               # TODO mi sembra buono (tutorial_break)
 
         self.elimina_tacce_indici(vettore_indici=indici_eliminare)
+
+    def seleziona_indici(self, vettore_indici: list):
+        """
+        Seleziono le tracce tramite gli indici e
+        restituisco un ClasseDataset delle selezionate
+        """
+        data = []
+        dizio_metadata = {}
+        for key in self.metadata.keys():
+            dizio_metadata[key] = []
+
+        for i in vettore_indici:
+            data.append(self.sismogramma[i])
+            for key in self.metadata.keys():
+                dizio_metadata[key].append(self.metadata[key][i])
+
+        data_return = ClasseDataset()
+        data_return.sismogramma = np.array(data)
+        data_return.metadata = dizio_metadata
+
+        return data_return
 
     def plotta(self, visualizza, semiampiezza=None, namepng=None, percosro_cartellla='C:/Users/GioCar/Desktop/Tesi_5'):
         """

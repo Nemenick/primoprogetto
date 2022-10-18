@@ -1,10 +1,10 @@
-"""import dask.dataframe as dd
+# import dask.dataframe as dd
+# import h5py
+# import matplotlib.pyplot as plt
+# import pandas as pd
+# import time
+# import warnings
 import numpy as np
-import h5py
-import matplotlib.pyplot as plt
-import pandas as pd
-import time
-import warnings"""
 from Classe_sismogramma_v3 import ClasseDataset
 
 # TODO seleziona classi
@@ -58,7 +58,7 @@ for i in classi_indici:
 """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
-"""
+# """
 hdf5in_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 csvin_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
@@ -78,8 +78,8 @@ for i in range(6):
     csv_list[i] = sto_qui + csv_list[i] + '.csv'
     classi_list[i] = sto_qui + classi_list[i] + '.txt'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_BUONE_4s.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_BUONE_4s.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_copia.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_copia.csv'
 
 classi_buone = [[19, 25, 20],
                 [11, 18, 20, 21, 15, 16, 23, 19, 5, 24],
@@ -104,7 +104,16 @@ Dataset_ori = ClasseDataset()
 Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
 Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
 Dataset_ori.crea_custom_dataset(hdf5out, csvout)
-"""
+
+hdf5in_4 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin_4 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+Data_4 = ClasseDataset()
+Data_4.leggi_custom_dataset(hdf5in_4, csvin_4)
+
+print((Dataset_ori.sismogramma == Data_4.sismogramma).all(), "sismogrammi")
+print((np.array(Dataset_ori.metadata['trace_name']) == np.array(Data_4.metadata['trace_name'])).all(), "metadata_nomi")
+# """
 
 # TODO genera txt per SOM
 """
@@ -121,7 +130,7 @@ Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividui up/down o altro
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
@@ -142,7 +151,7 @@ Dataset.elimina_tacce_indici(elimina)
 Dataset.crea_custom_dataset(hdf5out, csvout)
 # Dataset.to_txt(txt_data, txt_metadata)
 
-# """
+"""
 
 # TODO visualizza
 """
@@ -176,7 +185,7 @@ Dati.normalizza()
 Dati.crea_custom_dataset(hdf5out, csvout)
 """
 
-# TODO ricava longitudine, latitudine
+# TODO ricava longitudine, latitudine metadata
 """
 hdf5in = '/home/silvia/Desktop/Instance_Data/data'
 csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
@@ -193,3 +202,9 @@ Datain.acquisisci_new(hdf5in, csvin, col_sel)
 
 Datain.crea_custom_dataset(hdf5out, csvout)
 """
+
+# TODO statistica
+"""
+
+"""
+
