@@ -58,7 +58,7 @@ for i in classi_indici:
 """
 
 # TODO seleziona classi buone (da dataset big posso eliminare up/down in contemporaneo, non creo 2 dataset e poi unisco)
-# """
+"""
 hdf5in_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 csvin_ori = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
 
@@ -78,8 +78,8 @@ for i in range(6):
     csv_list[i] = sto_qui + csv_list[i] + '.csv'
     classi_list[i] = sto_qui + classi_list[i] + '.txt'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_copia.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_copia.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
 classi_buone = [[19, 25, 20],
                 [11, 18, 20, 21, 15, 16, 23, 19, 5, 24],
@@ -105,15 +105,7 @@ Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
 Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
 Dataset_ori.crea_custom_dataset(hdf5out, csvout)
 
-hdf5in_4 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvin_4 = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
-
-Data_4 = ClasseDataset()
-Data_4.leggi_custom_dataset(hdf5in_4, csvin_4)
-
-print((Dataset_ori.sismogramma == Data_4.sismogramma).all(), "sismogrammi")
-print((np.array(Dataset_ori.metadata['trace_name']) == np.array(Data_4.metadata['trace_name'])).all(), "metadata_nomi")
-# """
+"""
 
 # TODO genera txt per SOM
 """
@@ -204,7 +196,30 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO statistica
-"""
+# """
 
+# """
+
+# TODO seleziona tracce (devi avere un modo per ricavare indici)
+"""
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_primi100.hdf5'  # TODO
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_primi100.csv'
+
+vettore_indici = [] # TODO
+
+Datain = ClasseDataset()
+Datain.leggi_custom_dataset(hdf5in, csvin)
+Dataout = Datain.seleziona_indici(vettore_indici)
+Dataout.crea_custom_dataset(hdf5out, csvout)
+
+vettore_verita = []
+for i in range(len(Dataout.sismogramma)):
+    vettore_verita.append((Dataout.sismogramma[i] == Datain.sismogramma[vettore_indici[i]]).all())
+print(np.array(vettore_verita).all())
+lista_nomi = Datain.metadata["trace_name"][0:100]
+# print(np.array(Dataout.metadata["trace_name"]) == np.array(lista_nomi)).all()
 """
 
