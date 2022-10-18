@@ -4,6 +4,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
+from keras import optimizers
 from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
@@ -24,7 +25,7 @@ Dati.elimina_tacce_indici([124709])       # FIXME attento questa traccia è nan 
 semiampiezza = 80
 batchs = 512                               # TODO
 sample_train = len(Dati.sismogramma)                     # num di tracce da dare come train (il resto è validation)
-tentativo = "12"
+tentativo = "13"
 
 # Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
 lung = len(Dati.sismogramma[0])     # lunghezza traccia
@@ -121,7 +122,7 @@ model = keras.models.Sequential([
 ])
 
 model.compile(
-    optimizer="adam",
+    optimizer=optimizers.Adam(epsilon=0.01),
     loss="binary_crossentropy",
     metrics=['accuracy']
 )
@@ -166,7 +167,8 @@ dettagli = "Rete numero " + str(rete) + \
             "\ndati normalizzati con primo metodo " + hdf5in +\
             "\nepoche = " + str(epoche) +\
             "\nsample_train = " + str(sample_train) +\
-            "\nIn questo train la validation sono i dai del Pollino, il train è tutto instance dataset"
+            "\nIn questo train la validation sono i dai del Pollino, il train è tutto instance dataset" +\
+            "\n Qui adam non ha i parametri di default: ora epsilon = 0.01"
 file.write(dettagli)
 file.close()
 
