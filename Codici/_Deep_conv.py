@@ -73,7 +73,12 @@ Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
-e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui
+e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
+tentativi = [21, 22, 23]
+path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+for tentativo in tentativi:
+    os.mkdir(path_tentativi + "/" + str(tentativo))
+epsilons = [10**(-5), 0.001, 0.1]
 semiampiezza = 80
 epoche = 300
 batchs = 512
@@ -84,14 +89,10 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... (len(timeseries),1 (channels)) funziona
 # Creo la mia rete deep con i layer
-tentativi = [21, 22, 23]
-path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-for tentativo in tentativi:
-    os.mkdir(path_tentativi + "/" + str(tentativo))
-epsilons = [10**(-5), 0.001, 0.1]
+
 
 for tentativo in tentativi:
-    epsilon = epsilons[tentativo - 21]  # TODO cambia (al prossimo prova adam con varie epsilon)
+    epsilon = epsilons[tentativo - 21]  # TODO cambia (al prossimo....)
     print("\n\tmomento = ", epsilon)
 
     #  TODO Prima rete
@@ -172,6 +173,7 @@ for tentativo in tentativi:
     plt.clf()
 
     file = open(path_tentativi + "/" + str(tentativo) + "/_Dettagli_"+str(tentativo)+".txt", "w")
+    # TODO Cambia i dettagli
     dettagli = "Rete numero " + str(rete) + \
                "\nbatchsize = " + str(batchs) +\
                "\nsemiampiezza = " + str(semiampiezza) +\
