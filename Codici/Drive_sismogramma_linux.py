@@ -122,7 +122,7 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.to_txt(txt_data, txt_metadata)
 """
 
-# Todo Dividui up/down o altro
+# Todo Dividui dataset up/down o altro
 """
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
@@ -196,8 +196,8 @@ Datain.acquisisci_new(hdf5in, csvin, col_sel)
 Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
-# TODO statistica
-# """
+# TODO Grafico Instance Data
+"""
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
@@ -223,8 +223,7 @@ print(min_lon, max_lon)
 print(min_lat, max_lat)
 # plt.colorbar()
 plt.show()
-# """
-
+"""
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
@@ -248,4 +247,30 @@ print(np.array(vettore_verita).all())
 lista_nomi = Datain.metadata["trace_name"][0:100]
 # print(np.array(Dataout.metadata["trace_name"]) == np.array(lista_nomi)).all()
 """
+
+# TODO conta longitudine latitudine
+"""
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in, csvin)
+
+cont_test = 0
+cont_val = 0
+
+e_test = [43, 45, 9.5, 11.8]
+e_val = [37.5, 38.5, 14.5, 16]
+
+for i in range(len(Data.sismogramma)):
+    if e_test[0] < Data.metadata['source_latitude_deg'][i] < e_test[1] and e_test[2] \
+            < Data.metadata['source_longitude_deg'][i] < e_test[3]:
+        cont_test = cont_test + 1
+    if e_val[0] < Data.metadata['source_latitude_deg'][i] < e_val[1] and e_val[2] \
+            < Data.metadata['source_longitude_deg'][i] < e_val[3]:
+        cont_val = cont_val + 1
+
+print("test = ", cont_test, " val = ", cont_val)
+
+"""
+
 

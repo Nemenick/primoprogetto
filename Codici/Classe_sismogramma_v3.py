@@ -342,6 +342,7 @@ class ClasseDataset:
         """
         Seleziono le tracce tramite gli indici e
         restituisco un ClasseDataset delle selezionate
+        operazione del tipo Dataout = self.seleziona_indici(vettore_indici)
         """
         data = []
         dizio_metadata = {}
