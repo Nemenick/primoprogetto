@@ -197,7 +197,7 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-# """
+"""
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
@@ -223,7 +223,7 @@ print(min_lon, max_lon)
 print(min_lat, max_lat)
 # plt.colorbar()
 plt.show()
-# """
+"""
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
@@ -272,5 +272,4 @@ for i in range(len(Data.sismogramma)):
 print("test = ", cont_test, " val = ", cont_val)
 
 """
-
 
