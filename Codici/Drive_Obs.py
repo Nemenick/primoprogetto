@@ -5,6 +5,7 @@ import datetime
 import pandas as pd
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
+""" VEDI PRIMA CODICE IN _Sposta_cartelle """
 
 # path = "/home/silvia/Desktop/Pollino/*/*Z.sac"
 path = "/home/silvia/Desktop/viste_buone/*/*Z.sac"

@@ -84,15 +84,15 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... (len(timeseries),1 (channels)) funziona
 # Creo la mia rete deep con i layer
-tentativi = [18, 19, 20]
+tentativi = [21, 22, 23]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
-momenti = [0.6, 0.8, 0.9]
+epsilons = [10**(-5), 0.001, 0.1]
 
 for tentativo in tentativi:
-    momento = momenti[tentativo - 18]  # TODO cambia (al prossimo prova adam con varie epsilon)
-    print("\n\tmomento = ", momento)
+    epsilon = epsilons[tentativo - 21]  # TODO cambia (al prossimo prova adam con varie epsilon)
+    print("\n\tmomento = ", epsilon)
 
     #  TODO Prima rete
     """
@@ -134,7 +134,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        optimizer=optimizers.SGD(momentum=momento),
+        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -180,7 +181,7 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: SGD con Momentum, momentum = " + str(momento)
+               "\nOptimizer: Adam con epsilon = " + str(epsilon)
     file.write(dettagli)
     file.close()
 
@@ -224,7 +225,6 @@ for tentativo in tentativi:
                   "y_predict_test": yp_ok_test, "delta_test": delta_y_test}
     datapandas_test = pd.DataFrame.from_dict(dizio_test)
     datapandas_val = pd.DataFrame.from_dict(dizio_val)
-    # TODO RICONTROLLA (sembra buono)
     datapandas_test.to_csv(path_tentativi + "/" + str(tentativo) +
                            "/Predizioni_test_tentativo_" + str(tentativo) + ".csv", index=False)
     datapandas_val.to_csv(path_tentativi + "/" + str(tentativo) +
