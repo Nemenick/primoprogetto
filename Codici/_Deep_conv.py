@@ -187,7 +187,7 @@ for tentativo in tentativi:
 
     dizio = {"loss_train": loss_train, "loss_val": loss_val, "acc_train": acc_train, "acc_val": acc_val}
     data_pandas = pd.DataFrame.from_dict(dizio)
-    data_pandas.to_csv(path_tentativi + "/" + str(tentativo) + '/Storia_train_' + str(tentativo) + '.cvs', index=False)
+    data_pandas.to_csv(path_tentativi + "/" + str(tentativo) + '/Storia_train_' + str(tentativo) + '.csv', index=False)
 
     # TODO predict
     # """
