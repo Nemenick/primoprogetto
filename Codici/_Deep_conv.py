@@ -4,7 +4,7 @@ import pandas as pd
 # from keras.utils.np_utils import to_categorical
 # import tensorflow as tf
 from tensorflow import keras
-from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
+from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout
 from keras import optimizers
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
@@ -74,11 +74,13 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [21, 22, 23]
+tentativi = [24, 25]
+drop_2 = [0, 0.4]
+# epsilons = [10**(-5), 0.001, 0.1]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
-epsilons = [10**(-5), 0.001, 0.1]
+
 semiampiezza = 80
 epoche = 300
 batchs = 512
@@ -92,7 +94,7 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    epsilon = epsilons[tentativo - 21]  # TODO cambia (al prossimo....)
+    epsilon = 0.1  # TODO cambia (al prossimo....)
     print("\n\tmomento = ", epsilon)
 
     #  TODO Prima rete
@@ -122,11 +124,13 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+        Dropout(0.4),                                           # TODO
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
+        Dropout(drop_2[tentativo-24]),                          # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -183,7 +187,9 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: Adam con epsilon = " + str(epsilon)
+               "\nOptimizer: Adam con epsilon = " + str(epsilon) + \
+               "\nInserisco Dropout: tra i primi 2conv con rate 0.4, tra gli ultimi 2conv con rate " + \
+               str(drop_2[tentativo-24])
     file.write(dettagli)
     file.close()
 
