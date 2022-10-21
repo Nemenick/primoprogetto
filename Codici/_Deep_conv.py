@@ -74,8 +74,8 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [24, 25]
-drop_2 = [0, 0.4]
+tentativi = [26]
+drop_2 = [0.5]
 # epsilons = [10**(-5), 0.001, 0.1]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -124,17 +124,19 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        Dropout(0.4),                                           # TODO
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
+        Dropout(0.5),       # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
+        Dropout(0.5),       # TODO
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(drop_2[tentativo-24]),                          # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
+        Dropout(0.5),       # TODO
         Flatten(),
         Dense(50, activation="softsign"),
+        Dropout(0.5),       # TODO
         Dense(1, activation="sigmoid")
     ])
 
@@ -188,8 +190,7 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: Adam con epsilon = " + str(epsilon) + \
-               "\nInserisco Dropout: tra i primi 2conv con rate 0.4, tra gli ultimi 2conv con rate " + \
-               str(drop_2[tentativo-24])
+               "\nInserisco Dropout: dopo ogni pool e tra i due dense: droprate=0.5"
     file.write(dettagli)
     file.close()
 
