@@ -1,12 +1,12 @@
 # import dask.dataframe as dd
 # import h5py
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # from matplotlib import colors
 import obspy
 # import pandas as pd
 # import time
 # import warnings
-# import numpy as np
+import numpy as np
 from Classe_sismogramma_v3 import ClasseDataset
 
 # TODO seleziona classi
@@ -198,33 +198,44 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-"""
+# """
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
-
+img_italia = '/home/silvia/Documents/GitHub/primoprogetto/img_italia'
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
-figura, grafico_lon = plt.subplots()
-hb = grafico_lon.hexbin(x=Data.metadata['source_longitude_deg'],
-                        y=Data.metadata['source_latitude_deg'],
-                        gridsize=200,
-                        cmap='inferno',
-                        bins="log")
+figura, grafico = plt.subplots()
+hb = grafico.hexbin(x=Data.metadata['source_longitude_deg'],
+                    y=Data.metadata['source_latitude_deg'],
+                    gridsize=200,
+                    cmap='inferno',
+                    bins="log",
+                    zorder=1)
 min_lat = np.min(Data.metadata['source_latitude_deg'])
 max_lat = np.max(Data.metadata['source_latitude_deg'])
 min_lon = np.min(Data.metadata['source_longitude_deg'])
 max_lon = np.max(Data.metadata['source_longitude_deg'])
-grafico_lon.axis([min_lon, max_lon, min_lat, max_lat])
-grafico_lon.set_title("Hexagon binning")
-grafico_lon.set_title("Hexagon binning")
-cb = figura.colorbar(hb, ax=grafico_lon)
+grafico.set_xlim(min_lon, max_lon)
+grafico.set_ylim(min_lat, max_lat)
+grafico.imshow(img_italia, zorder=0, extent=(min_lon, max_lon, min_lat, max_lat), aspect='equal')
+grafico.axis([min_lon, max_lon, min_lat, max_lat])
+grafico.set_title("Hexagon binning")
+grafico.set_title("Hexagon binning")
+cb = figura.colorbar(hb, ax=grafico)
 cb.set_label('counts')
 # plt.axvline(min_lat, c='navy')
 print(min_lon, max_lon)
 print(min_lat, max_lat)
 # plt.colorbar()
 plt.show()
-"""
+# """
+#
+# fig, ax = plt.subplots(figsize = (8,7))
+# ax.scatter(df.longitude, df.latitude, zorder=1, alpha= 0.2, c='b', s=10)
+# ax.set_title('Plotting Spatial Data on Riyadh Map')
+# ax.set_xlim(BBox[0],BBox[1])
+# ax.set_ylim(BBox[2],BBox[3])
+# ax.imshow(ruh_m, zorder=0, extent = BBox, aspect= 'equal')
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
@@ -302,7 +313,7 @@ print(len(tracce_pol_in_inst), tracce_pol_in_inst)
 """
 
 # TODO ricava instance in pollino e viceversa
-# """
+"""
 hdf5ins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_lon_lat_time_4s.hdf5'
 csvins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_lon_lat_time_4s.csv'
 
@@ -328,4 +339,4 @@ Data_inst_in_pol = Datains.seleziona_indici(inst_in_pollino)
 
 Data_pol_in_inst.crea_custom_dataset(hdf5pol_out, csvpol_out)
 Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
-# """
+"""
