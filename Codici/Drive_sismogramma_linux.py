@@ -201,10 +201,11 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 # """
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
-img_italia = '/home/silvia/Documents/GitHub/primoprogetto/img_italia'
+img_italia = plt.imread('/home/silvia/Documents/GitHub/primoprogetto/img_italia.jpg')
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
 figura, grafico = plt.subplots()
+
 hb = grafico.hexbin(x=Data.metadata['source_longitude_deg'],
                     y=Data.metadata['source_latitude_deg'],
                     gridsize=200,
@@ -215,10 +216,9 @@ min_lat = np.min(Data.metadata['source_latitude_deg'])
 max_lat = np.max(Data.metadata['source_latitude_deg'])
 min_lon = np.min(Data.metadata['source_longitude_deg'])
 max_lon = np.max(Data.metadata['source_longitude_deg'])
-grafico.set_xlim(min_lon, max_lon)
-grafico.set_ylim(min_lat, max_lat)
-grafico.imshow(img_italia, zorder=0, extent=(min_lon, max_lon, min_lat, max_lat), aspect='equal')
-grafico.axis([min_lon, max_lon, min_lat, max_lat])
+# grafico.set_xlim(min_lon, max_lon)
+# grafico.set_ylim(min_lat, max_lat)
+grafico.axis([min_lon+1, max_lon+1, min_lat+0.3, max_lat+0.3])
 grafico.set_title("Hexagon binning")
 grafico.set_title("Hexagon binning")
 cb = figura.colorbar(hb, ax=grafico)
@@ -230,12 +230,12 @@ print(min_lat, max_lat)
 plt.show()
 # """
 #
-# fig, ax = plt.subplots(figsize = (8,7))
-# ax.scatter(df.longitude, df.latitude, zorder=1, alpha= 0.2, c='b', s=10)
-# ax.set_title('Plotting Spatial Data on Riyadh Map')
-# ax.set_xlim(BBox[0],BBox[1])
-# ax.set_ylim(BBox[2],BBox[3])
-# ax.imshow(ruh_m, zorder=0, extent = BBox, aspect= 'equal')
+#
+# world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
+#
+# # We restrict to South America.
+# ax = world[world.continent == 'South America'].plot(
+#     color='white', edgecolor='black')
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
