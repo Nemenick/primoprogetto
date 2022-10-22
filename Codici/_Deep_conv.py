@@ -6,6 +6,7 @@ import pandas as pd
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout
 from keras import optimizers
+from keras.callbacks import EarlyStopping
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
 import os
@@ -72,10 +73,9 @@ hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
-e_test = [43, 45, 9.5, 11.8]
-e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [26]
-drop_2 = [0.5]
+e_val = [43, 45, 9.5, 11.8]
+e_test = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
+tentativi = [30]
 # epsilons = [10**(-5), 0.001, 0.1]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -94,8 +94,8 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    epsilon = 0.1  # TODO cambia (al prossimo....)
-    print("\n\tmomento = ", epsilon)
+    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    print("\n\tepsilon = ", epsilon)
 
     #  TODO Prima rete
     """
@@ -126,17 +126,17 @@ for tentativo in tentativi:
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
-        Dropout(0.5),       # TODO
+
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
-        Dropout(0.5),       # TODO
+
         Conv1D(256, 5, activation="relu", padding="same"),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
-        Dropout(0.5),       # TODO
+
         Flatten(),
         Dense(50, activation="softsign"),
-        Dropout(0.5),       # TODO
+
         Dense(1, activation="sigmoid")
     ])
 
@@ -153,8 +153,11 @@ for tentativo in tentativi:
     # Inizio il train
 
     start = time.perf_counter()
-    storia = model.fit(x_train, y_train, batch_size=batchs, epochs=epoche, validation_data=(x_val, y_val))
-    # vedi validation come evolve durante la stessa epoca
+    storia = model.fit(x_train, y_train,
+                       batch_size=batchs,
+                       epochs=epoche,
+                       validation_data=(x_val, y_val),
+                       )  # callbacks=EarlyStopping(patience=3,  restore_best_weights=True)
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
     model.save(path_tentativi + "/" + str(tentativo) + "/Tentativo_"+str(tentativo)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
@@ -165,15 +168,15 @@ for tentativo in tentativi:
     acc_train = storia.history["accuracy"]
     acc_val = storia.history["val_accuracy"]
 
-    plt.plot(range(1, epoche+1), acc_train, label="acc_train")
-    plt.plot(range(1, epoche+1), acc_val, label="acc_val")
+    plt.plot(range(len(acc_train)), acc_train, label="acc_train")
+    plt.plot(range(len(acc_val)), acc_val, label="acc_val")
     plt.legend()
     plt.savefig(path_tentativi + "/" + str(tentativo) + "/accuracy_"+str(tentativo))
     plt.clf()
 
     plt.yscale("log")
-    plt.plot(range(1, epoche+1), loss_train, label="loss_train")
-    plt.plot(range(1, epoche+1), loss_val, label="loss_val")
+    plt.plot(range(len(loss_train)), loss_train, label="loss_train")
+    plt.plot(range(len(loss_val)), loss_val, label="loss_val")
     plt.legend()
     plt.savefig(path_tentativi + "/" + str(tentativo) + "/loss_"+str(tentativo))
     plt.clf()
@@ -189,8 +192,10 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: Adam con epsilon = " + str(epsilon) + \
-               "\nInserisco Dropout: dopo ogni pool e tra i due dense: droprate=0.5"
+               "\nOptimizer: ADMA con epsilon = " + str(epsilon) + \
+               "\nOra ho scambiato test e val, cerco di spiegare perchè val meglio di train(almeno inizialmente)" + \
+               " Confronta con 22"
+    # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)
     file.close()
 

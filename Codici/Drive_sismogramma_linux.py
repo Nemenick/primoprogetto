@@ -3,7 +3,7 @@
 import matplotlib.pyplot as plt
 # from matplotlib import colors
 import obspy
-# import pandas as pd
+import pandas as pd
 # import time
 # import warnings
 import numpy as np
@@ -198,7 +198,7 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-# """
+"""
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 img_italia = plt.imread('/home/silvia/Documents/GitHub/primoprogetto/img_italia.jpg')
@@ -228,7 +228,7 @@ print(min_lon, max_lon)
 print(min_lat, max_lat)
 # plt.colorbar()
 plt.show()
-# """
+"""
 #
 #
 # world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
@@ -339,4 +339,40 @@ Data_inst_in_pol = Datains.seleziona_indici(inst_in_pollino)
 
 Data_pol_in_inst.crea_custom_dataset(hdf5pol_out, csvpol_out)
 Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
+"""
+
+# TODO scegli miglior rete
+"""
+path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+tent_buoni = ['18', '19', '20', '21', '22', '23']
+le = len(tent_buoni)
+Storie = [{} for i in range(le)]
+for i in range(le):
+    Storie[i] = pd.read_csv(path+'/'+tent_buoni[i]+'_ok/'+'Storia_train_'+tent_buoni[i]+'.csv')
+
+fig, graf = plt.subplots()
+for i in range(le):
+    plt.plot(Storie[i]["loss_val"], label='tentativo_'+tent_buoni[i])
+    graf.set_ylim(0.02, 0.15)
+    graf.set_xlim(-2, 100)
+plt.legend()
+plt.title("Loss nei vari train")
+# plt.savefig(path+'/Loss_train_buoni')
+plt.show()
+
+# fig, graf = plt.subplots()
+# for i in range(le):
+#
+#     plt.plot(Storie[i]["acc_val"], label='tentativo_'+tent_buoni[i])
+#     graf.set_ylim(0.97, 0.995)
+# plt.legend()
+# plt.title("Accuracy nei vari train")
+# plt.savefig(path+'/Acc_train_buoni')
+# plt.show()
+
+min_los = [np.min(Storie[i]["loss_val"]) for i in range(le)]
+print(min_los)
+max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
+print(max_ac)
+
 """
