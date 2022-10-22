@@ -73,10 +73,10 @@ hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
-e_val = [43, 45, 9.5, 11.8]
-e_test = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [30]
-# epsilons = [10**(-5), 0.001, 0.1]
+e_test = [43, 45, 9.5, 11.8]
+e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
+tentativi = [39]
+kern_sizs = [3, 5, 7, 9]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -94,8 +94,10 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
-    print("\n\tepsilon = ", epsilon)
+    kern_siz = kern_sizs[tentativo - 35]
+    # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    momento = 0.75
+    print("\n\tmomento = ", momento)
 
     #  TODO Prima rete
     """
@@ -141,8 +143,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        optimizer=optimizers.Adam(epsilon=epsilon),
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -157,7 +159,7 @@ for tentativo in tentativi:
                        batch_size=batchs,
                        epochs=epoche,
                        validation_data=(x_val, y_val),
-                       )  # callbacks=EarlyStopping(patience=3,  restore_best_weights=True)
+                       callbacks=EarlyStopping(patience=3,  restore_best_weights=True))  #
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
     model.save(path_tentativi + "/" + str(tentativo) + "/Tentativo_"+str(tentativo)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
@@ -187,14 +189,13 @@ for tentativo in tentativi:
                "\nbatchsize = " + str(batchs) +\
                "\nsemiampiezza = " + str(semiampiezza) +\
                "\ndati normalizzati con primo metodo " + hdf5in +\
-               "\nepoche = " + str(epoche) +\
                "\nsample_train = " + str(len(x_train)/2) +\
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: ADMA con epsilon = " + str(epsilon) + \
-               "\nOra ho scambiato test e val, cerco di spiegare perchè val meglio di train(almeno inizialmente)" + \
-               " Confronta con 22"
+               "\nOptimizer: SGD con momento = " + str(momento) + \
+               "\nVario il primo,secondo,quarto kernel size, vedo se varia robustezza al timeshift. " + \
+               " First_kernel_size = " + str(kern_siz)
     # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)
     file.close()
