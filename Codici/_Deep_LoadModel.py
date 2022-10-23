@@ -82,13 +82,13 @@ y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in ran
              [Dati_val.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_val.sismogramma))])
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [35, 36, 37, 38]
-kern_sizs = [3, 5, 7, 9]
+tentativi = [39]
+# kern_sizs = [3, 5, 7, 9]
 time_shifts = [i-10 for i in range(21)]
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
-    kern_siz = kern_sizs[k]
+    # kern_siz = kern_sizs[k]
     model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')  # TODO
     model.summary()
 
@@ -104,19 +104,19 @@ for k in range(len(tentativi)):
         predizioni[k][2].append(predizione[1])
         print("predict num", time_shift, predizione)
 
-    plt.plot(predizioni[k][0], predizioni[k][1], label="Loss_Kern_size="+str(kern_siz))
+    plt.plot(predizioni[k][0], predizioni[k][1], label="Loss_Agumented_timeshift")  # TODO
 plt.legend()
 # plt.show()
-plt.savefig(pat_tent + "/" + "Loss_vs_Kernel_in_3layers_su_val_test")
+plt.savefig(pat_tent + "/" + "Loss_Agumented_timeshift")
 plt.clf()
 
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
-    kern_siz = kern_sizs[k]
-    plt.plot(predizioni[k][0], predizioni[k][2], label="Accuracy_Kern_size=" + str(kern_siz))
+    # kern_siz = kern_sizs[k]
+    plt.plot(predizioni[k][0], predizioni[k][2], label="Accuracy_Agumented_timeshift")  # TODO
 plt.legend()
 # plt.show()
-plt.savefig(pat_tent + "/" + "Acc_vs_Kernel_in_3layers_su_val_test")
+plt.savefig(pat_tent + "/" + "Accuracy_Agumented_timeshift")
 plt.clf()
 
 # yp = model.predict(x)
