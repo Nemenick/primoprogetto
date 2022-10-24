@@ -80,7 +80,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [39]
+tentativi = [40]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -104,7 +104,7 @@ for tentativo in tentativi:
     print("\n\teps = ", epsilon)
 
     #  TODO Prima rete
-    """
+    # """
     rete = 1
     model = keras.models.Sequential([
         Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
@@ -117,16 +117,17 @@ for tentativo in tentativi:
         Dense(50, activation="relu"),        # TODO prendi spunto da reti Ross, Uchide, Hara per migliore architettura
         Dense(1, activation="sigmoid")
     ])
-    
+
     model.compile(
-        optimizer="adam",
+        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    """
+    # """
 
     #  TODO Seconda rete
-    # """
+    """
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
@@ -152,7 +153,7 @@ for tentativo in tentativi:
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    # """
+    """
 
     model.summary()
 
@@ -189,7 +190,7 @@ for tentativo in tentativi:
 
     file = open(path_tentativi + "/" + str(tentativo) + "/_Dettagli_"+str(tentativo)+".txt", "w")
     # TODO Cambia i dettagli
-    dettagli = "Rete numero " + str(rete) + \
+    dettagli = "RETE NUMERO " + str(rete) + \
                "\nbatchsize = " + str(batchs) +\
                "\nsemiampiezza = " + str(semiampiezza) +\
                "\ndati normalizzati con primo metodo " + hdf5in +\

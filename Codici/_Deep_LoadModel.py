@@ -84,7 +84,7 @@ y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
 tentativi = [39]
 # kern_sizs = [3, 5, 7, 9]
-time_shifts = [i-10 for i in range(21)]
+time_shifts = [(i-40) for i in range(81)]
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
@@ -107,7 +107,7 @@ for k in range(len(tentativi)):
     plt.plot(predizioni[k][0], predizioni[k][1], label="Loss_Agumented_timeshift")  # TODO
 plt.legend()
 # plt.show()
-plt.savefig(pat_tent + "/" + "Loss_Agumented_timeshift")
+plt.savefig(pat_tent + "/" + "Loss_Agumented_long_timeshift")
 plt.clf()
 
 for k in range(len(tentativi)):
@@ -116,7 +116,9 @@ for k in range(len(tentativi)):
     plt.plot(predizioni[k][0], predizioni[k][2], label="Accuracy_Agumented_timeshift")  # TODO
 plt.legend()
 # plt.show()
-plt.savefig(pat_tent + "/" + "Accuracy_Agumented_timeshift")
+plt.axhline(0.5, color='k', ls='dashed', lw=1)
+plt.axhline(0.75, color='k', ls='dashed', lw=1)
+plt.savefig(pat_tent + "/" + "Accuracy_Agumented_long_timeshift")
 plt.clf()
 
 # yp = model.predict(x)

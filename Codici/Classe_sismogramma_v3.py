@@ -383,8 +383,8 @@ class ClasseDataset:
                 lung = len(self.sismogramma[0])
                 plt.plot(range(2*semiampiezza), self.sismogramma[i][lung//2 - semiampiezza:
                                                                     lung//2 + semiampiezza])
-                plt.axvline(x=semiampiezza, c="r", ls="--",lw=1)
-                plt.axhline(y=0, color='k', ls = 'dashed', lw=1)
+                plt.axvline(x=semiampiezza, c="r", ls="--", lw=1)
+                plt.axhline(y=0, color='k', ls='dashed', lw=1)
                 stringa = ""
                 for key in self.metadata:
                     if key != "centrato" and key != "demeaned":
