@@ -211,7 +211,7 @@ max_lat = np.max(Data.metadata['source_latitude_deg'])
 min_lon = np.min(Data.metadata['source_longitude_deg'])
 max_lon = np.max(Data.metadata['source_longitude_deg'])
 
-fig, grafico = plt.subplots()
+fig, grafico = plt.subplots()  # figsize=(25, 20)
 m = Basemap(llcrnrlon=min_lon,  urcrnrlon=max_lon, llcrnrlat=min_lat, urcrnrlat=max_lat, resolution='i')
 m.drawcoastlines()
 m.fillcontinents()
@@ -238,16 +238,9 @@ plt.hist2d(x=Data.metadata['source_longitude_deg'],
 # cb = fig.colorbar(hb, ax=grafico)
 # cb.set_label('counts')
 plt.colorbar()
-plt.show()
-# plt.savefig('/home/silvia/Desktop/Italia_Bella')
+# plt.show()
+plt.savefig('/home/silvia/Desktop/Italia_Bella2')
 """
-#
-#
-# world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
-#
-# # We restrict to South America.
-# ax = world[world.continent == 'South America'].plot(
-#     color='white', edgecolor='black')
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
@@ -388,3 +381,19 @@ max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
 print(max_ac)
 
 """
+
+# TODO istogrammi vari
+# """
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in, csvin)
+magnitudini = []
+for mag in Data.metadata['source_magnitude']:
+    magnitudini.append(float(mag))
+fig, ax = plt.subplots()
+plt.yscale('log')
+ax.hist(magnitudini, edgecolor="black", bins=13)
+plt.show()
+# plt.savefig('/home/silvia/Desktop/Magnitudo')
+# """
