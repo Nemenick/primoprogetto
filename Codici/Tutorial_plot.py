@@ -16,7 +16,7 @@ min_lon = np.min(Data.metadata['source_longitude_deg'])
 max_lon = np.max(Data.metadata['source_longitude_deg'])
 
 # TODO basemap
-# """
+"""
 fig, grafico = plt.subplots()
 m = Basemap(llcrnrlon=min_lon,  urcrnrlon=max_lon, llcrnrlat=min_lat, urcrnrlat=max_lat, resolution='i')
 m.drawcoastlines()
@@ -46,7 +46,7 @@ plt.hist2d(x=Data.metadata['source_longitude_deg'],
 plt.colorbar()
 plt.show()
 # plt.savefig('/home/silvia/Desktop/Italia_Bella')
-# """
+"""
 
 # TODO Geopandas
 """
@@ -73,5 +73,11 @@ print(min_lon, max_lon)
 print(min_lat, max_lat)
 # plt.colorbar()
 # plt.savefig('/home/silvia/Desktop/qualcosa.png')
+plt.show()
+"""
+
+# TODO segmento e quadrato
+"""
+plt.plot([1,1,2,2,1],[1,2,2,1,1])
 plt.show()
 """
