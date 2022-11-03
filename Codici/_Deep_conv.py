@@ -75,8 +75,8 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [39]
-kern_sizs = [3, 5, 7, 9]
+tentativi = [43]
+
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -94,10 +94,30 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    kern_siz = kern_sizs[tentativo - 35]
-    # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
-    momento = 0.75
-    print("\n\tmomento = ", momento)
+
+    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    print('\n\tepsilon = ', epsilon)
+    # momento = 0.75
+    # print('\n\tmomento = ', momento)
+
+    # TODO Zeresima rete
+    """
+    rete = 0
+    model = keras.models.Sequential([
+        Conv1D(16, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
+        MaxPooling1D(2),
+        Flatten(),
+        Dense(100, activation="softsign"),
+        Dense(1, activation="sigmoid")
+    ])
+
+    model.compile(
+        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.Adam(epsilon=epsilon),
+        loss="binary_crossentropy",
+        metrics=['accuracy']
+    )
+    """
 
     #  TODO Prima rete
     """
@@ -143,8 +163,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        # optimizer=optimizers.Adam(epsilon=epsilon),
+        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -193,9 +213,9 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: SGD con momento = " + str(momento) + \
-               "\nVario il primo,secondo,quarto kernel size, vedo se varia robustezza al timeshift. " + \
-               " First_kernel_size = " + str(kern_siz)
+               "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
+               "\nORA HO LA RETE 0! Faccio vedere che non è buona"
+
     # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)
     file.close()

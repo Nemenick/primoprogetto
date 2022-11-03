@@ -1,0 +1,10 @@
+Rete numero 2
+batchsize = 512
+semiampiezza = 80
+dati normalizzati con primo metodo /home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5
+sample_train = 141972.0
+In questo train train,test,val sono instance
+coordinate test = [43, 45, 9.5, 11.8]con 8983 dati di test
+coordinate val = [37.5, 38.5, 14.5, 16]con 10243 dati di val
+Optimizer: ADAM con epsilon = 0.001
+ORA PROVA su tutte le tracce INSTANCE che hanno polarità, senza pulizia SOM!

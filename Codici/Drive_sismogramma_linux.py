@@ -170,11 +170,11 @@ Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartel
 """
 Dati = ClasseDataset()
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
 
-csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
-hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
 
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.normalizza()
@@ -405,3 +405,11 @@ ax.hist(magnitudini, edgecolor="black", bins=13)
 plt.show()
 # plt.savefig('/home/silvia/Desktop/Magnitudo')
 """
+
+# 133532
+Dati = ClasseDataset()
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
+Dati.leggi_custom_dataset(hdf5out,csvout)
+Dati.elimina_tacce_indici([133532])
+Dati.crea_custom_dataset(hdf5out,csvout)
