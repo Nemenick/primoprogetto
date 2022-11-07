@@ -19,6 +19,7 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     :param estremi_test:    idem di e_val
     :param semi_amp:        Semiampiezza della traccia da considerare
     :param dati:            dataset da suddividere
+    :param timeshift:       effettuo un timeshift uniforme in [-t,t] per le sole tracce del train
     :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
     """
 
