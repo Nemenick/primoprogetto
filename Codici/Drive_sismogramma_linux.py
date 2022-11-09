@@ -171,7 +171,7 @@ csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
-semiampiezza_ = 150
+semiampiezza_ = 100
 cartella = '/home/silvia/Desktop/'
 
 vettore_indici = [62, 632, 7299, 1022, 9037]
