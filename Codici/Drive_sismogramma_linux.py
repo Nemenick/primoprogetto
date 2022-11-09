@@ -172,12 +172,12 @@ csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 semiampiezza_ = 150
-cartella = '/home/silvia/Desktop/Nuova_cartella'
+cartella = '/home/silvia/Desktop/'
 
 vettore_indici = [62, 632, 7299, 1022, 9037]
 
-nomepng = 'Esempi'
-Dataset.plotta(vettore_indici, percosro_cartellla=cartella)
+nomepng = 'Esempi_zoom'
+Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
 # """
 
 # TODO genera Custom Normalizzato
