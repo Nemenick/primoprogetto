@@ -245,8 +245,8 @@ class ClasseDataset:
         else:
             for i in range(len(self.sismogramma)):
                 if self.metadata["trace_P_arrival_sample"][i] > semiampiezza:
-                    sismogramma[i] = self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:
-                                                         self.metadata["trace_P_arrival_sample"][i] + semiampiezza]
+                    sismogramma[i] = self.sismogramma[i][int(self.metadata["trace_P_arrival_sample"][i]) - semiampiezza:
+                                                         int(self.metadata["trace_P_arrival_sample"][i]) + semiampiezza]
                 else:
                     stringa = "#"
                     for _ in range(300):
@@ -367,7 +367,9 @@ class ClasseDataset:
         namepng:                    se è passato diventa il nome del file in cui salvo i plot
         percorso_cartella           salva in 'C:/Users/GioCar/Desktop/Tesi_5/'+namepng se non è passato
                                     cioè creo la cartella percorso_cartella + namepng e ci metto i file dentro
-        # TODO migliora algoritmo, rendilo più legibbile
+
+        Se non fornisco semiampiezza, prende la massima possibile
+        # TODO migliora algoritmo, rendilo più legibbile (aggiungi selezione su metadati da mettere in "stringa")
         """
         if len(self.sismogramma) < len(visualizza):
             print("lunghezza sismogramma < sismogrammi da visualizzare")
@@ -410,6 +412,7 @@ class ClasseDataset:
                 da errore, non so perchè
                 Dataset_1.plotta(visualizza=140, semiampiezza=1000, namepng="new/vedi135")
                 per sismogramma non centrato ed semiampiezza superiore tracearrivalp
+                (forse sisma è nella parte finale della traccia) fai questo controllo
                 """
                 plt.plot(range(2*semiampiezza),
                          self.sismogramma[i][self.metadata["trace_P_arrival_sample"][i] - semiampiezza:

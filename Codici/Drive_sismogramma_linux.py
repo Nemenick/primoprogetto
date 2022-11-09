@@ -11,6 +11,21 @@ import matplotlib.colors as colors
 from mpl_toolkits.basemap import Basemap
 from Classe_sismogramma_v3 import ClasseDataset
 
+
+# TODO acquisisci new
+"""
+Dati = ClasseDataset()
+hdf5 = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k.hdf5'
+hdf5_mio = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k_mio.hdf5'
+csv = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
+csv_mio = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k_mio.csv'
+colonne = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+Dati.acquisisci_new(hdf5, csv, colonne)
+Dati.finestra(400)
+Dati.crea_custom_dataset(hdf5_mio, csv_mio)
+"""
+
 # TODO seleziona classi
 """
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
@@ -150,21 +165,20 @@ Dataset.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO visualizza
-"""
-hdf5 = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
-csv = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
+# """
+hdf5 = '/home/silvia/Desktop/Sample_dataset/_Mio/Instance_events_gm_10k_mio.hdf5'
+csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
-semiampiezza_ = 100
+semiampiezza_ = 150
+cartella = '/home/silvia/Desktop/Nuova_cartella'
 
-cartella = '/home/silvia/Desktop/Pollino'
+vettore_indici = [62, 632, 7299, 1022, 9037]
 
-vettore_indici = range(len(Dataset.sismogramma))
-
-nomepng = 'Pollino_figure_100Hz'
-Dataset.plotta(vettore_indici, semiampiezza_, nomepng, percosro_cartellla=cartella)
-"""
+nomepng = 'Esempi'
+Dataset.plotta(vettore_indici, percosro_cartellla=cartella)
+# """
 
 # TODO genera Custom Normalizzato
 """
@@ -391,7 +405,7 @@ print(max_ac)
 """
 
 # TODO istogrammi vari
-# """
+"""
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 Data = ClasseDataset()
@@ -411,7 +425,7 @@ plt.xlabel("Magnitudo")
 plt.ylabel("Numero di eventi")
 plt.show()
 # plt.savefig('/home/silvia/Desktop/Magnitudo')
-# """
+"""
 
 # 133532
 # Dati = ClasseDataset()
