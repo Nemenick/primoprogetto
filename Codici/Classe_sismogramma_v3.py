@@ -182,6 +182,7 @@ class ClasseDataset:
 
     def ricava_indici_classi(self, classi_da_selezionare: list, vettore_indici: list):
         """
+        Classi derivanti da analisi SOM
          metto in vettore_indici gli indici delle tracce che appartengono ad una delle classi elencate in
          classi_da_selezionare
 

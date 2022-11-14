@@ -92,13 +92,15 @@ classi_list = ['/Down_1_iterazione/4_8_10/4_8_10_post_5_classes', '/Down_1_itera
                '/Down_1_iterazione/7_9/7_9_post_7_classes', '/Up_1_iterazione/4/4_post_10_classes',
                '/Up_1_iterazione/24/24_post_10_classes', '/Up_1_iterazione/2_5_25/2_5_25_post_7_classes']
 
+
 for i in range(6):
     hdf_list[i] = sto_qui + hdf_list[i] + '.hdf5'
     csv_list[i] = sto_qui + csv_list[i] + '.csv'
     classi_list[i] = sto_qui + classi_list[i] + '.txt'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_.csv'
 
 classi_buone = [[19, 25, 20],
                 [11, 18, 20, 21, 15, 16, 23, 19, 5, 24],
@@ -165,7 +167,7 @@ Dataset.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO visualizza
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Sample_dataset/_Mio/Instance_events_gm_10k_mio.hdf5'
 csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv'
 
@@ -178,7 +180,7 @@ vettore_indici = [62, 632, 7299, 1022, 9037]
 
 nomepng = 'Esempi_zoom'
 Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO genera Custom Normalizzato
 """
@@ -215,8 +217,8 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 
 # TODO Grafico Instance Data
 """
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
 
@@ -260,8 +262,8 @@ y_t = [43, 45, 45, 43, 43]
 x_v, y_v = [14.5, 14.5, 16, 16, 14.5], [37.5, 38.5, 38.5, 37.5, 37.5]
 plt.plot(x_t, y_t, zorder=2, linewidth=2, color="deeppink")
 plt.plot(x_v, y_v, zorder=2, linewidth=2, color="orange")
-plt.show()
-# plt.savefig('/home/silvia/Desktop/Italia_Bella2')
+# plt.show()
+plt.savefig('/home/silvia/Desktop/Italia_Tracce_Cattive')
 """
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
@@ -423,9 +425,13 @@ plt.axvline(x=q[1], c="r", ls="--", lw="2")
 plt.axvline(x=q[2], c="orange", ls="--", lw="2")
 plt.xlabel("Magnitudo")
 plt.ylabel("Numero di eventi")
-plt.show()
-# plt.savefig('/home/silvia/Desktop/Magnitudo')
+# plt.show()
+plt.savefig('/home/silvia/Desktop/Magnitudo_buone')
 """
+
+
+
+
 
 # 133532
 # Dati = ClasseDataset()
