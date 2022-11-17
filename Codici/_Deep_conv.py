@@ -95,7 +95,7 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 for tentativo in tentativi:
 
-    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    epsilon = 10**(-1)  # TODO cambia (al prossimo....)
     print('\n\tepsilon = ', epsilon)
     # momento = 0.75
     # print('\n\tmomento = ', momento)
@@ -214,7 +214,7 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
-               "\nORA HO LA RETE 0! Faccio vedere che non è buona"
+               "\nEarly_stopping    con    patiente = 3, restore_best_weights = True"
 
     # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)

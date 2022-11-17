@@ -1,0 +1,8 @@
+Rete numero 2
+batchsize = 512
+semiampiezza = 80
+dati normalizzati con primo metodo /home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5
+epoche = 350
+sample_train = 150319
+In questo train la validation sono i dai del Pollino, il train è tutto instance dataset
+Optimizer: SGD con Momentum, momentum = 0.8

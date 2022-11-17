@@ -121,10 +121,10 @@ for i in range(6):
     print("elimino tracce in numero ", len(Dataset.metadata["trace_name"]), "da", classi_list[i])
     # print("QUI", type(nomi_cattivi), len(nomi_cattivi))
 
-Dataset_ori = ClasseDataset()
-Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
-Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
-Dataset_ori.crea_custom_dataset(hdf5out, csvout)
+# Dataset_ori = ClasseDataset()
+# Dataset_ori.leggi_custom_dataset(hdf5in_ori, csvin_ori)
+# Dataset_ori.elimina_tacce_nomi(nomi_cattivi)
+# Dataset_ori.crea_custom_dataset(hdf5out, csvout)
 
 """
 
@@ -408,14 +408,17 @@ print(max_ac)
 
 # TODO istogrammi vari
 """
+istogramma magnitudo
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
-q = [0.25, 0.5, 0.75]
+
 magnitudini = []
 for mag in Data.metadata['source_magnitude']:
     magnitudini.append(float(mag))
+    
+q = [0.25, 0.5, 0.75]
 q = np.quantile(magnitudini, q)
 fig, ax = plt.subplots()
 plt.yscale('log')
@@ -425,10 +428,39 @@ plt.axvline(x=q[1], c="r", ls="--", lw="2")
 plt.axvline(x=q[2], c="orange", ls="--", lw="2")
 plt.xlabel("Magnitudo")
 plt.ylabel("Numero di eventi")
-# plt.show()
-plt.savefig('/home/silvia/Desktop/Magnitudo_buone')
+plt.show()
+# plt.savefig('/home/silvia/Desktop/Magnitudo_buone')
 """
+"""
+# Istogramma tempi
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in, csvin)
 
+lat_min_amatrice, lat_max_amatrice = 42.47, 43.07
+lon_min_amatrice, lon_max_amatrice = 13.04, 13.29
+
+tempi = []
+year_tempi = []
+for j in range(len(Data.sismogramma)):
+    tempi.append(obspy.UTCDateTime(Data.metadata["source_origin_time"][j]))
+    year_tempi.append(tempi[j].year)
+
+q = [0.25, 0.5, 0.75]
+q = np.quantile(year_tempi, q)
+
+
+fig, ax = plt.subplots()
+# plt.yscale('log')
+ax.hist(year_tempi, edgecolor="black", bins=15)
+plt.axvline(x=q[0], c="orange", ls="--", lw="2")
+plt.axvline(x=q[1], c="r", ls="--", lw="2")
+plt.axvline(x=q[2], c="orange", ls="--", lw="2")
+plt.xlabel("Anno")
+plt.ylabel("Numero di eventi")
+plt.show()
+"""
 
 
 
