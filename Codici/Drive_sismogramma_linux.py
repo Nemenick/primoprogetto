@@ -216,17 +216,22 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-"""
+# """
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
 
-min_lat = np.min(Data.metadata['source_latitude_deg'])
-max_lat = np.max(Data.metadata['source_latitude_deg'])
-min_lon = np.min(Data.metadata['source_longitude_deg'])
-max_lon = np.max(Data.metadata['source_longitude_deg'])
-
+min_lat = 35.1392   # np.min(Data.metadata['source_latitude_deg'])
+max_lat = 48.166    # np.max(Data.metadata['source_latitude_deg'])
+min_lon = 5.3923    # np.min(Data.metadata['source_longitude_deg'])
+max_lon = 18.9612   # np.max(Data.metadata['source_longitude_deg'])
+print(min_lat, max_lat, min_lon, max_lon)
 fig, grafico = plt.subplots()  # figsize=(25, 20)
 m = Basemap(llcrnrlon=min_lon,  urcrnrlon=max_lon, llcrnrlat=min_lat, urcrnrlat=max_lat, resolution='i')
 m.drawcoastlines()
@@ -237,7 +242,7 @@ m.drawmeridians(np.arange(6, 22, 2), labels=[1, 1, 0, 1])
 m.drawcountries()
 plt.hist2d(x=Data.metadata['source_longitude_deg'],
            y=Data.metadata['source_latitude_deg'],
-           bins=(200, 200),
+           bins=(208, 200),
            cmap='inferno',
            zorder=1,
            alpha=0.99,
@@ -260,11 +265,11 @@ e_v = [37.5, 38.5, 14.5, 16]
 x_t = [9.5, 9.5, 11.8, 11.8, 9.5]
 y_t = [43, 45, 45, 43, 43]
 x_v, y_v = [14.5, 14.5, 16, 16, 14.5], [37.5, 38.5, 38.5, 37.5, 37.5]
-plt.plot(x_t, y_t, zorder=2, linewidth=2, color="deeppink")
-plt.plot(x_v, y_v, zorder=2, linewidth=2, color="orange")
+# plt.plot(x_t, y_t, zorder=2, linewidth=2, color="deeppink")
+# plt.plot(x_v, y_v, zorder=2, linewidth=2, color="orange")
 # plt.show()
 plt.savefig('/home/silvia/Desktop/Italia_Tracce_Cattive')
-"""
+# """
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
