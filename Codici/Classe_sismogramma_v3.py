@@ -144,7 +144,7 @@ class ClasseDataset:
         legge TUTTE le tracce di questo custom_dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
-        start = time.perf_counter()
+        # start = time.perf_counter()
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
@@ -295,6 +295,7 @@ class ClasseDataset:
     def normalizza(self, soglia=20):
         """
         # TODO implementa giusta normalizzazione (da decidere)
+        # TODO penso ciascuna traccia debba avere come valore massimo 1
         Metodo 1, prova
         """
         lung_traccia = len(self.sismogramma[0])
@@ -432,9 +433,6 @@ class ClasseDataset:
                     nome_cartella = percosro_cartellla + "/" + namepng
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
-
-
-
 
 
 if __name__ == "main":
