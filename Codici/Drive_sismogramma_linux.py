@@ -390,7 +390,7 @@ colori = ["red", "dodgerblue"]
 le = len(tent_buoni)
 Storie = [{} for i in range(le)]
 for i in range(le):
-    Storie[i] = pd.read_csv(path+'/'+tent_buoni[i]+'_ok/'+'Storia_train_'+tent_buoni[i]+'.csv')
+    Storie[i] = pd.read_csv(path+'/'+tent_buoni[i]+'Storia_train_'+tent_buoni[i]+'.csv')
 
 fig, graf = plt.subplots()
 for i in range(le):
