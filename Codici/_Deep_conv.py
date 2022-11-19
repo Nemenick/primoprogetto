@@ -84,6 +84,7 @@ for tentativo in tentativi:
 semiampiezza = 80
 epoche = 300
 batchs = 512
+pazienza = 5
 
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -95,7 +96,7 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 for tentativo in tentativi:
 
-    epsilon = 10**(-1)  # TODO cambia (al prossimo....)
+    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
     print('\n\tepsilon = ', epsilon)
     # momento = 0.75
     # print('\n\tmomento = ', momento)
@@ -148,11 +149,12 @@ for tentativo in tentativi:
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
-
+        Dropout(0.5),                           # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
 
         Conv1D(256, 5, activation="relu", padding="same"),
+        Dropout(0.5),                           # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
 
@@ -178,8 +180,8 @@ for tentativo in tentativi:
     storia = model.fit(x_train, y_train,
                        batch_size=batchs,
                        epochs=epoche,
-                       validation_data=(x_val, y_val),
-                       callbacks=EarlyStopping(patience=3,  restore_best_weights=True))  #
+                       validation_data=(x_val, y_val))
+                       # callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
     model.save(path_tentativi + "/" + str(tentativo) + "/Tentativo_"+str(tentativo)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
@@ -214,9 +216,9 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
-               "\nEarly_stopping    con    patiente = 3, restore_best_weights = True"
+               "\n Ho messo DROPOUT dopo primo poolong e prima ultimo conv1D"
 
-    # Early_stopping    con    patiente = 3, restore_best_weights = True
+# "\nEarly_stopping    con    patiente = "+str(pazienza)+"3, restore_best_weights = True" +\
     file.write(dettagli)
     file.close()
 

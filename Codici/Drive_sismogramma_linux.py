@@ -382,9 +382,11 @@ Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
 # Adam con epsilon = 1e-05            21
 # Adam con epsilon = 1e-03            22
 # Adam con epsilon = 1e-01            23
-labels = ["SGD, m=0.6", "SGD, m=0.9", "ADAM, ε=1e-05", "ADAM, ε=1e-03", "ADAM, ε=1e-01"]
+# labels = ["SGD, m=0.6", "SGD, m=0.9", "ADAM, ε=1e-05", "ADAM, ε=1e-03", "ADAM, ε=1e-01"]
+labels = ["ADAM ε=1e-03", "ADAM ε=1e-03 + Dropout"]
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-tent_buoni = ['18',  '20', '21', '22', '23']
+tent_buoni = ['22', '45']
+colori = ["red", "dodgerblue"]
 le = len(tent_buoni)
 Storie = [{} for i in range(le)]
 for i in range(le):
@@ -392,28 +394,28 @@ for i in range(le):
 
 fig, graf = plt.subplots()
 for i in range(le):
-    plt.plot(Storie[i]["loss_val"], label=labels[i])
+    plt.plot(Storie[i]["loss_val"], label=labels[i], color=colori[i])
     plt.yscale("log")
-    graf.set_ylim(0.025, 0.3)
+    # graf.set_ylim(0.025, 0.3)
     # graf.set_xlim(-2, 100)
 plt.legend()
 plt.title("Test Loss")
-plt.savefig(path+'/_Test loss_nei vati tentativi')
+plt.savefig(path+'/_Test loss_Dropout')
 plt.show()
 
 fig, graf = plt.subplots()
 for i in range(le):
 
-    plt.plot(Storie[i]["acc_val"], label=labels[i])
-    graf.set_ylim(0.96, 0.996)
+    plt.plot(Storie[i]["acc_val"], label=labels[i], color=colori[i])
+    # graf.set_ylim(0.96, 0.996)
 plt.legend()
 plt.title("Test accuracy")
-plt.savefig(path+'/_Test accuracy_nei vati tentativi')
+plt.savefig(path+'/_Test accuracy_Dropout')
 plt.show()
 
-min_los = [np.min(Storie[i]["loss_train"]) for i in range(le)]
+min_los = [np.min(Storie[i]["loss_val"]) for i in range(le)]
 print(min_los)
-max_ac = [np.max(Storie[i]["acc_train"]) for i in range(le)]
+max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
 print(max_ac)
 
 # """
