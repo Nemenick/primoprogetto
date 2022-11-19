@@ -376,7 +376,7 @@ Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
 """
 
 # TODO scegli miglior rete
-# """
+"""
 # SGD con Momentum, momentum = 0.6    18
 # SGD con Momentum, momentum = 0.9    20
 # Adam con epsilon = 1e-05            21
@@ -418,19 +418,24 @@ print(min_los)
 max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
 print(max_ac)
 
-# """
+"""
 
 # TODO istogrammi vari
-"""
+# """
 # istogramma magnitudo
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+
+hdf5in = '/home/silvia/Desktop/Pollino_All/Pollino_All_data_100Hz.hdf5'
+csvin = '/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz.csv'
+
 Data = ClasseDataset()
 Data.leggi_custom_dataset(hdf5in, csvin)
 
 magnitudini = []
 for mag in Data.metadata['source_magnitude']:
-    magnitudini.append(float(mag))
+    if mag != 'unknown':                        # circa 7 non avevano magnitudo
+        magnitudini.append(float(mag))
     
 q = [0.25, 0.5, 0.75]
 q = np.quantile(magnitudini, q)
@@ -442,9 +447,10 @@ plt.axvline(x=q[1], c="r", ls="--", lw="2")
 plt.axvline(x=q[2], c="orange", ls="--", lw="2")
 plt.xlabel("Magnitudo")
 plt.ylabel("Numero di eventi")
+plt.title("Magnitudo Dataset_2")
+plt.savefig('/home/silvia/Desktop/Magnitudo_Pollino')
 plt.show()
-# plt.savefig('/home/silvia/Desktop/Magnitudo_buone')
-"""
+# """
 """
 # Istogramma tempi
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
