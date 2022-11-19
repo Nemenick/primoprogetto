@@ -75,7 +75,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [45]
+tentativi = [43_1]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -96,7 +96,7 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 for tentativo in tentativi:
 
-    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    epsilon = 10**(-1)  # TODO cambia (al prossimo....)
     print('\n\tepsilon = ', epsilon)
     # momento = 0.75
     # print('\n\tmomento = ', momento)
@@ -106,7 +106,7 @@ for tentativo in tentativi:
     rete = 0
     model = keras.models.Sequential([
         Conv1D(16, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
-        MaxPooling1D(2),
+        Conv1D(16, 3, activation="relu"),
         Flatten(),
         Dense(100, activation="softsign"),
         Dense(1, activation="sigmoid")
@@ -149,18 +149,13 @@ for tentativo in tentativi:
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
-        Dropout(0.5),                           # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
-
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(0.5),                           # TODO
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
-
         Flatten(),
         Dense(50, activation="softsign"),
-
         Dense(1, activation="sigmoid")
     ])
 
@@ -180,8 +175,8 @@ for tentativo in tentativi:
     storia = model.fit(x_train, y_train,
                        batch_size=batchs,
                        epochs=epoche,
-                       validation_data=(x_val, y_val))
-                       # callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
+                       validation_data=(x_val, y_val),
+                       callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
     model.save(path_tentativi + "/" + str(tentativo) + "/Tentativo_"+str(tentativo)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
@@ -216,9 +211,10 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
-               "\n Ho messo DROPOUT dopo primo poolong e prima ultimo conv1D"
+               "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True"
 
-# "\nEarly_stopping    con    patiente = "+str(pazienza)+"3, restore_best_weights = True" +\
+# "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
+#     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"
     file.write(dettagli)
     file.close()
 

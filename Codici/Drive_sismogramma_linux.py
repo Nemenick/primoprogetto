@@ -376,52 +376,51 @@ Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
 """
 
 # TODO scegli miglior rete
-"""
+# """
 # SGD con Momentum, momentum = 0.6    18
 # SGD con Momentum, momentum = 0.9    20
 # Adam con epsilon = 1e-05            21
 # Adam con epsilon = 1e-03            22
 # Adam con epsilon = 1e-01            23
 # labels = ["SGD, m=0.6", "SGD, m=0.9", "ADAM, ε=1e-05", "ADAM, ε=1e-03", "ADAM, ε=1e-01"]
-labels = ["ADAM ε=1e-03", "ADAM ε=1e-03 + Dropout"]
+labels = ["ADAM, ε=1e-03", "SGD, m=0.75"]
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-tent_buoni = ['22', '45']
+tent_buoni = ['27', '28']
 colori = ["red", "dodgerblue"]
 le = len(tent_buoni)
 Storie = [{} for i in range(le)]
 for i in range(le):
-    Storie[i] = pd.read_csv(path+'/'+tent_buoni[i]+'Storia_train_'+tent_buoni[i]+'.csv')
+    Storie[i] = pd.read_csv(path+'/'+tent_buoni[i]+'/Storia_train_'+tent_buoni[i]+'.csv')
 
 fig, graf = plt.subplots()
 for i in range(le):
-    plt.plot(Storie[i]["loss_val"], label=labels[i], color=colori[i])
+    plt.plot(Storie[i]["loss_train"], label=labels[i], color=colori[i])
     plt.yscale("log")
     # graf.set_ylim(0.025, 0.3)
     # graf.set_xlim(-2, 100)
 plt.legend()
-plt.title("Test Loss")
-plt.savefig(path+'/_Test loss_Dropout')
+plt.title("Training Loss")
+plt.savefig(path+'/_Training loss_ ADAM vs SGD')
 plt.show()
 
 fig, graf = plt.subplots()
 for i in range(le):
 
-    plt.plot(Storie[i]["acc_val"], label=labels[i], color=colori[i])
+    plt.plot(Storie[i]["acc_train"], label=labels[i], color=colori[i])
     # graf.set_ylim(0.96, 0.996)
 plt.legend()
-plt.title("Test accuracy")
-plt.savefig(path+'/_Test accuracy_Dropout')
+plt.title("Training accuracy")
+plt.savefig(path+'/_Training accuracy ADAM vs SGD')
 plt.show()
 
-min_los = [np.min(Storie[i]["loss_val"]) for i in range(le)]
+min_los = [np.min(Storie[i]["loss_train"]) for i in range(le)]
 print(min_los)
-max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
+max_ac = [np.max(Storie[i]["acc_train"]) for i in range(le)]
 print(max_ac)
-
-"""
+# """
 
 # TODO istogrammi vari
-# """
+"""
 # istogramma magnitudo
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
 # csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
@@ -450,7 +449,7 @@ plt.ylabel("Numero di eventi")
 plt.title("Magnitudo Dataset_2")
 plt.savefig('/home/silvia/Desktop/Magnitudo_Pollino')
 plt.show()
-# """
+"""
 """
 # Istogramma tempi
 hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
