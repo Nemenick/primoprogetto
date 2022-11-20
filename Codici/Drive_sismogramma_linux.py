@@ -383,11 +383,11 @@ Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
 # Adam con epsilon = 1e-03            22
 # Adam con epsilon = 1e-01            23
 # labels = ["SGD, m=0.6", "SGD, m=0.9", "ADAM, ε=1e-05", "ADAM, ε=1e-03", "ADAM, ε=1e-01"]
-labels = ["Pulizia_SOM", "Senza_pulizia_SOM"]
+labels = ["SGD m=0.75", "ADAM ε=1e-3"]
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-tent_buoni = ['27', '42']
-colori_train = ["red", "royalblue"]
-colori_val = ["orangered", "dodgerblue"]
+tent_buoni = ['28', '27']
+colori_train = ["royalblue", "red"]
+colori_val = ["dodgerblue", "orangered"]
 le = len(tent_buoni)
 Storie = [{} for i in range(le)]
 for i in range(le):
@@ -402,7 +402,7 @@ for i in range(le):
     # graf.set_xlim(-2, 100)
 plt.legend()
 plt.title("Loss")
-plt.savefig(path+'/_Loss Pulito vs Sporco')
+plt.savefig(path+'/_Loss ADAM vs SGD')
 plt.show()
 
 fig, graf = plt.subplots()
@@ -412,7 +412,7 @@ for i in range(le):
     graf.set_ylim(0.96, 0.996)
 plt.legend()
 plt.title("Accuracy")
-plt.savefig(path+'/_Accuracy Pulito vs Sporco')
+plt.savefig(path+'/_Accuracy ADAM vs SGD')
 plt.show()
 
 min_los = [np.min(Storie[i]["loss_val"]) for i in range(le)]
