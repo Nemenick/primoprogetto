@@ -68,6 +68,8 @@ hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_B
 """
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate_4s.csv'
 hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'
+hdf5ins_out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.hdf5'
+csvins_out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.csv'
 """
 
 Dati = ClasseDataset()
@@ -75,7 +77,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [43_1]
+tentativi = [281]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -83,8 +85,8 @@ for tentativo in tentativi:
 
 semiampiezza = 80
 epoche = 300
-batchs = 512
-pazienza = 5
+batchs = 512                                # TODO CAMBIA parametri
+pazienza = 3
 
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -96,10 +98,10 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 for tentativo in tentativi:
 
-    epsilon = 10**(-1)  # TODO cambia (al prossimo....)
-    print('\n\tepsilon = ', epsilon)
-    # momento = 0.75
-    # print('\n\tmomento = ', momento)
+    # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    # print('\n\tepsilon = ', epsilon)
+    momento = 0.75
+    print('\n\tmomento = ', momento)
 
     # TODO Zeresima rete
     """
@@ -160,8 +162,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        optimizer=optimizers.Adam(epsilon=epsilon),
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -210,8 +212,9 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
-               "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True"
+               "\nOptimizer: SGD con epsilon = " + str(momento) + \
+               "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
+               "\n###############  HO TOLTO DATI DEL POLLINO  ###############"
 
 # "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
 #     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"
