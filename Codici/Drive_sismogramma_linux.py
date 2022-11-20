@@ -1,5 +1,6 @@
 # import dask.dataframe as dd
 # import h5py
+import seaborn
 import matplotlib.pyplot as plt
 # from matplotlib import colors
 import obspy
@@ -376,7 +377,7 @@ Data_inst_in_pol.crea_custom_dataset(hdf5ins_out, csvins_out)
 """
 
 # TODO Confronta rete
-# """
+"""
 # SGD con Momentum, momentum = 0.6    18
 # SGD con Momentum, momentum = 0.9    20
 # Adam con epsilon = 1e-05            21
@@ -419,7 +420,44 @@ min_los = [np.min(Storie[i]["loss_val"]) for i in range(le)]
 print(min_los)
 max_ac = [np.max(Storie[i]["acc_val"]) for i in range(le)]
 print(max_ac)
-# """
+"""
+
+# TODO matrice confusione Predizione TEST
+"""
+# "y_Mano_test", "y_predict_test"
+titoli = ["SGD m=0.75", "ADAM ε=1e-3"]
+path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+tentativi = ['28', '27']
+colori_train = ["royalblue", "red"]
+colori_val = ["dodgerblue", "orangered"]
+le = len(tentativi)
+
+
+for i in range(le):
+    # Create a dataset
+    tp, tn, fp, fn = 0, 0, 0, 0
+    predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_test_tentativo_' + tentativi[i] + '.csv')
+    for j in range(len(predizioni["y_predict_test"])):
+        if predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:
+            tp += 1
+        if predizioni["y_Mano_test"][j] == 0 and predizioni["delta_test"][j] < 0.5:
+            tn += 1
+        if predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] > 0.5:
+            fn += 1
+        if predizioni["y_Mano_test"][j] == 0 and predizioni["delta_test"][j] > 0.5:
+            fp += 1
+    print("SONO TUTTI ? (tutti), tp+tn+..", len(predizioni["y_predict_test"]), tp+tn+fp+fn)
+    print(tp, fn, "\n", fp, tn)
+    df = pd.DataFrame([[tp, fn], [fp, tn]], columns=["Up", "Down"])
+
+    # plot a heatmap with annotation
+    seaborn.heatmap(df, annot=True, fmt=".5g", annot_kws={"size": 15}, cmap="Blues", cbar=False)
+    plt.xlabel("Predizioni della rete")
+    plt.ylabel("Polarità assegnata")
+    plt.title(titoli[i])
+    plt.savefig(path+'/_Confusion_matrix_'+titoli[i]+".png")
+    plt.show()
+"""
 
 # TODO istogrammi vari
 """
