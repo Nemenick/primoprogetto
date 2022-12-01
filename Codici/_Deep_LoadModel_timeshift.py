@@ -82,9 +82,9 @@ y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in ran
              [Dati_val.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_val.sismogramma))])
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [31, 27, 32, 33, 34]
-kern_sizs = [3, 5, 7, 9, 11]
-time_shifts = [(i-20) for i in range(41)]
+tentativi = [39]
+kern_sizs = [5]
+time_shifts = [(i-40) for i in range(81)]
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
@@ -105,8 +105,11 @@ for k in range(len(tentativi)):
         print("predict num", time_shift, predizione)
 
     plt.plot(predizioni[k][0], predizioni[k][1], label="Loss_Kern_size="+str(kern_siz))  # TODO
-plt.legend()
-plt.savefig(pat_tent + "/" + "Loss_vs_Kernel_su_val_test")
+# plt.legend()
+plt.title("Training with timeshift in train-set")
+plt.ylabel("Test Loss")
+plt.xlabel("T (translation point)")
+plt.savefig(pat_tent + "/" + "AAAAALoss_vs_Kernel_su_val_test_timeshift", dpi=300)
 plt.show()
 plt.clf()
 
@@ -114,11 +117,16 @@ for k in range(len(tentativi)):
     tentativo = tentativi[k]
     kern_siz = kern_sizs[k]
     plt.plot(predizioni[k][0], predizioni[k][2], label="Accuracy_Kern_size="+str(kern_siz))  # TODO
-plt.legend()
+# plt.legend()
 
-# plt.axhline(0.5, color='k', ls='dashed', lw=1)
-# plt.axhline(0.75, color='k', ls='dashed', lw=1)
-plt.savefig(pat_tent + "/" + "Accuracy_vs_Kernel_su_val_test")
+plt.axhline(0.5, color='k', ls='dashed', lw=1)
+plt.axhline(0.75, color='k', ls='dashed', lw=1)
+
+plt.title("Training with timeshift in train-set")
+plt.ylabel("Test Accuracy")
+plt.xlabel("T (translation point)")
+plt.savefig(pat_tent + "/" + "AAAAAAAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
+
 plt.show()
 plt.clf()
 
