@@ -8,6 +8,9 @@ from mpl_toolkits.basemap import Basemap
 
 file = img.imread('/home/silvia/Desktop/Italia_Tracce_DPI.png')
 
-plt.imshow(file)
-plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI_augmented', dpi=500)
+fig = plt.imshow(file)
+plt.axis('off')
+fig.axes.get_xaxis().set_visible(False)
+fig.axes.get_yaxis().set_visible(False)
+
 plt.show()
