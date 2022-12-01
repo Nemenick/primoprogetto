@@ -43,7 +43,7 @@
       <recent name="C:\Users\GioCar\Documents\GitHub\primoprogetto\Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python._PROVA_ELIMINA">
+  <component name="RunManager" selected="Python.Drive_sismogramma_linux">
     <configuration name="Drive_sismogramma_linux" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -151,10 +151,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python._PROVA_ELIMINA" />
         <item itemvalue="Python.Drive_sismogramma_linux" />
-        <item itemvalue="Python._Deep_Valuta_pollino" />
         <item itemvalue="Python._Deep_conv" />
+        <item itemvalue="Python._PROVA_ELIMINA" />
+        <item itemvalue="Python._Deep_Valuta_pollino" />
         <item itemvalue="Python._Deep_LoadModel_timeshift" />
       </list>
     </recent_temporary>

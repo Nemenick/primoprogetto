@@ -77,14 +77,14 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [281]
+tentativi = [666]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
 
 semiampiezza = 80
-epoche = 300
+epoche = 1
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 3
 

@@ -217,12 +217,12 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-"""
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
+# """
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
 
-# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
 
 
 Data = ClasseDataset()
@@ -269,8 +269,8 @@ x_v, y_v = [14.5, 14.5, 16, 16, 14.5], [37.5, 38.5, 38.5, 37.5, 37.5]
 # plt.plot(x_t, y_t, zorder=2, linewidth=2, color="deeppink")
 # plt.plot(x_v, y_v, zorder=2, linewidth=2, color="orange")
 # plt.show()
-plt.savefig('/home/silvia/Desktop/Italia_Tracce_Cattive')
-"""
+plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI', dpi=300)
+# """
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
@@ -427,7 +427,7 @@ print(max_ac)
 """
 
 # TODO matrice confusione Predizione TEST
-# """
+"""
 # "y_Mano_test", "y_predict_test"
 titoli = ["_POLLINO_SGD m=0.75", "_POLLINO_ADAM ε=1e-3"]                                  # TODO cambia
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
@@ -465,7 +465,7 @@ for i in range(le):
     plt.title(titoli[i])
     plt.savefig(path+'/_Confusion_matrix_'+titoli[i]+".png")
     plt.show()
-# """
+"""
 
 # TODO istogrammi vari
 """
