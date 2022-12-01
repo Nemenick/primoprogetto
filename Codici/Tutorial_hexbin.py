@@ -16,5 +16,7 @@ cb.set_label('counts')
 # plt.axvline(min_lat, c='navy')
 print(min_lon, max_lon)
 print(min_lat, max_lat)
+"""
 # plt.colorbar()
+"""
 plt.show()
