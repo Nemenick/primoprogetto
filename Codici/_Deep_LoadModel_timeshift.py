@@ -82,13 +82,16 @@ y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in ran
              [Dati_val.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_val.sismogramma))])
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [39]
-kern_sizs = [5]
-time_shifts = [(i-40) for i in range(81)]
+tentativi = [39, 27]
+labels = ["Timeshift in training set", "NO Timeshift in training set"]
+colori = ["blue", "red"]
+time_shifts = [(i-30) for i in range(61)]
 predizioni = [[[], [], []] for i in range(len(tentativi))]
+fig, axs = plt.subplots(1, 2)
+fig.set_figheight(5)
+fig.set_figwidth(10)
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
-    kern_siz = kern_sizs[k]
     model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')  # TODO
     model.summary()
 
@@ -104,31 +107,46 @@ for k in range(len(tentativi)):
         predizioni[k][2].append(predizione[1])
         print("predict num", time_shift, predizione)
 
-    plt.plot(predizioni[k][0], predizioni[k][1], label="Loss_Kern_size="+str(kern_siz))  # TODO
+    axs[0].plot(predizioni[k][0], predizioni[k][1], label=labels[k], color=colori[k])  # TODO plt.
+
+axs[0].legend()
+axs[0].set_title('Test Loss')
+
+
+
+for ax in axs.flat:
+    ax.set(xlabel='T  (translation point)')
+
+
+
+
 # plt.legend()
-plt.title("Training with timeshift in train-set")
-plt.ylabel("Test Loss")
-plt.xlabel("T (translation point)")
-plt.savefig(pat_tent + "/" + "AAAAALoss_vs_Kernel_su_val_test_timeshift", dpi=300)
-plt.show()
-plt.clf()
+# plt.title("Test Loss")
+# plt.ylabel("Test Loss")
+# plt.xlabel("T (translation point)")
+# plt.savefig(pat_tent + "/" + "BBBLoss_vs_Kernel_su_val_test_timeshift", dpi=300)
+# plt.show()
+# plt.clf()
 
 for k in range(len(tentativi)):
     tentativo = tentativi[k]
-    kern_siz = kern_sizs[k]
-    plt.plot(predizioni[k][0], predizioni[k][2], label="Accuracy_Kern_size="+str(kern_siz))  # TODO
+
+    axs[1].plot(predizioni[k][0], predizioni[k][2], label=labels[k], color=colori[k])
+
+     # TODO  plt.
 # plt.legend()
+axs[1].set_title('Test Accuracy')
+axs[1].axhline(0.5, color='k', ls='dashed', lw=1)
+axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
 
-plt.axhline(0.5, color='k', ls='dashed', lw=1)
-plt.axhline(0.75, color='k', ls='dashed', lw=1)
-
-plt.title("Training with timeshift in train-set")
-plt.ylabel("Test Accuracy")
-plt.xlabel("T (translation point)")
-plt.savefig(pat_tent + "/" + "AAAAAAAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
-
+# plt.title("Test Accuracy")
+# plt.ylabel("Test Accuracy")
+# plt.xlabel("T (translation point)")
+# plt.savefig(pat_tent + "/" + "BBBAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
+axs[1].legend()
+plt.savefig(pat_tent + "/" + "AAAAQUALCOSA", dpi=300)
 plt.show()
-plt.clf()
+# plt.clf()
 
 # yp = model.predict(x)
 # print(y, len(y), "\n", yp, len(yp))
