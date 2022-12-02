@@ -115,7 +115,7 @@ axs[0].set_title('Test Loss')
 
 
 for ax in axs.flat:
-    ax.set(xlabel='T  (traslation point)')
+    ax.set(xlabel='T  (translation samples in test set)')
 
 
 
