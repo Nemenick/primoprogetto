@@ -266,11 +266,11 @@ e_v = [37.5, 38.5, 14.5, 16]
 x_t = [9.5, 9.5, 11.8, 11.8, 9.5]
 y_t = [43, 45, 45, 43, 43]
 x_v, y_v = [14.5, 14.5, 16, 16, 14.5], [37.5, 38.5, 38.5, 37.5, 37.5]
-# plt.plot(x_t, y_t, zorder=2, linewidth=2, color="deeppink")
-# plt.plot(x_v, y_v, zorder=2, linewidth=2, color="orange")
-# plt.show()
+plt.plot(x_t, y_t, zorder=2, linewidth=1, color="deeppink")
+plt.plot(x_v, y_v, zorder=2, linewidth=1, color="orange")
 plt.title("Number of events in Dataset_1")
-plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI', dpi=300)
+plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI_', dpi=300)
+plt.show()
 # """
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
