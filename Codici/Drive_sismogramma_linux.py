@@ -168,20 +168,21 @@ Dataset.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO visualizza
-"""
+# """
 hdf5 = '/home/silvia/Desktop/Sample_dataset/_Mio/Instance_events_gm_10k_mio.hdf5'
 csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
-semiampiezza_ = 100
+semiampiezza_ = 220
 cartella = '/home/silvia/Desktop/'
 
-vettore_indici = [62, 632, 7299, 1022, 9037]
+# vettore_indici = [62, 632, 7299, 1022, 9037] vettore_indici = [8] (200)
+vettore_indici = [8]
 
 nomepng = 'Esempi_zoom'
-Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
-"""
+Dataset.plotta(vettore_indici,  namepng=None, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
+# """
 
 # TODO genera Custom Normalizzato
 """
@@ -217,7 +218,7 @@ Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
-# """
+"""
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
 # csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
 
@@ -271,7 +272,7 @@ plt.plot(x_v, y_v, zorder=2, linewidth=1, color="orange")
 plt.title("Number of events in Dataset_1")
 plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI_', dpi=300)
 plt.show()
-# """
+"""
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
