@@ -180,8 +180,8 @@ cartella = '/home/silvia/Desktop/'
 # vettore_indici = [62, 632, 7299, 1022, 9037] vettore_indici = [8] (200)
 vettore_indici = [8]
 
-nomepng = 'Esempi_zoom'
-Dataset.plotta(vettore_indici,  namepng=None, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
+nomepng = "_Presentazione_Undecidable"
+Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
 # """
 
 # TODO genera Custom Normalizzato
