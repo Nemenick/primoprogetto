@@ -20,11 +20,46 @@ hdf5 = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k.hdf5'
 hdf5_mio = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k_mio.hdf5'
 csv = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
 csv_mio = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k_mio.csv'
-colonne = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-           "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"]
+# colonne = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
+#            "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"] ! RICVEDI
 Dati.acquisisci_new(hdf5, csv, colonne)
 Dati.finestra(400)
 Dati.crea_custom_dataset(hdf5_mio, csv_mio)
+"""
+
+# TODO ricava longitudine, latitudine metadata
+"""
+hdf5in = '/home/silvia/Desktop/Instance_Data/data'
+csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
+col_sel = ['trace_name', 'source_latitude_deg', 'source_longitude_deg', 'source_origin_time', 'station_code',
+           'station_channels', 'trace_start_time', 'trace_P_arrival_sample',
+           'trace_polarity', 'trace_P_uncertainty_s', 'source_magnitude', 'source_magnitude_type', 'trace_Z_snr_db'
+           ]
+
+hdf5out = '/home/silvia/Desktop/data_buttare.hdf5'
+csvout = '/home/silvia/Desktop/metadata_pol_veloc_more_metadata.csv'
+
+Datain = ClasseDataset()
+Datain.acquisisci_new(hdf5in, csvin, col_sel)
+
+Datain.crea_custom_dataset(hdf5out, csvout)
+"""
+
+# TODO ricava longitudine, latitudine metadata, SOLO CSV
+"""
+csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
+col_sel = ['trace_name', 'source_latitude_deg', 'source_longitude_deg', 'source_origin_time', 'station_code',
+           'station_channels', 'trace_start_time', 'trace_P_arrival_sample',
+           'trace_polarity', 'trace_P_uncertainty_s', 'source_magnitude', 'source_magnitude_type', 'trace_Z_snr_db'
+           ]
+
+hdf5out = '/home/silvia/Desktop/data_buttare.hdf5'
+csvout = '/home/silvia/Desktop/ATTENTOmetadata_pol_veloc_more_metadata.csv'
+
+Datain = ClasseDataset()
+Datain.acquisisci_new_csv(csvin, col_sel)
+print(len(Datain.metadata['trace_name']))
+Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO seleziona classi
@@ -130,45 +165,57 @@ for i in range(6):
 """
 
 # TODO genera txt per SOM
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
+# """
+# hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_clas_5_21_23.hdf5'
+# csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_clas_5_21_23.csv'
+#
+# txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_down_5_21_23.txt'
+# txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_down_5_21_23.txt'
+hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
 
-txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_down_5_21_23.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_down_5_21_23.txt'
+txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s_SRN_L_10.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s_SRN_L_10.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
+elimina = []
+print(len(Dataset.sismogramma), len(elimina))
+for i in range(len(Dataset.sismogramma)):
+    if Dataset.metadata["trace_Z_snr_db"][i] >= 10:
+        elimina.append(i)
+Dataset.elimina_tacce_indici(elimina)
+# Dataset.crea_custom_dataset('/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_SRN_L_10.hdf5','/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s_SRN_L_10.csv')
+print(len(Dataset.sismogramma), len(elimina))
 # Dataset.finestra(200)
 Dataset.to_txt(txt_data, txt_metadata)
+# """
+
+# Todo Dividi dataset up/down o altro
 """
+hdf5 = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
+csv = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
 
-# Todo Dividui dataset up/down o altro
-"""
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_aaaaaaaaaaaaaaaaaa4s.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_aaaaaaaaaaaaaaaaaa4s.csv'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_copia.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
-
-txt_data = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_down_4s.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_down_4s.txt'
+txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_aaaaaaaaaaaaaaaaaa4s.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_aaaaaaaaaaaaaaaaaa4s.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 elimina = []
 for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_polarity"][i] != 'negative':
+    if Dataset.metadata["trace_polarity"][i] != 'positive':
         elimina.append(i)
 Dataset.elimina_tacce_indici(elimina)
-
+Dataset.finestra(200)
 Dataset.crea_custom_dataset(hdf5out, csvout)
-# Dataset.to_txt(txt_data, txt_metadata)
-
+Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # TODO visualizza
-# """
+"""
 hdf5 = '/home/silvia/Desktop/Sample_dataset/_Mio/Instance_events_gm_10k_mio.hdf5'
 csv = '/home/silvia/Desktop/Sample_dataset/_Mio/metadata_Instance_events_10k.csv'
 
@@ -182,7 +229,7 @@ vettore_indici = [8]
 
 nomepng = "_Presentazione_Undecidable"
 Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
-# """
+"""
 
 # TODO genera Custom Normalizzato
 """
@@ -197,24 +244,6 @@ hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normali
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 Dati.normalizza()
 Dati.crea_custom_dataset(hdf5out, csvout)
-"""
-
-# TODO ricava longitudine, latitudine metadata
-"""
-hdf5in = '/home/silvia/Desktop/Instance_Data/data'
-csvin = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
-col_sel = ['trace_name', 'source_latitude_deg', 'source_longitude_deg', 'source_origin_time', 'station_code',
-           'station_channels', 'trace_start_time', 'trace_P_arrival_sample',
-           'trace_polarity', 'trace_P_uncertainty_s', 'source_magnitude', 'source_magnitude_type'
-           ]
-
-hdf5out = '/home/silvia/Desktop/data_buttare.hdf5'
-csvout = '/home/silvia/Desktop/metadata_pol_veloc_more_metadata.csv'
-
-Datain = ClasseDataset()
-Datain.acquisisci_new(hdf5in, csvin, col_sel)
-
-Datain.crea_custom_dataset(hdf5out, csvout)
 """
 
 # TODO Grafico Instance Data
@@ -532,7 +561,17 @@ plt.show()
 """
 
 
-
+# hdf5 = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
+# csv = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
+#
+# hdf5out = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter_2.hdf5'
+# csvout = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter_2.csv'
+#
+# Data = ClasseDataset()
+# Data.leggi_custom_dataset(hdf5, csv)
+# Data.elimina_tacce_indici([133532])
+#
+# Data.crea_custom_dataset(hdf5out,csvout)
 
 # 133532
 # Dati = ClasseDataset()
@@ -541,3 +580,4 @@ plt.show()
 # Dati.leggi_custom_dataset(hdf5out,csvout)
 # Dati.elimina_tacce_indici([133532])
 # Dati.crea_custom_dataset(hdf5out,csvout)
+

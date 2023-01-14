@@ -22,11 +22,10 @@ class ClasseDataset:
         self.metadata = {}                  # dizionario di lista, non np.array (non so come li tratta pandas)
         self.classi = []                    # lista di int
 
-    def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot, nomi_selezionati=None):
+    def acquisisci_new(self, percorsohdf5, percorsocsv, col_tot):
         """
         Acquisisce e seleziona tracce del file hdf5 e csv
-        e salva in file csv i nomi_selezionati e indici delle tracce selezionate
-        ATTENTO! (non creo un custom dataset di trace, ma solo salvo in csv lista di quelle da leggere)
+
         """
 
         start = time.perf_counter()
@@ -56,7 +55,7 @@ class ClasseDataset:
         # print(nomidata)
         self.sismogramma = []
         self.metadata = {}
-        indice_csv = []
+
         for key in allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
             self.metadata[key] = []
         for i in range(len(nomidata)):
@@ -67,20 +66,60 @@ class ClasseDataset:
                          allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
                 self.sismogramma.append(dataset.get(nomidata[i]))
                 self.sismogramma[-1] = self.sismogramma[-1][2]  # Componente z, ci mette di meno
-                indice_csv.append(i)
                 for key in self.metadata:
                     self.metadata[key].append(allmetadata[key][i])
         print("\nshape_prima di ridimensionare\n", len(self.sismogramma), len(self.sismogramma[0]))
         self.sismogramma = np.array(self.sismogramma)
         print("shape dopo", self.sismogramma.shape, len(self.metadata["trace_P_arrival_sample"]))
         filehdf5.close()
-        indice_csv = np.array(indice_csv)
-        if nomi_selezionati is not None:
-            pd_names = pd.DataFrame({"trace_name": self.metadata["trace_name"],
-                                     "indice_csv": indice_csv})  # basta indice_csv
-            pd_names.to_csv(nomi_selezionati, index=False)
-            # pd_names = tracenames':[], 'indice file csv'
-            print("HO creato il file nomi_selezionati")
+        print("HO fatto")
+
+    def acquisisci_new_csv(self,  percorsocsv, col_tot):
+        """
+        Acquisisce e seleziona tracce del file csv
+        """
+        start = time.perf_counter()
+        # FIXME engine"python" (lentissimo): dava problemi la riga 33114, l'ho skippata e legge ma dice che e too large-
+        datd = dd.read_csv(percorsocsv, usecols=col_tot, engine="python", on_bad_lines="skip",
+                           sample=10 ** 8, assume_missing=True,
+                           dtype={'source_latitude_deg': 'object',
+                                  'source_longitude_deg': 'object',
+                                  'source_origin_time': 'object'})
+        # datd = dd.read_csv(percorsocsv, usecols=col_tot)
+
+        allmetadata = {}
+        for i in col_tot:  # genera metadata["colname"] = np.array["colname"]
+            allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
+            print(i, time.perf_counter() - start)
+        for key in allmetadata:
+            print(key, allmetadata[key])
+        # creo il dizionario metadata["tracename"][1] etc
+        # print(self.metadata["trace_name"])
+        print(time.perf_counter() - start)
+
+
+
+        # print("\ndatasetORI", dataset)
+        # nomidata = list(dataset.keys())                             # Mi sono salvato i nomi di tutti i dataset
+        nomidata = allmetadata["trace_name"]                     # Presi dal file CSV
+        # print(nomidata)
+
+        self.metadata = {}
+
+        for key in allmetadata:            # creo dataset selezionato ma che ha gli stessi metadata del completo
+            self.metadata[key] = []
+        for i in range(len(nomidata)):
+            if i % 10000 == 0:
+                print("sto analizzando il sismogramma ", i)
+            if allmetadata["trace_polarity"][i] != 'undecidable' \
+                    and (allmetadata["station_channels"][i] == "HH" or
+                         allmetadata["station_channels"][i] == "EH"):        # TODO condizione da aggiornare
+
+                for key in self.metadata:
+                    self.metadata[key].append(allmetadata[key][i])
+
+        print("shape dopo", len(self.metadata["trace_P_arrival_sample"]))
+
 
     def acquisisci_old(self, percorsohdf5, percorsocsv, col_tot, percorso_nomi):
         """"
