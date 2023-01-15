@@ -120,7 +120,6 @@ class ClasseDataset:
 
         print("shape dopo", len(self.metadata["trace_P_arrival_sample"]))
 
-
     def acquisisci_old(self, percorsohdf5, percorsocsv, col_tot, percorso_nomi):
         """"
         Acquisisce le tracce presenti in file hdf5 e csv che sono nominate nel file percorso nomi
