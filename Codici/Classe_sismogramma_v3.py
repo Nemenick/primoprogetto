@@ -97,8 +97,6 @@ class ClasseDataset:
         # print(self.metadata["trace_name"])
         print(time.perf_counter() - start)
 
-
-
         # print("\ndatasetORI", dataset)
         # nomidata = list(dataset.keys())                             # Mi sono salvato i nomi di tutti i dataset
         nomidata = allmetadata["trace_name"]                     # Presi dal file CSV
@@ -170,8 +168,8 @@ class ClasseDataset:
         filehdf5.create_dataset(name='dataset1', data=self.sismogramma)
         print("ho creato hdf5")
         dizio = self.metadata
-        dizio["centrato"] = self.centrato
-        dizio["demeaned"] = self.demeaned
+        dizio["centrato"] = self.centrato   # Mette tutta la "colonna" al valore self.centrato
+        dizio["demeaned"] = self.demeaned   # (fa in modo che ogni colonna abbia stesso shape)
         datapandas = pd.DataFrame.from_dict(dizio)
         datapandas.to_csv(percorsocsvout_pandas, index=False)
         filehdf5.close()
@@ -397,6 +395,8 @@ class ClasseDataset:
         data_return = ClasseDataset()
         data_return.sismogramma = np.array(data)
         data_return.metadata = dizio_metadata
+        data_return.centrato = self.centrato
+        data_return.demeaned = self.demeaned
 
         return data_return
 

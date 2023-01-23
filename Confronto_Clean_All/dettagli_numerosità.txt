@@ -1,3 +1,9 @@
 Dati_Test_clean = 8411
 
 Dat_Test_All = 8983
+
+Data	Net
+All	All 	97.62
+All	Clean	97.71
+Clean	All	98.66
+Clean	Clean	98.91

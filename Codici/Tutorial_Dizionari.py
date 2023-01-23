@@ -29,3 +29,11 @@ Prova.istanzia()
 print( Prova.metadata, type(Prova.metadata), type(Prova.metadata["uno"]))
 Prova.elimina(indici)
 print( Prova.metadata, type(Prova.metadata), type(Prova.metadata["uno"]))"""
+
+
+dizio = {"a": [1,2,3], "b": ["a", "b", "c"]}
+print(dizio)
+dizio["c"] = True
+print(dizio)
+datapandas = pd.DataFrame.from_dict(dizio)
+print(datapandas)

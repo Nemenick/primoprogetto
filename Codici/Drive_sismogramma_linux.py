@@ -171,28 +171,28 @@ for i in range(6):
 #
 # txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/data_down_5_21_23.txt'
 # txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Down_1_iterazione/5_21_23/metadata_down_5_21_23.txt'
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
+hdf5 = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.hdf5'
+csv = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.csv'
 
-txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s_SRN_L_10.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s_SRN_L_10.txt'
+txt_data = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.txt'
+txt_metadata = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
-elimina = []
-print(len(Dataset.sismogramma), len(elimina))
-for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_Z_snr_db"][i] >= 10:
-        elimina.append(i)
-Dataset.elimina_tacce_indici(elimina)
-# Dataset.crea_custom_dataset('/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_SRN_L_10.hdf5','/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s_SRN_L_10.csv')
-print(len(Dataset.sismogramma), len(elimina))
+# elimina = []
+# print(len(Dataset.sismogramma), len(elimina))
+# for i in range(len(Dataset.sismogramma)):
+#     if Dataset.metadata["trace_Z_snr_db"][i] >= 10:
+#         elimina.append(i)
+# Dataset.elimina_tacce_indici(elimina)
+# # Dataset.crea_custom_dataset('/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_SRN_L_10.hdf5','/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s_SRN_L_10.csv')
+# print(len(Dataset.sismogramma), len(elimina))
 # Dataset.finestra(200)
 Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividi dataset up/down o altro
-"""
+# """
 hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
 csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
 
@@ -213,12 +213,10 @@ print(len(Dataset.sismogramma), len(Dataset.metadata["trace_name"]))
         # print(i)
 # Dataset.elimina_tacce_indici(elimina)
 # Dataset.finestra(200)
-Dataset.centrato = True
-Dataset.demeaned = True
 Dataset.crea_custom_dataset(hdf5out, csvout)
 print(len(Dataset.sismogramma),len(Dataset.metadata["trace_polarity"]))
 # Dataset.to_txt(txt_data, txt_metadata)
-"""
+# """
 
 # TODO visualizza
 """
@@ -252,7 +250,7 @@ Dati.normalizza()
 Dati.crea_custom_dataset(hdf5out, csvout)
 """
 
-# TODO Grafico Instance Data
+# TODO Grafico Instance Data (mappa)
 """
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
 # csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
@@ -311,24 +309,34 @@ plt.show()
 
 # TODO seleziona tracce (devi avere un modo per ricavare indici)
 """
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+#
+# hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_primi100.hdf5'  # TODO
+# csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_primi100.csv'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_primi100.hdf5'  # TODO
-csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_primi100.csv'
-
-vettore_indici = [] # TODO
+vettore_indici = []  # TODO
 
 Datain = ClasseDataset()
 Datain.leggi_custom_dataset(hdf5in, csvin)
+
+path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+tentativi = "27"
+predizioni = pd.read_csv(path + '/' + tentativi + '/Predizioni_Pollino_tentativo_' + tentativi + '.csv')
+
+for i in range(len(predizioni["delta"])):
+    if predizioni["delta"][i] >= 0.5:
+        vettore_indici.append(i)
+
 Dataout = Datain.seleziona_indici(vettore_indici)
+print(Dataout.metadata["centrato"], "\n##########", Dataout.centrato)
 Dataout.crea_custom_dataset(hdf5out, csvout)
 
-vettore_verita = []
-for i in range(len(Dataout.sismogramma)):
-    vettore_verita.append((Dataout.sismogramma[i] == Datain.sismogramma[vettore_indici[i]]).all())
-print(np.array(vettore_verita).all())
-lista_nomi = Datain.metadata["trace_name"][0:100]
+# vettore_verita = []
+# for i in range(len(Dataout.sismogramma)):
+#     vettore_verita.append((Dataout.sismogramma[i] == Datain.sismogramma[vettore_indici[i]]).all())
+# print(np.array(vettore_verita).all())
+# lista_nomi = Datain.metadata["trace_name"][0:100]
 # print(np.array(Dataout.metadata["trace_name"]) == np.array(lista_nomi)).all()
 """
 
@@ -361,7 +369,7 @@ for i in range(len(Data.sismogramma)):
 print("test = ", cont_test, " val = ", cont_val, "pol = ", cont_pol)
 """
 
-# TOdo verifica pollino
+# TOdo verifica pollino in insta
 """
 hdf5ins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_lon_lat_time_4s.hdf5'
 csvins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_lon_lat_time_4s.csv'
