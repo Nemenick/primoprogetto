@@ -3,13 +3,14 @@ import numpy as np
 import pandas as pd
 # from keras.utils.np_utils import to_categorical
 # import tensorflow as tf
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"          # TODO ATTENTO !
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout
 from keras import optimizers
 from keras.callbacks import EarlyStopping
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
-import os
 
 
 def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset):
@@ -77,7 +78,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [666]
+tentativi = [168]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:

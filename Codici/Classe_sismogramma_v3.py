@@ -196,13 +196,11 @@ class ClasseDataset:
         self.demeaned = self.metadata["demeaned"][1]
         # print(self.sismogramma.shape, len(self.sismogramma))
 
-    def to_txt(self, txt_data, txt_metadata):
-        # self.acquisisci_new(percorsohdf5, percorsocsv, col_tot=col_tot, nomi_selezionati=nomi_selezionati)
-        # print("\n\nVA BENE?", self.sismogramma)
+    def to_txt(self, txt_data, txt_metadata=None):
         np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok
-        metadata_txt = pd.DataFrame.from_dict(self.metadata)
-        metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
-        # df.to_csv(r'c:\data\pandas.txt', header=None, index=None, sep='\t', mode='a')
+        if txt_metadata is not None:
+            metadata_txt = pd.DataFrame.from_dict(self.metadata)
+            metadata_txt.to_csv(txt_metadata, index=False, sep='\t')
 
     def leggi_classi_txt(self, percorsoclassi):
         """

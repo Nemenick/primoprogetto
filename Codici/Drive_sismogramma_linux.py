@@ -192,31 +192,31 @@ Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # Todo Dividi dataset up/down o altro
-# """
-hdf5 = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
-csv = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
+"""
+hdf5 = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.hdf5'
+csv = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.csv'
 
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate2.hdf5'
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate2.csv'
+hdf5out = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.hdf5'
+csvout = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.csv'
 
 
-txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_aaaaaaaaaaaaaaaaaa4s.txt'
-txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_aaaaaaaaaaaaaaaaaa4s.txt'
+txt_data = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.txt'
+txt_metadata = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.txt'
 
 Dataset = ClasseDataset()
 Dataset.leggi_custom_dataset(hdf5, csv)
 print(len(Dataset.sismogramma), len(Dataset.metadata["trace_name"]))
-# elimina = []
-# for i in range(len(Dataset.sismogramma)):
-#     if Dataset.metadata["trace_polarity"][i] != 'negative':
-#         elimina.append(i)
+elimina = []
+for i in range(len(Dataset.sismogramma)):
+    if Dataset.metadata["trace_polarity"][i] != 'positive':
+        elimina.append(i)
         # print(i)
-# Dataset.elimina_tacce_indici(elimina)
+Dataset.elimina_tacce_indici(elimina)
 # Dataset.finestra(200)
 Dataset.crea_custom_dataset(hdf5out, csvout)
-print(len(Dataset.sismogramma),len(Dataset.metadata["trace_polarity"]))
-# Dataset.to_txt(txt_data, txt_metadata)
-# """
+print(len(Dataset.sismogramma), len(Dataset.metadata["trace_polarity"]))
+Dataset.to_txt(txt_data, txt_metadata)
+"""
 
 # TODO visualizza
 """
@@ -572,24 +572,31 @@ plt.ylabel("Numero di eventi")
 plt.show()
 """
 
-
-# hdf5 = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter.hdf5'
-# csv = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter.csv'
-#
-# hdf5out = '/home/silvia/Desktop/Instance_Data/Uno/data_selected_Polarity_Velocimeter_2.hdf5'
-# csvout = '/home/silvia/Desktop/Instance_Data/Uno/metadata_Instance_events_selected_Polarity_Velocimeter_2.csv'
-#
-# Data = ClasseDataset()
 # Data.leggi_custom_dataset(hdf5, csv)
 # Data.elimina_tacce_indici([133532])
-#
 # Data.crea_custom_dataset(hdf5out,csvout)
-
 # 133532
-# Dati = ClasseDataset()
-# csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
-# hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
-# Dati.leggi_custom_dataset(hdf5out,csvout)
-# Dati.elimina_tacce_indici([133532])
-# Dati.crea_custom_dataset(hdf5out,csvout)
 
+
+hdf5out = '/home/silvia/Desktop/SOM_errori/Tentativo_27/data_Velocimeter_Buone_4s_test_sbagliati27_Up.hdf5'  #
+csvout = '/home/silvia/Desktop/SOM_errori/Tentativo_27/metadata_Velocimeter_Buone_4s_test_sbagliati27_Up.csv'
+
+hdf5in = '/home/silvia/Desktop/SOM_errori/Tentativo_27/Data_Velocimeter_Buone_4s_test/data_Velocimeter_Buone_4s_test_sbagliati27.hdf5'  # TODO
+csvin = '/home/silvia/Desktop/SOM_errori/Tentativo_27/Data_Velocimeter_Buone_4s_test/metadata_Velocimeter_Buone_4s_test_sbagliati27.csv'
+
+txt_data = '/home/silvia/Desktop/SOM_errori/Tentativo_27/data_Velocimeter_Buone_4s_test_sbagliati27_Down.txt'
+
+
+Dataset = ClasseDataset()
+Dataset.leggi_custom_dataset(hdf5in, csvin)
+print(len(Dataset.sismogramma), len(Dataset.metadata["trace_name"]))
+elimina = []
+for i in range(len(Dataset.sismogramma)):
+    if Dataset.metadata["trace_polarity"][i] != 'positive':
+        elimina.append(i)
+        # print(i)# for i in range(len(Dataout.sismogramma)):
+Dataset.elimina_tacce_indici(elimina)
+# Dataset.finestra(200)
+# Dataset.crea_custom_dataset(hdf5out, csvout)
+print(len(Dataset.sismogramma), len(Dataset.metadata["trace_polarity"]))
+Dataset.to_txt(txt_data)
