@@ -15,7 +15,7 @@ class ClasseDataset:
         """
         inserisci qui tutte le proprietà di classe con i ripsettivi tipi
         """
-        self.centrato = False           # dice se ho tagliato e centrato la finestra temporale
+        self.centrato = False           # dice se ho tagliato e centrato la finestra temporale (bool)
         self.demeaned = False           # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
 
         self.sismogramma = np.array([])     # np.array (,)
@@ -195,6 +195,7 @@ class ClasseDataset:
         self.centrato = self.metadata["centrato"][1]
         self.demeaned = self.metadata["demeaned"][1]
         # print(self.sismogramma.shape, len(self.sismogramma))
+        filehdf5.close()
 
     def to_txt(self, txt_data, txt_metadata=None):
         np.savetxt(txt_data, self.sismogramma, fmt='%.5e')  # warning, ma fuonziona ok

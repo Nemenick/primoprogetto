@@ -1,5 +1,5 @@
 # import dask.dataframe as dd
-# import h5py
+import h5py
 import seaborn
 import matplotlib.pyplot as plt
 # from matplotlib import colors
@@ -185,7 +185,8 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 #     if Dataset.metadata["trace_Z_snr_db"][i] >= 10:
 #         elimina.append(i)
 # Dataset.elimina_tacce_indici(elimina)
-# # Dataset.crea_custom_dataset('/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_SRN_L_10.hdf5','/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s_SRN_L_10.csv')
+# # Dataset.crea_custom_dataset('/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s_SRN_L_10.hdf5',
+'/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s_SRN_L_10.csv')
 # print(len(Dataset.sismogramma), len(elimina))
 # Dataset.finestra(200)
 Dataset.to_txt(txt_data, txt_metadata)
@@ -400,8 +401,10 @@ print(len(tracce_pol_in_inst), tracce_pol_in_inst)
 hdf5ins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
 csvins = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_lon_lat_time_4s.csv'
 
-hdf5ins_out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.hdf5'
-csvins_out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.csv'
+hdf5ins_out = 
+'/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.hdf5'
+csvins_out = 
+'/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_SENZA_POLLINO.csv'
 
 hdf5pol = '/home/silvia/Desktop/Pollino_All/Pollino_All_data_100Hz.hdf5'
 csvpol = '/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz.csv'
@@ -578,25 +581,50 @@ plt.show()
 # 133532
 
 
-hdf5out = '/home/silvia/Desktop/SOM_errori/Tentativo_27/data_Velocimeter_Buone_4s_test_sbagliati27_Up.hdf5'  #
-csvout = '/home/silvia/Desktop/SOM_errori/Tentativo_27/metadata_Velocimeter_Buone_4s_test_sbagliati27_Up.csv'
+percorsohdf5 = '/home/silvia/Desktop/SCSN(Ross)/scsn_p_2000_2017_6sec_0.5r_fm_test.hdf5'
+filehdf5 = h5py.File(percorsohdf5, 'r')
 
-hdf5in = '/home/silvia/Desktop/SOM_errori/Tentativo_27/Data_Velocimeter_Buone_4s_test/data_Velocimeter_Buone_4s_test_sbagliati27.hdf5'  # TODO
-csvin = '/home/silvia/Desktop/SOM_errori/Tentativo_27/Data_Velocimeter_Buone_4s_test/metadata_Velocimeter_Buone_4s_test_sbagliati27.csv'
+hdf5ross = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_all_data.hdf5'
+csvross = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_all_metadata.csv'
 
-txt_data = '/home/silvia/Desktop/SOM_errori/Tentativo_27/data_Velocimeter_Buone_4s_test_sbagliati27_Down.txt'
+hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_data.hdf5'
+csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata.csv'
 
 
-Dataset = ClasseDataset()
-Dataset.leggi_custom_dataset(hdf5in, csvin)
-print(len(Dataset.sismogramma), len(Dataset.metadata["trace_name"]))
-elimina = []
-for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_polarity"][i] != 'positive':
-        elimina.append(i)
-        # print(i)# for i in range(len(Dataout.sismogramma)):
-Dataset.elimina_tacce_indici(elimina)
-# Dataset.finestra(200)
-# Dataset.crea_custom_dataset(hdf5out, csvout)
-print(len(Dataset.sismogramma), len(Dataset.metadata["trace_polarity"]))
-Dataset.to_txt(txt_data)
+Data_Ross = ClasseDataset()
+Data_Ross.leggi_custom_dataset(hdf5ross, csvross)
+polarity_waves = []
+for i in range(len(Data_Ross.sismogramma)):
+    if Data_Ross.metadata["trace_polarity"][i] == 'positive' or Data_Ross.metadata["trace_polarity"][i] == 'negative':
+        polarity_waves.append(i)
+
+Data_polarity = Data_Ross.seleziona_indici(polarity_waves)
+Data_polarity.crea_custom_dataset(hdf5ross_polarity, csvross_polarity)
+
+# # Data_Ross.plotta(zero,130,namepng="zero",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
+# # Data_Ross.plotta(uno,130,namepng="uno",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
+# Data_Ross.plotta(due,130,namepng="due",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
+
+
+#
+# Data_Ross.sismogramma = np.array(filehdf5.get("X"))
+# trace_polarity = filehdf5.get("Y")
+# polarity_names = ["positive", "negative", "undecidable"]
+# for i in range(len(trace_polarity)):
+#     trace_polarity[i] = polarity_names[trace_polarity[i]]
+# print(type(trace_polarity), type(trace_polarity[1]))
+# source_magnitude = filehdf5.get("mag")
+# print(type(source_magnitude), type(source_magnitude[1]), "polarity")
+# dist = filehdf5.get("dist")
+# print(type(dist), type(dist[1]), "Dist")
+# evids = filehdf5.get("evids")
+# print(type(evids), type(evids[1]), "evdis")
+# sncls = filehdf5.get("sncls")
+# print(type(sncls), type(sncls[1]), "sncls")
+# trace_Z_snr_db = filehdf5.get("snr")
+# print(type(trace_Z_snr_db), type(trace_Z_snr_db[1]),"snr")
+# Data_Ross.centrato = True
+# Data_Ross.metadata = {"sncls": sncls, "trace_polarity": trace_polarity, "source_magnitude": source_magnitude,
+#                       "trace_Z_snr_db": trace_Z_snr_db, "dist": dist, "evids": evids}
+# Data_Ross.finestra(semiampiezza=200)
+# Data_Ross.crea_custom_dataset(hdf5ross, csvross)

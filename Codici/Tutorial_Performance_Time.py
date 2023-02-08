@@ -1,6 +1,7 @@
 import h5py
 import numpy as np
 import time
+import pandas as pd
 import dask.dataframe as dd
 
 Nprove= 100
@@ -86,3 +87,26 @@ print("tempo append", time.perf_counter()-start)"""
 # end = time.perf_counter()
 # print("tempo while", end-start)
 """
+
+
+# TODO pd vs hdf5 write
+
+random = np.random.standard_normal(size=(100000, 500))
+
+start_hdf5 = time.perf_counter()
+percorsohdf5out = "/home/silvia/Desktop/file_random_data.hdf5"
+filehdf5 = h5py.File(percorsohdf5out, 'w')
+filehdf5.create_dataset(name='dataset_random', data=random)
+filehdf5.close()
+print("tempo hdf5: ", time.perf_counter()-start_hdf5)
+
+random = np.random.standard_normal(size=(500, 200))
+
+start_pd = time.perf_counter()
+percorsocsvout_pandas = "/home/silvia/Desktop/file_random_data.csv"
+dizio = {}
+for i in range(len(random)):
+    dizio[str(i)] = random[i]
+data = pd.DataFrame.from_dict(dizio)
+data.to_csv(percorsocsvout_pandas, index=False)
+print(time.perf_counter() - start_pd)
