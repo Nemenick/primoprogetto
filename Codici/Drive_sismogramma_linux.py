@@ -590,25 +590,12 @@ csvross = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_all_metadata.csv'
 hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_data.hdf5'
 csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata.csv'
 
+hdf5ross_normalizzo = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_data.hdf5'
+csvross_normalizzo = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata_Normalizzate20.csv'
 
-Data_Ross = ClasseDataset()
-Data_Ross.leggi_custom_dataset(hdf5ross, csvross)
-polarity_waves = []
-for i in range(len(Data_Ross.sismogramma)):
-    if Data_Ross.metadata["trace_polarity"][i] == 'positive' or Data_Ross.metadata["trace_polarity"][i] == 'negative':
-        polarity_waves.append(i)
-
-Data_polarity = Data_Ross.seleziona_indici(polarity_waves)
-Data_polarity.crea_custom_dataset(hdf5ross_polarity, csvross_polarity)
-
-# # Data_Ross.plotta(zero,130,namepng="zero",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
-# # Data_Ross.plotta(uno,130,namepng="uno",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
-# Data_Ross.plotta(due,130,namepng="due",percosro_cartellla='/home/silvia/Desktop/SCSN(Ross)')
-
-
-#
-# Data_Ross.sismogramma = np.array(filehdf5.get("X"))
-# trace_polarity = filehdf5.get("Y")
+Data_ross = ClasseDataset()
+Data_ross.leggi_custom_dataset(hdf5ross_normalizzo, csvross_normalizzo)
+Data_ross.plotta(range(20),120,"normalizzate",'/home/silvia/Desktop/SCSN(Ross)')
 # polarity_names = ["positive", "negative", "undecidable"]
 # for i in range(len(trace_polarity)):
 #     trace_polarity[i] = polarity_names[trace_polarity[i]]

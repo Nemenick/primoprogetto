@@ -8,8 +8,8 @@ from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
 
-hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_data.hdf5'
-csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata.csv'
+hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_data.hdf5'
+csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_metadata.csv'
 Data_Ross = ClasseDataset()
 Data_Ross.leggi_custom_dataset(hdf5ross_polarity, csvross_polarity)
 sample_train = len(Data_Ross.sismogramma)
@@ -68,7 +68,7 @@ predizioni_totali = len(y_predicted_ok)
 predizioni_giuste = 0
 predizioni_errate = 0
 for i in range(len(y_predicted_ok)):
-    if abs(y_pol_true - y_predicted_ok) < 0.5:
+    if abs(y_pol_true[i] - y_predicted_ok[i]) < 0.5:
         predizioni_giuste = predizioni_giuste+1
     else:
         predizioni_errate = predizioni_errate+1
@@ -84,7 +84,7 @@ print(len(Data_Ross.metadata["trace_name"]), len(y_pol_true), len(y_predicted_ok
 datapandas_val = pd.DataFrame.from_dict(dizio_val)
 
 datapandas_val.to_csv(pat_tent + str(tentativo) +
-                      "/Predizioni_Roos_Testset_tentativo_" + str(tentativo) + ".csv", index=False)
+                      "/Predizioni_Roos_Normalizzate20_Testset_tentativo_" + str(tentativo) + ".csv", index=False)
 
 # pat_confronto = '/home/silvia/Documents/GitHub/primoprogetto/Confronto_Clean_All/'
 # datapandas_val.to_csv(pat_confronto + "/DataClean_NetClean/DataClean_NetClean.csv", index=False)
