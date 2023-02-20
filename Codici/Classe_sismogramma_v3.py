@@ -345,6 +345,8 @@ class ClasseDataset:
                 self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
                 self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
 
+            self.sismogramma[i] = self.sismogramma[i] / np.max([np.max(self.sismogramma[i]),
+                                                                -np.min(self.sismogramma[i])])
             if i % 1000 == 0:
                 print("normalizzo, sto alla ", i)
 

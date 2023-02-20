@@ -575,43 +575,32 @@ plt.ylabel("Numero di eventi")
 plt.show()
 """
 
+
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
+
+
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate1-1.csv'
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+
+Dati = ClasseDataset()
+Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
+for i in range(len(Dati.sismogramma)):
+    Dati.sismogramma[i] = Dati.sismogramma[i]/np.max([np.max(Dati.sismogramma[i]),
+                                                      -np.min(Dati.sismogramma[i])])
+
+Dati.crea_custom_dataset(hdf5out, csvout)
+maxi = -2
+mini = 2
+for i in range(len(Dati.sismogramma)):
+    maxi = np.max([np.max(Dati.sismogramma[i]), maxi])
+    mini = np.min([np.min(Dati.sismogramma[i]), mini])
+print(maxi, mini)
+
+Dati.plotta([1,8,50,987])
+
 # Data.leggi_custom_dataset(hdf5, csv)
 # Data.elimina_tacce_indici([133532])
 # Data.crea_custom_dataset(hdf5out,csvout)
 # 133532
 
-
-percorsohdf5 = '/home/silvia/Desktop/SCSN(Ross)/scsn_p_2000_2017_6sec_0.5r_fm_test.hdf5'
-filehdf5 = h5py.File(percorsohdf5, 'r')
-
-hdf5ross = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_all_data.hdf5'
-csvross = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_all_metadata.csv'
-
-hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_data.hdf5'
-csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata.csv'
-
-hdf5ross_normalizzo = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_data.hdf5'
-csvross_normalizzo = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_metadata_Normalizzate20.csv'
-
-Data_ross = ClasseDataset()
-Data_ross.leggi_custom_dataset(hdf5ross_normalizzo, csvross_normalizzo)
-Data_ross.plotta(range(20),120,"normalizzate",'/home/silvia/Desktop/SCSN(Ross)')
-# polarity_names = ["positive", "negative", "undecidable"]
-# for i in range(len(trace_polarity)):
-#     trace_polarity[i] = polarity_names[trace_polarity[i]]
-# print(type(trace_polarity), type(trace_polarity[1]))
-# source_magnitude = filehdf5.get("mag")
-# print(type(source_magnitude), type(source_magnitude[1]), "polarity")
-# dist = filehdf5.get("dist")
-# print(type(dist), type(dist[1]), "Dist")
-# evids = filehdf5.get("evids")
-# print(type(evids), type(evids[1]), "evdis")
-# sncls = filehdf5.get("sncls")
-# print(type(sncls), type(sncls[1]), "sncls")
-# trace_Z_snr_db = filehdf5.get("snr")
-# print(type(trace_Z_snr_db), type(trace_Z_snr_db[1]),"snr")
-# Data_Ross.centrato = True
-# Data_Ross.metadata = {"sncls": sncls, "trace_polarity": trace_polarity, "source_magnitude": source_magnitude,
-#                       "trace_Z_snr_db": trace_Z_snr_db, "dist": dist, "evids": evids}
-# Data_Ross.finestra(semiampiezza=200)
-# Data_Ross.crea_custom_dataset(hdf5ross, csvross)

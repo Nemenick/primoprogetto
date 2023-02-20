@@ -4,13 +4,14 @@ import pandas as pd
 # from keras.utils.np_utils import to_categorical
 # import tensorflow as tf
 import os
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"          # TODO ATTENTO !
 from tensorflow import keras
 from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout
 from keras import optimizers
 from keras.callbacks import EarlyStopping
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
+
+# os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"          # TODO ATTENTO !
 
 
 def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset):
@@ -62,9 +63,9 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 # percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # percorso di Dove sono contenute le tracce
 """
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate_4s.csv'
@@ -78,16 +79,16 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [168]
+tentativi = [49]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
 
 semiampiezza = 80
-epoche = 1
+epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
-pazienza = 3
+pazienza = 10
 
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -101,7 +102,7 @@ for tentativo in tentativi:
 
     # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
     # print('\n\tepsilon = ', epsilon)
-    momento = 0.75
+    momento = 0.8
     print('\n\tmomento = ', momento)
 
     # TODO Zeresima rete
@@ -146,17 +147,47 @@ for tentativo in tentativi:
     """
 
     #  TODO Seconda rete
-    # """
+    """
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+        Dropout(0.5),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
+        Dropout(0.5),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
+        Flatten(),
+        Dense(50, activation="softsign"),
+        Dense(1, activation="sigmoid")
+    ])
+
+    model.compile(
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
+        loss="binary_crossentropy",
+        metrics=['accuracy']
+    )
+    """
+
+    #  TODO Terza rete
+    # """
+    rete = 3
+    model = keras.models.Sequential([
+        Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+        Dropout(0.5),
+        Conv1D(64, 4, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(128, 3, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(256, 5, activation="relu", padding="same"),
+        Dropout(0.5),
+        Conv1D(128, 3, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(128, 3, activation="relu"),
         Flatten(),
         Dense(50, activation="softsign"),
         Dense(1, activation="sigmoid")
@@ -208,14 +239,16 @@ for tentativo in tentativi:
     dettagli = "Rete numero " + str(rete) + \
                "\nbatchsize = " + str(batchs) +\
                "\nsemiampiezza = " + str(semiampiezza) +\
-               "\ndati normalizzati con primo metodo " + hdf5in +\
+               "\ndati normalizzati con primo metodo_New" + hdf5in +\
                "\nsample_train = " + str(len(x_train)/2) +\
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: SGD con epsilon = " + str(momento) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
-               "\n###############  HO TOLTO DATI DEL POLLINO  ###############"
+               "\nHO DROPOUT (0.5) dopo primo e 4o conv" + \
+               "\nSENZA PULIZIA SOM" + \
+               "\n###############  HO INCLUSO DATI DEL POLLINO  ###############"
 
 # "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
 #     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"

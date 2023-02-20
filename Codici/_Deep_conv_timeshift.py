@@ -19,7 +19,7 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     :param estremi_test:    idem di e_val
     :param semi_amp:        Semiampiezza della traccia da considerare
     :param dati:            dataset da suddividere
-    :param timeshift:       effettuo un timeshift uniforme in [-t,t] per le sole tracce del train
+    :param timeshift:       effettuo un timeshift con dist. uniforme in [0,t] e [-t,0] per le sole tracce del train
     :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
     """
 
@@ -55,44 +55,50 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     indici_test_val = indici_test + indici_val
     dati.elimina_tacce_indici(indici_test_val)
     sample_train = len(dati.sismogramma)
-    xtrain = np.zeros((sample_train * 2, semi_amp * 2))
+    xtrain = np.zeros((sample_train * 6, semi_amp * 2))
     for k in range(sample_train):
-        shift1 = random.randint(-timeshift, timeshift)
-        xtrain[k] = dati.sismogramma[k][lung // 2 - semi_amp + shift1:lung // 2 + semi_amp + shift1]
-        shift2 = random.randint(-timeshift, timeshift)
-        xtrain[k + sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp + shift2:lung // 2 + semi_amp + shift2]
-    ytrain = np.array([dati.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)] +
-                      [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(sample_train)])
+        shift1 = random.randint(1, timeshift)      # shift alla traccia normale positivo
+        shift_1 = random.randint(1, timeshift)     # ""    alla traccia normale negativo
+        shift_11 = random.randint(1, timeshift)    # ""    alla traccia flipped positivo
+        shift_1_1 = random.randint(1, timeshift)   # ""    alla traccia flipped negativo
+        xtrain[k] = dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        xtrain[k + sample_train] = dati.sismogramma[k][lung // 2 - semi_amp + shift1:lung // 2 + semi_amp + shift1]
+        xtrain[k + 2*sample_train] = dati.sismogramma[k][lung // 2 - semi_amp - shift_1:lung // 2 + semi_amp - shift_1]
+        xtrain[k + 3*sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        xtrain[k + 4*sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp + shift_11:lung // 2 + semi_amp +
+                                                                                          shift_11]
+        xtrain[k + 5*sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp - shift_1_1:lung // 2 + semi_amp -
+                                                                                           shift_1_1]
+
+    ytrain = np.array([dati.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)]*3 +
+                      [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(sample_train)]*3)
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 # percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # percorso di Dove sono contenute le tracce
-"""
-csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate_4s.csv'
-hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'
-"""
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [40]
+tentativi = [50]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
 
 semiampiezza = 80
-epoche = 300
+epoche = 100
 batchs = 512
-
+pazienza = 10
+shift_samples = 5
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati,
-                                                                                            timeshift=10)
+                                                                                            timeshift=shift_samples)
 
 # input shape : 1D convolutions and recurrent layers use(batch_size, sequence_length, features)
 # batch size omitted ... (len(timeseries),1 (channels)) funziona
@@ -100,12 +106,13 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
-    # momento = 0.75
-    print("\n\teps = ", epsilon)
+    # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    # print('\n\tepsilon = ', epsilon)
+    momento = 0.8
+    print('\n\tmomento = ', momento)
 
     #  TODO Prima rete
-    # """
+    """
     rete = 1
     model = keras.models.Sequential([
         Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
@@ -125,7 +132,7 @@ for tentativo in tentativi:
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    # """
+    """
 
     #  TODO Seconda rete
     """
@@ -156,6 +163,34 @@ for tentativo in tentativi:
     )
     """
 
+    #  TODO Terza rete
+    # """
+    rete = 3
+    model = keras.models.Sequential([
+        Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+        Dropout(0.5),
+        Conv1D(64, 4, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(128, 3, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(256, 5, activation="relu", padding="same"),
+        Dropout(0.5),
+        Conv1D(128, 3, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(128, 3, activation="relu"),
+        Flatten(),
+        Dense(50, activation="softsign"),
+        Dense(1, activation="sigmoid")
+    ])
+
+    model.compile(
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
+        loss="binary_crossentropy",
+        metrics=['accuracy']
+    )
+    # """
+
     model.summary()
 
     # Inizio il train
@@ -165,7 +200,7 @@ for tentativo in tentativi:
                        batch_size=batchs,
                        epochs=epoche,
                        validation_data=(x_val, y_val),
-                       callbacks=EarlyStopping(patience=4,  restore_best_weights=True))  #
+                       callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))  #
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
     model.save(path_tentativi + "/" + str(tentativo) + "/Tentativo_"+str(tentativo)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
@@ -191,17 +226,20 @@ for tentativo in tentativi:
 
     file = open(path_tentativi + "/" + str(tentativo) + "/_Dettagli_"+str(tentativo)+".txt", "w")
     # TODO Cambia i dettagli
-    dettagli = "RETE NUMERO " + str(rete) + \
-               "\nbatchsize = " + str(batchs) +\
-               "\nsemiampiezza = " + str(semiampiezza) +\
-               "\ndati normalizzati con primo metodo " + hdf5in +\
-               "\nsample_train = " + str(len(x_train)/2) +\
+    dettagli = "Rete numero " + str(rete) + \
+               "\nbatchsize = " + str(batchs) + \
+               "\nsemiampiezza = " + str(semiampiezza) + \
+               "\ndati normalizzati con primo metodo_New" + hdf5in + \
+               "\nsample_train = " + str(len(x_train) / 2) + \
                "\nIn questo train train,test,val sono instance" + \
-               "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
-               "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: Adam con eps = " + str(epsilon) + \
-               "\nEarly_stopping    con    patiente = 4, restore_best_weights = True " \
-               "\nAGGIUNGO AGUMENTATION TIMESHIFT: test e val non hanno timeshift "
+               "\ncoordinate test = " + str(e_test) + "con " + str(len(x_test)) + " dati di test" + \
+               "\ncoordinate val = " + str(e_val) + "con " + str(len(x_val)) + " dati di val" + \
+               "\nOptimizer: SGD con epsilon = " + str(momento) + \
+               "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
+               "\nHO DROPOUT (0.5) dopo primo e 4o conv" + \
+               "\nSENZA PULIZIA SOM" + \
+               "\nAGUMENTATION TIMESHIFT: test e val non hanno timeshift, shift samples = " + str(shift_samples) + \
+               "\n###############  HO INCLUSO DATI DEL POLLINO  ###############"
     # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)
     file.close()
