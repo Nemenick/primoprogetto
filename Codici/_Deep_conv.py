@@ -79,7 +79,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [49]
+tentativi = [51]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -147,7 +147,7 @@ for tentativo in tentativi:
     """
 
     #  TODO Seconda rete
-    """
+    # """
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
@@ -155,9 +155,9 @@ for tentativo in tentativi:
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
+        Dropout(0.5),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(0.5),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -171,10 +171,10 @@ for tentativo in tentativi:
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    """
+    # """
 
     #  TODO Terza rete
-    # """
+    """
     rete = 3
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
@@ -199,7 +199,7 @@ for tentativo in tentativi:
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    # """
+    """
 
     model.summary()
 
@@ -246,7 +246,7 @@ for tentativo in tentativi:
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: SGD con epsilon = " + str(momento) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
-               "\nHO DROPOUT (0.5) dopo primo e 4o conv" + \
+               "\nHO DROPOUT (0.5) dopo primo e 3o conv" + \
                "\nSENZA PULIZIA SOM" + \
                "\n###############  HO INCLUSO DATI DEL POLLINO  ###############"
 
