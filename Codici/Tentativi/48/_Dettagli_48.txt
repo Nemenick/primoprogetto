@@ -11,3 +11,5 @@ Early_stopping con patiente = 10, restore_best_weights = True
 HO DROPOUT (0.5) dopo primo e 4o conv
 SENZA PULIZIA SOM
 ###############  HO INCLUSO DATI DEL POLLINO  ###############
+
+Acc_Ross = 95.09
