@@ -12,3 +12,5 @@ HO DROPOUT (0.5) dopo primo e 4o conv
 SENZA PULIZIA SOM
 AGUMENTATION TIMESHIFT: test e val non hanno timeshift, shift samples = 5
 ###############  HO INCLUSO DATI DEL POLLINO  ###############
+
+Ross_Acc = 88%
