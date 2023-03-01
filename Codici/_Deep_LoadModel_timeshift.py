@@ -61,11 +61,14 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
 
 # hdf5in = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 # csvin = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
+
+hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)
@@ -73,6 +76,9 @@ print("N_sismogrammi", len(Dati.sismogramma), "N_polarità", len(Dati.metadata["
 # Dati.elimina_tacce_indici([124709])
 
 semiampiezza = 80       # TODO
+
+# TODO test instance
+"""
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
 test_sample = len(Dati_test.sismogramma)
@@ -80,9 +86,20 @@ lung = len(Dati.sismogramma[0])
 x = np.zeros((len(Dati_test.sismogramma)+len(Dati_val.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))] +
              [Dati_val.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_val.sismogramma))])
+"""
+
+# TODO test Ross
+# """
+Dati_test = Dati
+Dati_val = ClasseDataset()
+test_sample = len(Dati_test.sismogramma)
+lung = len(Dati.sismogramma[0])
+x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
+y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
+# """
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [39, 27]
+tentativi = [53, 52]
 labels = ["Timeshift in training set", "NO Timeshift in training set"]
 colori = ["blue", "red"]
 time_shifts = [(i-30) for i in range(61)]
@@ -98,8 +115,8 @@ for k in range(len(tentativi)):
     for time_shift in time_shifts:
         for i in range(len(Dati_test.sismogramma)):
             x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
-        for i in range(len(Dati_val.sismogramma)):
-            x[i+test_sample] = Dati_val.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
+        # for i in range(len(Dati_val.sismogramma)):
+        #     x[i+test_sample] = Dati_val.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
 
         predizione = model.evaluate(x, y, batch_size=1024)
         predizioni[k][0].append(time_shift)
@@ -111,8 +128,6 @@ for k in range(len(tentativi)):
 
 axs[0].legend()
 axs[0].set_title('Test Loss')
-
-
 
 for ax in axs.flat:
     ax.set(xlabel='T  (translation samples in test set)')
@@ -133,7 +148,7 @@ for k in range(len(tentativi)):
 
     axs[1].plot(predizioni[k][0], predizioni[k][2], label=labels[k], color=colori[k])
 
-     # TODO  plt.
+# TODO  plt.
 # plt.legend()
 axs[1].set_title('Test Accuracy')
 axs[1].axhline(0.5, color='k', ls='dashed', lw=1)
@@ -144,8 +159,9 @@ axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
 # plt.xlabel("T (translation point)")
 # plt.savefig(pat_tent + "/" + "BBBAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
 axs[1].legend()
-plt.savefig(pat_tent + "/" + "AAAAQUALCOSA", dpi=300)
-plt.show()
+path_save = '/home/silvia/Desktop'
+plt.savefig(path_save + "/" + "Timeshift_", dpi=300)
+# plt.show()
 # plt.clf()
 
 # yp = model.predict(x)

@@ -1,6 +1,7 @@
 # import dask.dataframe as dd
 import h5py
 import seaborn
+import dask.dataframe as dd
 import matplotlib.pyplot as plt
 # from matplotlib import colors
 import obspy
@@ -574,31 +575,73 @@ plt.xlabel("Anno")
 plt.ylabel("Numero di eventi")
 plt.show()
 """
+"""
 
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+classi_path = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_up/classes_up.txt'
 
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in, csvin)
+Data.leggi_classi_txt(classi_path)
 
+classi_buone = [i+1 for i in range(25)]
+classi_buone.remove(2)
+classi_buone.remove(5)
+classi_buone.remove(25)
 
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate1-1.csv'
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+indici = []
+Data.ricava_indici_classi(classi_buone, indici)
+Data.elimina_tacce_indici(indici)
+hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/data_clas_2_5_25.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/metadata_clas_2_5_25.csv'
+Data.crea_custom_dataset(hdf5out, csvout)
 
-Dati = ClasseDataset()
-Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
-for i in range(len(Dati.sismogramma)):
-    Dati.sismogramma[i] = Dati.sismogramma[i]/np.max([np.max(Dati.sismogramma[i]),
-                                                      -np.min(Dati.sismogramma[i])])
+txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/data_up_2_5_25.txt'
+txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
+Data.to_txt(txt_data, txt_metadata)
+"""
+# TODO qualcosa tracce mislabeled
+"""
+csv_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
+hdf5_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
 
-Dati.crea_custom_dataset(hdf5out, csvout)
-maxi = -2
-mini = 2
-for i in range(len(Dati.sismogramma)):
-    maxi = np.max([np.max(Dati.sismogramma[i]), maxi])
-    mini = np.min([np.min(Dati.sismogramma[i]), mini])
-print(maxi, mini)
+csv_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
+hdf5_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
 
-Dati.plotta([1,8,50,987])
+percorsoclassi = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/NEWclasses.txt'
+Du, Dd = ClasseDataset(), ClasseDataset()
+Du.leggi_custom_dataset(hdf5_up, csv_up)
+Dd.leggi_custom_dataset(hdf5_do, csv_do)
+print(len(Du.sismogramma), len(Dd.sismogramma))
 
+classi = []
+with open(percorsoclassi, 'r') as f:
+    for line in f:
+        if line:  # avoid blank lines
+            classi.append(int(float(line.strip())))
+Du.classi = classi[0:len(Du.sismogramma)]
+Dd.classi = classi[len(Du.sismogramma):]
+
+classi_up_l_1 = [18, 19, 33, 41, 49]
+classi_down_l_1 = [24, 30, 31, 39, 40, 46, 52, 53]
+cl_up_indici, cl_down_indici = [], []
+Du.ricava_indici_classi(classi_up_l_1, cl_up_indici)
+Dd.ricava_indici_classi(classi_down_l_1, cl_down_indici)
+
+Du = Du.seleziona_indici(cl_up_indici)
+print(len(cl_down_indici), len(cl_up_indici), cl_down_indici[-1], cl_up_indici[-1])
+Dd = Dd.seleziona_indici(cl_down_indici)
+
+Du.crea_custom_dataset('/home/silvia/Desktop/data_U.hdf5', '/home/silvia/Desktop/metadata_U.csv')
+Dd.crea_custom_dataset('/home/silvia/Desktop/data_D.hdf5', '/home/silvia/Desktop/metadata_D.csv')
+"""
+
+Du, Dd = ClasseDataset(), ClasseDataset()
+Du.leggi_custom_dataset('/home/silvia/Desktop/data_U.hdf5', '/home/silvia/Desktop/metadata_U.csv')
+Dd.leggi_custom_dataset('/home/silvia/Desktop/data_D.hdf5', '/home/silvia/Desktop/metadata_D.csv')
+# Du.plotta(range(len(Du.sismogramma)), 120, "up_dove_up_l_1_perc", '/home/silvia/Desktop')
+Dd.plotta(range(len(Dd.sismogramma)), 120, "down_dove_down_l_1_perc", '/home/silvia/Desktop')
 # Data.leggi_custom_dataset(hdf5, csv)
 # Data.elimina_tacce_indici([133532])
 # Data.crea_custom_dataset(hdf5out,csvout)

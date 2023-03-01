@@ -8,11 +8,14 @@ from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
 
-hdf5ross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-csvross_polarity = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
-Data_Ross = ClasseDataset()
-Data_Ross.leggi_custom_dataset(hdf5ross_polarity, csvross_polarity)
-sample_train = len(Data_Ross.sismogramma)
+# hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+# csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+
+hdf5_predicting = '/home/silvia/Desktop/data_D.hdf5'
+csv_predicting = '/home/silvia/Desktop/metadata_D.csv'
+Data_predicting = ClasseDataset()
+Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
+sample_train = len(Data_predicting.sismogramma)
 
 
 # hdf5all = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
@@ -24,10 +27,10 @@ sample_train = len(Data_Ross.sismogramma)
 # Dati_ = ClasseDataset()
 # Dati_.leggi_custom_dataset(hdf5in, csvin)
 
-lung = len(Data_Ross.sismogramma[0])
+lung = len(Data_predicting.sismogramma[0])
 semi_amp = 80
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativo = 50
+tentativo = 53
 
 # estremi_test = [43, 45, 9.5, 11.8]
 # xtest = []
@@ -46,8 +49,8 @@ tentativo = 50
 
 x_pol = np.zeros((sample_train, semi_amp * 2))
 for k in range(sample_train):
-    x_pol[k] = Data_Ross.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
-y_pol_true = np.array([Data_Ross.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)])
+    x_pol[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+y_pol_true = np.array([Data_predicting.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)])
 y_pol_true = y_pol_true + 0
 
 model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
@@ -78,14 +81,16 @@ print("totali/giuste/errate: ", predizioni_totali, "-", predizioni_giuste, "-", 
 #              "delta": delta_y}
 # print(len(Dati_.metadata["trace_name"]), len(ytest_true), len(y_predicted_ok), len(delta_y))
 
-dizio_val = {"traccia": Data_Ross.metadata["trace_name"], "y_Mano": y_pol_true, "y_predict": y_predicted_ok,
+dizio_val = {"traccia": Data_predicting.metadata["trace_name"], "y_Mano": y_pol_true, "y_predict": y_predicted_ok,
              "delta": delta_y}
-print(len(Data_Ross.metadata["trace_name"]), len(y_pol_true), len(y_predicted_ok), len(delta_y))
+print(len(Data_predicting.metadata["trace_name"]), len(y_pol_true), len(y_predicted_ok), len(delta_y))
 datapandas_val = pd.DataFrame.from_dict(dizio_val)
-
+# TODO cambia nome del file
 datapandas_val.to_csv(pat_tent + str(tentativo) +
-                      "/Predizioni_Roos_Normalizzate20_Testset_tentativo_" + str(tentativo) + ".csv", index=False)
-
+                      "/Predizioni_tracce_up_l_1_perc_tent_" + str(tentativo) + ".csv", index=False)
+# TODO cambia se vuoi inserire la predizione
+Data_predicting.metadata["Pred_tent_" + str(tentativo)] = y_predicted_ok
+Data_predicting.crea_custom_dataset(hdf5_predicting, csv_predicting)
 # pat_confronto = '/home/silvia/Documents/GitHub/primoprogetto/Confronto_Clean_All/'
 # datapandas_val.to_csv(pat_confronto + "/DataClean_NetClean/DataClean_NetClean.csv", index=False)
 
@@ -115,3 +120,4 @@ datapandas_val.to_csv(pat_tent + str(tentativo) +
 #
 # datapandas_val.to_csv(pat_tent + str(tentativo) +
 #                       "/Predizioni_Pollino_tentativo_" + str(tentativo) + ".csv", index=False)
+
