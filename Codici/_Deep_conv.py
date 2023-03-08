@@ -5,7 +5,7 @@ import pandas as pd
 # import tensorflow as tf
 import os
 from tensorflow import keras
-from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout
+from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten, Dropout, BatchNormalization
 from keras import optimizers
 from keras.callbacks import EarlyStopping
 from matplotlib import pyplot as plt
@@ -62,10 +62,9 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
-
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1_SNR_GE.csv'
 # percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1_SNR_GE.hdf5'
 # percorso di Dove sono contenute le tracce
 """
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate_4s.csv'
@@ -79,7 +78,9 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [60]
+invertito = False
+# e_test, e_val, invertito = e_val, e_test, True
+tentativi = [65]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -89,7 +90,12 @@ semiampiezza = 80
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 10
+drop = 0.5
+# lr = 0.01
 
+lrs = [0.01 for i in range(3)]
+momenti = [0.8 for _ in range(3)]
+indice_tent = 0
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
 
@@ -99,10 +105,12 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-
+    lr = lrs[indice_tent]
+    momento = momenti[indice_tent]
+    indice_tent += 1
     # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
     # print('\n\tepsilon = ', epsilon)
-    momento = 0.8
+    # momento = 0.8
     print('\n\tmomento = ', momento)
 
     # TODO Zeresima rete
@@ -151,13 +159,13 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        Dropout(0.5),
+        Dropout(drop),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(0.5),
+        Dropout(drop),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -166,7 +174,7 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.SGD(momentum=momento, learning_rate=lr),  # TODO CAMBIA
         # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
@@ -245,12 +253,14 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nOptimizer: SGD con epsilon = " + str(momento) + \
+               "\nLearning rate = " + str(lr) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
-               "\nHO DROPOUT (0.5) dopo primo e 4o conv" + \
+               "\nHO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
                "\nSENZA PULIZIA SOM" + \
-               "\nTest e val INVERTITI" + \
-               "\n###############  HO INCLUSO DATI DEL POLLINO  ###############"
-
+               "\n###############  HO INCLUSO DATI POLLINO  ###############" + \
+               "\n###############  Addestramento SNR GE ###############"
+    if invertito:
+        dettagli = dettagli + "\n############### Inverto test e val ###############"
 # "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
 #     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"
     file.write(dettagli)
@@ -300,8 +310,18 @@ for tentativo in tentativi:
                            "/Predizioni_test_tentativo_" + str(tentativo) + ".csv", index=False)
     datapandas_val.to_csv(path_tentativi + "/" + str(tentativo) +
                           "/Predizioni_val_tentativo_" + str(tentativo) + ".csv", index=False)
-    # """
 
+    predizioni_totali = len(y_test)
+    predizioni_giuste = 0
+    predizioni_errate = 0
+    for i in range(predizioni_totali):
+        if abs(y_test[i] - yp_ok_test[i]) < 0.5:
+            predizioni_giuste = predizioni_giuste+1
+        else:
+            predizioni_errate = predizioni_errate+1
+    print("totali/giuste/errate: ", predizioni_totali, "-", predizioni_giuste, "-", predizioni_errate, "-")
+    print(predizioni_giuste/predizioni_totali)
+    # """
 # predizione = model.evaluate(x_test, y_test)
 #
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))

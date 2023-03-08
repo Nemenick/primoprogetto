@@ -1,5 +1,6 @@
 # import dask.dataframe as dd
 import h5py
+import math
 import seaborn
 import dask.dataframe as dd
 import matplotlib.pyplot as plt
@@ -195,29 +196,34 @@ Dataset.to_txt(txt_data, txt_metadata)
 
 # Todo Dividi dataset up/down o altro
 """
-hdf5 = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.hdf5'
-csv = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.csv'
+# hdf5 = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.hdf5'
+# csv = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.csv'
+#
+# hdf5out = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.hdf5'
+# csvout = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.csv'
 
-hdf5out = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.hdf5'
-csvout = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.csv'
+hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
+hdf5out = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_SNR_L_data.hdf5'
+csvout = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_SNR_L_metadata.csv'
 
-txt_data = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.txt'
-txt_metadata = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.txt'
+# txt_data = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27_Up.txt'
+# txt_metadata = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27_Up.txt'
 
 Dataset = ClasseDataset()
-Dataset.leggi_custom_dataset(hdf5, csv)
+Dataset.leggi_custom_dataset(hdf5in, csvin)
 print(len(Dataset.sismogramma), len(Dataset.metadata["trace_name"]))
-elimina = []
+seleziona = []
 for i in range(len(Dataset.sismogramma)):
-    if Dataset.metadata["trace_polarity"][i] != 'positive':
-        elimina.append(i)
+    if Dataset.metadata["trace_Z_snr_db"][i] < 10:
+        seleziona.append(i)
         # print(i)
-Dataset.elimina_tacce_indici(elimina)
+Dataset = Dataset.seleziona_indici(seleziona)
 # Dataset.finestra(200)
-Dataset.crea_custom_dataset(hdf5out, csvout)
 print(len(Dataset.sismogramma), len(Dataset.metadata["trace_polarity"]))
-Dataset.to_txt(txt_data, txt_metadata)
+Dataset.crea_custom_dataset(hdf5out, csvout)
+# Dataset.to_txt(txt_data, txt_metadata)
 """
 
 # TODO visualizza
@@ -601,7 +607,7 @@ txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/dat
 txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
 Data.to_txt(txt_data, txt_metadata)
 """
-# TODO qualcosa tracce mislabeled
+# TODO predict tracce mislabeled (analisi som)
 """
 csv_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
 hdf5_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
@@ -637,13 +643,117 @@ Du.crea_custom_dataset('/home/silvia/Desktop/data_U.hdf5', '/home/silvia/Desktop
 Dd.crea_custom_dataset('/home/silvia/Desktop/data_D.hdf5', '/home/silvia/Desktop/metadata_D.csv')
 """
 
-Du, Dd = ClasseDataset(), ClasseDataset()
-Du.leggi_custom_dataset('/home/silvia/Desktop/data_U.hdf5', '/home/silvia/Desktop/metadata_U.csv')
-Dd.leggi_custom_dataset('/home/silvia/Desktop/data_D.hdf5', '/home/silvia/Desktop/metadata_D.csv')
-# Du.plotta(range(len(Du.sismogramma)), 120, "up_dove_up_l_1_perc", '/home/silvia/Desktop')
-Dd.plotta(range(len(Dd.sismogramma)), 120, "down_dove_down_l_1_perc", '/home/silvia/Desktop')
-# Data.leggi_custom_dataset(hdf5, csv)
-# Data.elimina_tacce_indici([133532])
-# Data.crea_custom_dataset(hdf5out,csvout)
-# 133532
+# TODO Affidabilità predizioni
+"""
+# keys(INSTANCE_Test) = ['traccia_test', 'y_Mano_test', 'y_predict_test', 'delta_test']
+percorso = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52"
+datd = pd.read_csv(percorso + "/Predizioni_Roos_Normalizzate20_Testset_tentativo_52.csv",
+                   dtype={"y_Mano": float, "y_predict": float, 'delta': float})
+print(datd.keys())
 
+predizioni = [[0 for _ in range(4)] for __ in range(10)]
+# predizioni [5][0] = pred totali intervallo [0.5,0.6]
+# predizioni [5][1] = pred giuste intervallo [0.5,0.6]
+# predizioni [5][2] = pred errate intervallo [0.5,0.6]
+# predizioni [5][3] = pred giuste/totali intervallo [0.5,0.6]
+for i in range(1, len(datd)):
+    indice = math.floor(float(datd['y_predict'][i])*10)
+    predizioni[indice][0] += 1
+    if datd['delta'][i] < 0.5:
+        predizioni[indice][1] += 1
+    else:
+        predizioni[indice][2] += 1
+for i in range(len(predizioni)):
+    predizioni[i][3] = predizioni[i][1]/(float(predizioni[i][0])+0.000001)
+dizio_pred = pd.DataFrame(predizioni, columns=["Totali", "Giuste", "Errate", "Affidabilità"])
+dizio_pred.to_excel(percorso + "/Affidabilità_test_Ross_tentativo_52.xlsx")
+"""
+
+# TODO reshape for Phasenet
+"""
+percorsohdf5 = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k.hdf5'
+hdf5out = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k_reshaped_PhaseNet.hdf5'
+percorsocsv = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
+colonne = ['trace_name','station_code','station_channels','trace_start_time','trace_P_arrival_sample',
+'trace_polarity','trace_P_uncertainty_s','source_magnitude','source_magnitude_type','source_origin_time',
+'source_latitude_deg','source_longitude_deg']
+
+filehdf5 = h5py.File(percorsohdf5, 'r')
+dataset = filehdf5.get("data")
+
+
+datd = pd.read_csv(percorsocsv, usecols=colonne, engine="python", on_bad_lines="skip",
+                           dtype={'source_latitude_deg': 'object',
+                                  'source_longitude_deg': 'object',
+                                  'source_origin_time': 'object'})
+allmetadata = {}
+for i in colonne:  # genera metadata["colname"] = np.array["colname"]
+    allmetadata[i] = np.array(datd[i])                                    # LEGGO CSV
+
+for key in allmetadata:
+    print(key, allmetadata[key])
+nomidata = allmetadata["trace_name"]                     # Presi dal file CSV
+# print(nomidata)
+# print(type(nomidata), nomidata)
+Data_shape_2 = []
+Data_shape = []
+index = 0
+for i in nomidata:
+    Data_shape.append(list(dataset.get(i)))
+Data_shape = np.array(Data_shape)
+for i in range(len(Data_shape)):
+    arrivo = allmetadata["trace_P_arrival_sample"][i]
+    Data_shape_2.append([])
+    for j in range(3):
+        Data_shape_2[i].append(Data_shape[-1][j][arrivo - 1399:arrivo + 1602])  # fai -1399, + 1602
+        # Data_shape[-1][j] = Data_shape[-1][j][arrivo-1499:arrivo+1499]
+Data_shape_2 = np.array(Data_shape_2)
+print(Data_shape_2.shape)
+
+
+lung = len(Data_shape_2[0][0])
+
+print("######################", lung)
+print(Data_shape_2.shape)
+
+# Data_shape[1].reshape(3,12000)
+Data_reshaped = Data_shape_2[0].reshape(lung, 3)
+
+filehdf5out = h5py.File(hdf5out, 'w')
+filehdf5out.create_group("data")
+data = filehdf5out.get("data")
+for i in range(len(Data_shape_2)):  # len(Data_shape)
+    Data_reshaped = np.float32(Data_shape_2[i].reshape(lung, 3))
+    data.create_dataset(name=nomidata[i], data=Data_reshaped)
+    if i % 100 == 0:
+        print(i)
+
+print(Data_shape_2.shape)
+print(type(Data_shape_2[1]))
+print(Data_reshaped.shape)
+print(type(Data_reshaped), Data_reshaped.shape)
+print("vedi qui", type(Data_shape_2[1][1][1]), type(Data_reshaped[1][1]))
+
+filehdf5out.close()
+filehdf5.close()
+"""
+
+
+#
+# # # hdf5out = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k_reshaped_PhaseNet2.hdf5'
+# # hdf5out = '/home/silvia/Desktop/PhaseNet_Prova/PhaseNet/test_data/data.h5'
+# # filehdf5out = h5py.File(hdf5out, 'r')
+# # my_data = filehdf5out.get("data")
+# # nomi = list(my_data.keys())
+# # # print(my_data.keys())
+# # print(type(my_data[nomi[1]]), my_data[nomi[1]].shape)
+#
+#
+#
+# # for i in range(10):
+# #     dizio_pred = {"intervallo"+str(i*0.1): predizioni}
+# # Data.leggi_custom_dataset(hdf5, csv)
+# # Data.elimina_tacce_indici([133532])
+# # Data.crea_custom_dataset(hdf5out,csvout)
+# # 133532
+#

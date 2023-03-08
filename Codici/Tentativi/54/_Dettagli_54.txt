@@ -1,0 +1,18 @@
+Rete numero 2
+batchsize = 512
+semiampiezza = 75
+dati normalizzati con primo metodo_New/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5
+sample_train = 141972.0
+In questo train train,test,val sono instance
+coordinate test = [43, 45, 9.5, 11.8]con 8983 dati di test
+coordinate val = [37.5, 38.5, 14.5, 16]con 10243 dati di val
+Optimizer: SGD con epsilon = 0.85
+Early_stopping con patiente = 7, restore_best_weights = True
+HO DROPOUT (0.3) dopo primo e 4o conv
+HO BATCH Normalizzation dopo 3o conv e prima di ultimo denso
+HO pensato, non troppi batch per non rallentare (https://par.nsf.gov/servlets/purl/10166570)
+HO pensato, bacth + drop + conv -> drop rate minore (stesso link)
+HO pensato, drop dopo strati con kernel ampi e non alla fine (classifico con tutte le info)
+SENZA PULIZIA SOM
+###############  HO INCLUSO DATI POLLINO  ###############
+###############  SEMIAMPIEZZA TRACCIA 75  ###############

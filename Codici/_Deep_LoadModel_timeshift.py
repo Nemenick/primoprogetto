@@ -103,6 +103,7 @@ tentativi = [53, 52]
 labels = ["Timeshift in training set", "NO Timeshift in training set"]
 colori = ["blue", "red"]
 time_shifts = [(i-30) for i in range(61)]
+# time_shifts = range(24, 31)
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 fig, axs = plt.subplots(1, 2)
 fig.set_figheight(5)
@@ -113,6 +114,7 @@ for k in range(len(tentativi)):
     model.summary()
 
     for time_shift in time_shifts:
+        file1 = open("predizioni_tent_" + str(tentativo) + ".txt", "a")  # append mode
         for i in range(len(Dati_test.sismogramma)):
             x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
         # for i in range(len(Dati_val.sismogramma)):
@@ -123,7 +125,8 @@ for k in range(len(tentativi)):
         predizioni[k][1].append(predizione[0])
         predizioni[k][2].append(predizione[1])
         print("predict num", time_shift, predizione)
-
+        file1.write(str(time_shift) + "\t" + str(predizione[0]) + "\t" + str(predizione[1]) + "\n")
+        file1.close()
     axs[0].plot(predizioni[k][0], predizioni[k][1], label=labels[k], color=colori[k])  # TODO plt.
 
 axs[0].legend()
@@ -153,7 +156,6 @@ for k in range(len(tentativi)):
 axs[1].set_title('Test Accuracy')
 axs[1].axhline(0.5, color='k', ls='dashed', lw=1)
 axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
-
 # plt.title("Test Accuracy")
 # plt.ylabel("Test Accuracy")
 # plt.xlabel("T (translation point)")
