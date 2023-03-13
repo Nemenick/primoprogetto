@@ -297,7 +297,7 @@ class ClasseDataset:
 
             self.centrato = True
 
-    def demean(self, metodo: str):
+    def demean(self, metodo: str = 'rumore'):
         """
             scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
             metodo totale -> toglie tutta la media
@@ -314,11 +314,11 @@ class ClasseDataset:
             if self.centrato:
                 for i in range(len(self.sismogramma)):
                     lung = len(self.sismogramma[0])
-                    self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i][:lung//2-10])
+                    self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i][:lung//2-5])
             else:
                 for i in range(len(self.sismogramma)):
                     self.sismogramma[i] = self.sismogramma[i] - \
-                                          np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10])
+                                          np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 5])
 
         if metodo != "rumore" and metodo != "totale":
             print("attento, metodo demean sbagliato\n rumore o totale? (NON SO SE FUNZIONa ORA)")

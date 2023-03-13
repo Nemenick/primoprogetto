@@ -6,19 +6,15 @@
   <component name="ChangeListManager">
     <list default="true" id="e59a045a-66fa-43b7-abb2-30250a02ac46" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/Predizioni_test_tentativo_55.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/Predizioni_test_tentativo_55.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/Predizioni_val_tentativo_55.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/Predizioni_val_tentativo_55.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/Storia_train_55.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/Storia_train_55.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/Tentativo_55.hdf5" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/Tentativo_55.hdf5" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/_Dettagli_55.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/_Dettagli_55.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/accuracy_55.png" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/accuracy_55.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/55/loss_55.png" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/55/loss_55.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/Dettagli_tentativi.odt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tutorial_txt.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tutorial_txt.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/52/.~lock.Affidabilità_test_Instance_tentativo_52.xlsx#" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/Dettagli_tentativi.odt.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/Dettagli_tentativi.odt.odt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel_timeshift.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel_timeshift.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv_timeshift2.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv_timeshift2.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/predizioni_tent_52.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/predizioni_tent_53.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,48 +80,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="GPU_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="primoprogetto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Codici" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/GPU_test.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Tutorial_PhaseNet" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
-      <module name="primoprogetto" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Codici" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/Tutorial_PhaseNet.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="_Deep_LoadModel" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -139,6 +93,27 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="_Deep_LoadModel_timeshift" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="primoprogetto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Codici" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_LoadModel_timeshift.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -168,12 +143,34 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="_Deep_conv_timeshift2" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="primoprogetto" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Codici" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_conv_timeshift2.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Python._Deep_LoadModel" />
-        <item itemvalue="Python._Deep_conv" />
         <item itemvalue="Python.Drive_sismogramma_linux" />
-        <item itemvalue="Python.GPU_test" />
+        <item itemvalue="Python._Deep_LoadModel_timeshift" />
+        <item itemvalue="Python._Deep_conv_timeshift2" />
+        <item itemvalue="Python._Deep_conv" />
       </list>
     </recent_temporary>
   </component>

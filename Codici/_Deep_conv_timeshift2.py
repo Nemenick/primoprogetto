@@ -76,6 +76,76 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
+def dividi_train_test_val_2(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset, timeshift=0):
+    """
+    :param estremi_val:     estremi della validation set, [lat_min, lat_max, lon_min, lon_max]
+    :param estremi_test:    idem di e_val
+    :param semi_amp:        Semiampiezza della traccia da considerare
+    :param dati:            dataset da suddividere
+    :param timeshift:       effettuo un timeshift con dist. uniforme in [0,t] e [-t,0] per le sole tracce del train
+    :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
+    ora xtrain sara: [dati_normali[0:tot], dati_norm_shifted+[pari], dati_norm_shifted-[pari]]+
+                     [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]+
+    """
+
+    lung = len(dati.sismogramma[0])  # lunghezza traccia
+    (xval, yval, xtest, ytest) = ([], [], [], [])
+    indici_test = []
+    indici_val = []
+    for k in range(len(dati.sismogramma)):
+        if estremi_test[0] < dati.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+                < dati.metadata['source_longitude_deg'][k] < estremi_test[3]:
+            indici_test.append(k)                   # li farò eliminare dal trainset
+            shift = random.randint(-timeshift, timeshift) * 0  # TODO
+            xtest.append(dati.sismogramma[k][lung // 2 - semi_amp + shift:lung // 2 + semi_amp + shift])
+            if dati.metadata["trace_polarity"][k] == "positive":
+                ytest.append(1)
+            elif dati.metadata["trace_polarity"][k] == "negative":
+                ytest.append(0)
+        if estremi_val[0] < dati.metadata['source_latitude_deg'][k] < estremi_val[1] and estremi_val[2] \
+                < dati.metadata['source_longitude_deg'][k] < estremi_val[3]:
+            indici_val.append(k)                   # li farò eliminare dal trainset
+            shift = random.randint(-timeshift, timeshift) * 0  # TODO
+            xval.append(dati.sismogramma[k][lung // 2 - semi_amp + shift:lung // 2 + semi_amp + shift])
+            if dati.metadata["trace_polarity"][k] == "positive":
+                yval.append(1)
+            elif dati.metadata["trace_polarity"][k] == "negative":
+                yval.append(0)
+    (xval, yval, xtest, ytest) = (np.array(xval), np.array(yval), np.array(xtest), np.array(ytest))
+    print("\n\nPrint da funzione dividi.. : lunghezze val,test", len(xval), len(yval), len(xtest), len(ytest), "\n\n")
+
+    dati_test = dati.seleziona_indici(indici_test)
+    dati_val = dati.seleziona_indici(indici_val)
+
+    indici_test_val = indici_test + indici_val
+    dati.elimina_tacce_indici(indici_test_val)
+    sample_train = len(dati.sismogramma)
+    if sample_train % 2 == 1:
+        sample_train -= 1
+    xtrain = np.zeros((sample_train * 4, semi_amp * 2))
+    for k in range(sample_train):
+        xtrain[k] = dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        xtrain[k + 2*sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        if k > sample_train/2:
+            shift1 = random.randint(1, timeshift)      # shift alla traccia normale positivo
+            shift_1 = random.randint(1, timeshift)     # ""    alla traccia normale negativo
+            shift_11 = random.randint(1, timeshift)    # ""    alla traccia flipped positivo
+            shift_1_1 = random.randint(1, timeshift)   # ""    alla traccia flipped negativo
+            xtrain[int(k- sample_train/2 + sample_train)] = dati.sismogramma[k][lung // 2 - semi_amp + shift1:lung // 2 + semi_amp + shift1]
+            xtrain[int(k- sample_train/2 + 3*sample_train/2)] = dati.sismogramma[k][lung // 2 - semi_amp - shift_1:lung // 2 + semi_amp - shift_1]
+            xtrain[int(k -sample_train/2 + 7*sample_train/2)] = -dati.sismogramma[k][lung // 2 - semi_amp + shift_11:lung // 2 + semi_amp + shift_11]
+            xtrain[int(k-sample_train/2 + 3 * sample_train)] = -dati.sismogramma[k][lung // 2 - semi_amp - shift_1_1:lung // 2 + semi_amp - shift_1_1]
+
+    ytrain = \
+        np.array([dati.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)] +
+                 [dati.metadata["trace_polarity"][_] == "positive" for _ in range(int(sample_train/2), sample_train)]*2
+                 + [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(sample_train)] +
+                 [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(int(sample_train/2),
+                                                                                        sample_train)]*2)
+    ytrain = ytrain + 0
+    return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
+
+
 csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 # percorso di dove sono contenuti i metadata
 hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
@@ -86,7 +156,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [56]
+tentativi = [66]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -96,7 +166,7 @@ epoche = 100
 batchs = 512
 pazienza = 10
 shift_samples = 5
-x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
+x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val_2(e_test, e_val,
                                                                                             semiampiezza, Dati,
                                                                                             timeshift=shift_samples)
 

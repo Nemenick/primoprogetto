@@ -1,3 +1,0 @@
-scrivi custom dataset di finestra temporale centrata e varie lunghezze.
-Puoi farlo dopo aver studiato al variare della finestra temporale
-per tuning della finestra temporale usa Fit_Generator # TODO Fit_generator per tunare

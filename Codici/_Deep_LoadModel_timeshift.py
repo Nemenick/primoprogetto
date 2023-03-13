@@ -61,14 +61,14 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 
-# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
-# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 
 # hdf5in = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 # csvin = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
 
-hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+# hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+# csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)
@@ -78,32 +78,32 @@ print("N_sismogrammi", len(Dati.sismogramma), "N_polarità", len(Dati.metadata["
 semiampiezza = 80       # TODO
 
 # TODO test instance
-"""
+# """
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
 test_sample = len(Dati_test.sismogramma)
 lung = len(Dati.sismogramma[0])
-x = np.zeros((len(Dati_test.sismogramma)+len(Dati_val.sismogramma), semiampiezza*2))
-y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))] +
-             [Dati_val.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_val.sismogramma))])
-"""
+x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
+y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
+# """
 
 # TODO test Ross
-# """
+"""
 Dati_test = Dati
 Dati_val = ClasseDataset()
 test_sample = len(Dati_test.sismogramma)
 lung = len(Dati.sismogramma[0])
 x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
-# """
+"""
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [53, 52]
-labels = ["Timeshift in training set", "NO Timeshift in training set"]
-colori = ["blue", "red"]
+tentativi = [52, 53, 66]
+nome_file_append = "QUALCODS_tent_"
+labels = ["no shift", "53(primo metodo timeshift)", "66 (secondo metodo)"]  # TODO
+colori = ["blue", "red", "orange"]
 time_shifts = [(i-30) for i in range(61)]
-# time_shifts = range(24, 31)
+# time_shifts = range(26, 31)
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 fig, axs = plt.subplots(1, 2)
 fig.set_figheight(5)
@@ -114,11 +114,9 @@ for k in range(len(tentativi)):
     model.summary()
 
     for time_shift in time_shifts:
-        file1 = open("predizioni_tent_" + str(tentativo) + ".txt", "a")  # append mode
+        file1 = open(nome_file_append + str(tentativo) + ".txt", "a")  # TODO append mode
         for i in range(len(Dati_test.sismogramma)):
             x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
-        # for i in range(len(Dati_val.sismogramma)):
-        #     x[i+test_sample] = Dati_val.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
 
         predizione = model.evaluate(x, y, batch_size=1024)
         predizioni[k][0].append(time_shift)
@@ -162,7 +160,7 @@ axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
 # plt.savefig(pat_tent + "/" + "BBBAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
 axs[1].legend()
 path_save = '/home/silvia/Desktop'
-plt.savefig(path_save + "/" + "Timeshift_", dpi=300)
+plt.savefig(path_save + "/" + "Timeshift_Instance_Test_53_66", dpi=300)
 # plt.show()
 # plt.clf()
 

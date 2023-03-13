@@ -482,42 +482,43 @@ print(max_ac)
 # TODO matrice confusione Predizione TEST
 """
 # "y_Mano_test", "y_predict_test"
-titoli = ["_POLLINO_SGD m=0.75", "_POLLINO_ADAM ε=1e-3"]                                  # TODO cambia
+fig_name = ['Ross_tentativo_52_1']
+titoli = ["Ross test set"]                                  # TODO cambia
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-tentativi = ['28_1', '27_1']
+tentativi = ['52']
 
 le = len(tentativi)
 
 # predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:
 # predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
 for i in range(le):
-    # Create a dataset
     tp, tn, fp, fn = 0, 0, 0, 0
     # predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_test_tentativo_' + tentativi[i] + '.csv') # TODO
-    predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_Pollino_tentativo_' + tentativi[i] + '.csv')
-    for j in range(len(predizioni["traccia_val"])):
+    predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_Roos_Normalizzate20_Testset_tentativo_' + tentativi[i] + '.csv')
+    for j in range(len(predizioni["traccia"])):
         # predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:          # TODO
         # predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
 
-        if predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
+        if predizioni["y_Mano"][j] == 1 and predizioni["delta"][j] < 0.5:
             tp += 1
-        if predizioni["y_Mano_pol"][j] == 0 and predizioni["delta_val"][j] < 0.5:
+        if predizioni["y_Mano"][j] == 0 and predizioni["delta"][j] < 0.5:
             tn += 1
-        if predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] > 0.5:
+        if predizioni["y_Mano"][j] == 1 and predizioni["delta"][j] >= 0.5:
             fn += 1
-        if predizioni["y_Mano_pol"][j] == 0 and predizioni["delta_val"][j] > 0.5:
+        if predizioni["y_Mano"][j] == 0 and predizioni["delta"][j] >= 0.5:
             fp += 1
-    print("SONO TUTTI ? (tutti), tp+tn+..", len(predizioni["y_pol_predict"]), tp+tn+fp+fn)
+    print("SONO TUTTI ? (tutti), tp+tn+..", len(predizioni["y_predict"]), tp+tn+fp+fn)
     print(tp, fn, "\n", fp, tn)
-    df = pd.DataFrame([[tp, fn], [fp, tn]], columns=["Up", "Down"])
+    df = pd.DataFrame([[tp, fn], [fp, tn]], columns=["Positive", "Negative"])
 
     # plot a heatmap with annotation
-    seaborn.heatmap(df, annot=True, fmt=".5g", annot_kws={"size": 15}, cmap="Blues", cbar=False)
-    plt.xlabel("Predizioni della rete")
-    plt.ylabel("Polarità assegnata")
-    plt.title(titoli[i])
-    plt.savefig(path+'/_Confusion_matrix_'+titoli[i]+".png")
-    plt.show()
+    ax = seaborn.heatmap(df, annot=True, fmt=".7g", annot_kws={"size": 20}, cmap="Blues", cbar=False)
+    plt.xlabel("Predicted polarity (network)", fontsize=13, labelpad=15)
+    plt.ylabel("Assigned polarity (catalogue)", fontsize=13, labelpad=15)
+    plt.title(titoli[i], fontsize=15, pad=19)
+    ax.set_yticklabels(['Positive', 'Negative'])
+    plt.savefig(path+'/Confusion_matrix_'+fig_name[i]+".png", bbox_inches='tight')
+    # plt.show()
 """
 
 # TODO istogrammi vari
@@ -738,6 +739,71 @@ filehdf5out.close()
 filehdf5.close()
 """
 
+# TODO confronto timeshift plot
+"""
+numero_confronto = 2
+predizioni = [[[] for j in range(3)] for i in range(numero_confronto)]
+file = [open("predizioni_shift_Ross_tent_66.txt", "r"), open("predizioni_tent_52.txt", "r")]  # TODO append mode
+# labels = ["66", "53"]
+labels = ["Timeshift in training set", "NO Timeshift in training set"]
+colori = ["blue", "red"]
+
+for k in range(numero_confronto):
+    for line in file[k]:
+        a = line.split()
+        # print(a)
+        predizioni[k][0].append(int(a[0]))
+        for i in range(1, 3):
+            predizioni[k][i].append(float(a[i]))
+
+
+print(predizioni)
+fig, axs = plt.subplots(1, 2)
+fig.set_figheight(5)
+fig.set_figwidth(10)
+for k in range(numero_confronto):
+    axs[0].plot(predizioni[k][0][20:41], predizioni[k][1][20:41], label=labels[k], color=colori[k])  # TODO plt.
+    axs[0].legend()
+    axs[0].set_title('Test Loss')
+
+    axs[1].plot(predizioni[k][0][20:41], predizioni[k][2][20:41], label=labels[k], color=colori[k])
+
+axs[1].set_title('Test Accuracy')
+axs[1].axhline(0.5, color='k', ls='dashed', lw=1)
+axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
+axs[1].legend()
+
+for ax in axs.flat:
+    ax.set(xlabel='T  (translation samples in test set)')
+
+path_save = '/home/silvia/Desktop'
+plt.savefig(path_save + "/" + "Timeshift_66_52", dpi=300)
+"""
+
+# TODO data from Hara
+"""
+pat = '/home/silvia/Desktop/Hara/Validation'
+hdf = '/home/silvia/Desktop/Hara/Validation/Hara_validation_data_Normalizzate_1-1.hdf5'
+csv = '/home/silvia/Desktop/Hara/Validation/Hara_validation_metadata_Normalizzate_1-1.csv'
+polarity = 'validation_100Hz_polarity.npy'
+data = 'validation_100Hz_waveform.npy'
+
+a = np.load(pat + "/" + data)
+b = np.load(pat + "/" + polarity)
+
+Hara = ClasseDataset()
+Hara.sismogramma = a
+Hara.centrato = True
+Hara.metadata["trace_name"] = ["trace_"+str(i) for i in range(len(a))]
+Hara.metadata["trace_polarity"] = ["positive" if b[i][0] == 1 else "negative" for i in range(len(a))]
+Hara.demean()
+# Hara.crea_custom_dataset(hdf, csv)
+visualizzare = [i for i in range(20)]
+# Hara.plotta(visualizzare, namepng="Hara_figure", percosro_cartellla=pat)
+Hara.normalizza()
+Hara.crea_custom_dataset(hdf, csv)
+Hara.plotta(visualizzare, namepng="Hara_figure_normalizzate", percosro_cartellla=pat)
+"""
 
 #
 # # # hdf5out = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k_reshaped_PhaseNet2.hdf5'
