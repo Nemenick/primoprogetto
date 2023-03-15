@@ -20,6 +20,7 @@ ax.bar(x, y1, width=1/n_bin, label='x2', edgecolor="black", color=custom_cmap, a
 # background
 ax.bar(x, y, width=1/n_bin, label='x2', edgecolor="red", alpha=0.5, hatch='//', color='red', align='edge', zorder=-1)
 ax.grid(color='gray', linestyle=':', linewidth=1, alpha=0.3)
+ax.set_axisbelow(True)
 plt.plot([0, 1], [0, 1], linestyle="--", color='grey', linewidth="2")
 
 ax.set_xlim(0, 1.)
