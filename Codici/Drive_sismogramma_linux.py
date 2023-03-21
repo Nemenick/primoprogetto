@@ -263,8 +263,8 @@ Dati.crea_custom_dataset(hdf5out, csvout)
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
 # csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/metadata_Velocimeter_Cattive_4s.csv'
 
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s.csv'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 
 
 Data = ClasseDataset()
@@ -280,7 +280,7 @@ m = Basemap(llcrnrlon=min_lon,  urcrnrlon=max_lon, llcrnrlat=min_lat, urcrnrlat=
 m.drawcoastlines()
 m.fillcontinents()
 
-m.drawparallels(np.arange(36, 52, 2), labels=[1, 1, 0, 1])
+m.drawparallels(np.arange(36, 52, 2), labels=[1, 0, 0, 0])
 m.drawmeridians(np.arange(6, 22, 2), labels=[1, 1, 0, 1])
 m.drawcountries()
 plt.hist2d(x=Data.metadata['source_longitude_deg'],
@@ -310,7 +310,7 @@ y_t = [43, 45, 45, 43, 43]
 x_v, y_v = [14.5, 14.5, 16, 16, 14.5], [37.5, 38.5, 38.5, 37.5, 37.5]
 plt.plot(x_t, y_t, zorder=2, linewidth=1, color="deeppink")
 plt.plot(x_v, y_v, zorder=2, linewidth=1, color="orange")
-plt.title("Number of events in Dataset_1")
+plt.title("Number of events in Dataset A")
 plt.savefig('/home/silvia/Desktop/Italia_Tracce_DPI_', dpi=300)
 plt.show()
 """
@@ -485,6 +485,7 @@ print(max_ac)
 fig_name = ['Ross_tentativo_52_1']
 titoli = ["Ross test set"]                                  # TODO cambia
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+ipath = '/home/silvia/Desktop/CFM_images'
 tentativi = ['52']
 
 le = len(tentativi)
@@ -517,7 +518,7 @@ for i in range(le):
     plt.ylabel("Assigned polarity (catalogue)", fontsize=13, labelpad=15)
     plt.title(titoli[i], fontsize=15, pad=19)
     ax.set_yticklabels(['Positive', 'Negative'])
-    plt.savefig(path+'/Confusion_matrix_'+fig_name[i]+".png", bbox_inches='tight')
+    plt.savefig(ipath+'/Confusion_matrix_'+fig_name[i]+".png", bbox_inches='tight')
     # plt.show()
 """
 
@@ -616,7 +617,7 @@ hdf5_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5
 csv_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
 hdf5_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
 
-percorsoclassi = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/NEWclasses.txt'
+percorsoclassi = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses.txt'
 Du, Dd = ClasseDataset(), ClasseDataset()
 Du.leggi_custom_dataset(hdf5_up, csv_up)
 Dd.leggi_custom_dataset(hdf5_do, csv_do)
@@ -630,8 +631,10 @@ with open(percorsoclassi, 'r') as f:
 Du.classi = classi[0:len(Du.sismogramma)]
 Dd.classi = classi[len(Du.sismogramma):]
 
-classi_up_l_1 = [18, 19, 33, 41, 49]
-classi_down_l_1 = [24, 30, 31, 39, 40, 46, 52, 53]
+# classi_up_l_1 = [18, 33, 41, 49]
+# classi_down_l_1 = [24, 30, 31, 39, 40, 46, 52, 53]
+classi_up_l_1 = [34]
+classi_down_l_1 = [55]
 cl_up_indici, cl_down_indici = [], []
 Du.ricava_indici_classi(classi_up_l_1, cl_up_indici)
 Dd.ricava_indici_classi(classi_down_l_1, cl_down_indici)
@@ -640,34 +643,37 @@ Du = Du.seleziona_indici(cl_up_indici)
 print(len(cl_down_indici), len(cl_up_indici), cl_down_indici[-1], cl_up_indici[-1])
 Dd = Dd.seleziona_indici(cl_down_indici)
 
-Du.crea_custom_dataset('/home/silvia/Desktop/data_U.hdf5', '/home/silvia/Desktop/metadata_U.csv')
-Dd.crea_custom_dataset('/home/silvia/Desktop/data_D.hdf5', '/home/silvia/Desktop/metadata_D.csv')
+Du.crea_custom_dataset('/home/silvia/Desktop/data_U_class34.hdf5', '/home/silvia/Desktop/metadata_U_class34.csv')
+Dd.crea_custom_dataset('/home/silvia/Desktop/data_D_class55.hdf5', '/home/silvia/Desktop/metadata_D_class55.csv')
 """
 
 # TODO Affidabilità predizioni
 """
 # keys(INSTANCE_Test) = ['traccia_test', 'y_Mano_test', 'y_predict_test', 'delta_test']
-percorso = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52"
-datd = pd.read_csv(percorso + "/Predizioni_Roos_Normalizzate20_Testset_tentativo_52.csv",
+tentativo = '52'
+nbin = '15'
+percorso = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/" + tentativo
+datd = pd.read_csv(percorso + "/Predizioni_Roos_Normalizzate20_Testset_tentativo_" + tentativo + ".csv",
                    dtype={"y_Mano": float, "y_predict": float, 'delta': float})
 print(datd.keys())
 
-predizioni = [[0 for _ in range(4)] for __ in range(10)]
+predizioni = [[0 for _ in range(4)] for __ in range(nbin)]
 # predizioni [5][0] = pred totali intervallo [0.5,0.6]
 # predizioni [5][1] = pred giuste intervallo [0.5,0.6]
 # predizioni [5][2] = pred errate intervallo [0.5,0.6]
 # predizioni [5][3] = pred giuste/totali intervallo [0.5,0.6]
 for i in range(1, len(datd)):
-    indice = math.floor(float(datd['y_predict'][i])*10)
+    indice = math.floor(float(datd['y_predict'][i]) * nbin)
+    indice = 19 if indice == 20 else indice
     predizioni[indice][0] += 1
     if datd['delta'][i] < 0.5:
         predizioni[indice][1] += 1
     else:
         predizioni[indice][2] += 1
 for i in range(len(predizioni)):
-    predizioni[i][3] = predizioni[i][1]/(float(predizioni[i][0])+0.000001)
+    predizioni[i][3] = predizioni[i][1] / (float(predizioni[i][0]) + 0.000001)
 dizio_pred = pd.DataFrame(predizioni, columns=["Totali", "Giuste", "Errate", "Affidabilità"])
-dizio_pred.to_excel(percorso + "/Affidabilità_test_Ross_tentativo_52.xlsx")
+dizio_pred.to_excel(percorso + "/Affidabilità_test_Ross_tentativo_" + tentativo + ".xlsx")
 """
 
 # TODO reshape for Phasenet
@@ -805,21 +811,5 @@ Hara.crea_custom_dataset(hdf, csv)
 Hara.plotta(visualizzare, namepng="Hara_figure_normalizzate", percosro_cartellla=pat)
 """
 
-#
-# # # hdf5out = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_counts_10k_reshaped_PhaseNet2.hdf5'
-# # hdf5out = '/home/silvia/Desktop/PhaseNet_Prova/PhaseNet/test_data/data.h5'
-# # filehdf5out = h5py.File(hdf5out, 'r')
-# # my_data = filehdf5out.get("data")
-# # nomi = list(my_data.keys())
-# # # print(my_data.keys())
-# # print(type(my_data[nomi[1]]), my_data[nomi[1]].shape)
-#
-#
-#
-# # for i in range(10):
-# #     dizio_pred = {"intervallo"+str(i*0.1): predizioni}
-# # Data.leggi_custom_dataset(hdf5, csv)
-# # Data.elimina_tacce_indici([133532])
-# # Data.crea_custom_dataset(hdf5out,csvout)
 # # 133532
-#
+

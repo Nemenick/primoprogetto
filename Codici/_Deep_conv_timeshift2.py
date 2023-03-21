@@ -86,6 +86,7 @@ def dividi_train_test_val_2(estremi_test: list, estremi_val: list, semi_amp: int
     :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
     ora xtrain sara: [dati_normali[0:tot], dati_norm_shifted+[pari], dati_norm_shifted-[pari]]+
                      [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]+
+                     non pari ma quelli per cui k>sample_train/2
     """
 
     lung = len(dati.sismogramma[0])  # lunghezza traccia
@@ -156,7 +157,7 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [66]
+tentativi = [79]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -165,7 +166,7 @@ semiampiezza = 80
 epoche = 100
 batchs = 512
 pazienza = 10
-shift_samples = 5
+shift_samples = 10
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val_2(e_test, e_val,
                                                                                             semiampiezza, Dati,
                                                                                             timeshift=shift_samples)

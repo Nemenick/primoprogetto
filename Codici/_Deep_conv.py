@@ -62,10 +62,15 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1_SNR_GE.csv'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 # percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1_SNR_GE.hdf5'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # percorso di Dove sono contenute le tracce
+
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+# TODO controlla perchè data_Velocimeter_Buone_4s_Normalizzate SENZA POLLINO mi da errore !!!!!!!!!!!!!!!!!!!!
+
 """
 csvin = 'C:/Users/GioCar/Desktop/Tesi_5/metadata_Velocimeter_Buone_normalizzate_4s.csv'
 hdf5in = 'C:/Users/GioCar/Desktop/Tesi_5/data_Velocimeter_Buone_normalizzate_4s.hdf5'
@@ -80,13 +85,13 @@ e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 invertito = False
 # e_test, e_val, invertito = e_val, e_test, True
-tentativi = [65]
+tentativi = [76,77,78]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
 
-semiampiezza = 80
+semiampiezza = 75
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 10
@@ -95,6 +100,7 @@ drop = 0.5
 
 lrs = [0.01 for i in range(3)]
 momenti = [0.8 for _ in range(3)]
+epsilons = [10**(-3), 5*10**(-3), 0.5*10**(-3)]
 indice_tent = 0
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -107,11 +113,11 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 for tentativo in tentativi:
     lr = lrs[indice_tent]
     momento = momenti[indice_tent]
-    indice_tent += 1
-    # epsilon = 10**(-3)  # TODO cambia (al prossimo....)
+    # epsilon = epsilons[indice_tent]  # TODO cambia (al prossimo....)
     # print('\n\tepsilon = ', epsilon)
     # momento = 0.8
-    print('\n\tmomento = ', momento)
+    # print('\n\tmomento = ', momento)
+    indice_tent += 1
 
     # TODO Zeresima rete
     """
@@ -252,15 +258,15 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: SGD con epsilon = " + str(momento) + \
+               "\nOptimizer: SGD con momento = " + str(momento) + \
                "\nLearning rate = " + str(lr) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
                "\nHO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
-               "\nSENZA PULIZIA SOM" + \
-               "\n###############  HO INCLUSO DATI POLLINO  ###############" + \
-               "\n###############  Addestramento SNR GE ###############"
+               "\nPULIZIA SOM" + \
+               "\n###############  HO INCLUSO DATI POLLINO  ###############"
     if invertito:
         dettagli = dettagli + "\n############### Inverto test e val ###############"
+# "\nOptimizer: SGD con momento = " + str(momento) + \
 # "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
 #     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"
     file.write(dettagli)

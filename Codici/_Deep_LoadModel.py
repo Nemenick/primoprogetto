@@ -10,12 +10,16 @@ from Classe_sismogramma_v3 import ClasseDataset
 
 # hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
 # csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+
 # hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
-# hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/data_U.hdf5'
-# csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/metadata_U.csv'
+
+# hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/data_U_class34.hdf5'
+# csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/metadata_U_class34.csv'
+
 hdf5_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_data_Normalizzate_1-1.hdf5'
 csv_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_metadata_Normalizzate_1-1.csv'
+
 # hdf5_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_data_100Hz_normalizzate_New1-1.hdf5"
 # csv_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv"
 
@@ -24,9 +28,9 @@ Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
 sample_train = len(Data_predicting.sismogramma)
 
 lung = len(Data_predicting.sismogramma[0])
-semi_amp = 70
+semi_amp = 75
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativo = 59
+tentativo = 78
 
 # TODO predict Instance Test
 # estremi_test = [43, 45, 9.5, 11.8]
@@ -86,7 +90,7 @@ print(len(Data_predicting.metadata["trace_name"]), len(y_test_true), len(y_predi
 datapandas_val = pd.DataFrame.from_dict(dizio_val)
 # TODO cambia nome del file
 datapandas_val.to_csv(pat_tent + str(tentativo) +
-                      "/Predizioni_Hara_train_tentativo_" + str(tentativo) + ".csv", index=False)
+                      "/Predizioni_up_l_1_perc_class_34_tentativo_" + str(tentativo) + ".csv", index=False)
 # TODO cambia se vuoi inserire la predizione nel file di metadata
 # Data_predicting.metadata["Pred_tent_" + str(tentativo)] = y_predicted_ok
 # Data_predicting.crea_custom_dataset(hdf5_predicting, csv_predicting)

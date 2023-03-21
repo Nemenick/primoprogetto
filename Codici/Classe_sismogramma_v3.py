@@ -385,11 +385,15 @@ class ClasseDataset:
         """
         data = []
         dizio_metadata = {}
+        classi_som = []
+        append_class = True if len(self.classi) == len(self.sismogramma) else False
         for key in self.metadata.keys():
             dizio_metadata[key] = []
 
         for i in vettore_indici:
             data.append(self.sismogramma[i])
+            if append_class:
+                classi_som.append(self.classi[i])
             for key in self.metadata.keys():
                 dizio_metadata[key].append(self.metadata[key][i])
 
@@ -398,6 +402,8 @@ class ClasseDataset:
         data_return.metadata = dizio_metadata
         data_return.centrato = self.centrato
         data_return.demeaned = self.demeaned
+        if append_class:
+            data_return.classi = classi_som
 
         return data_return
 

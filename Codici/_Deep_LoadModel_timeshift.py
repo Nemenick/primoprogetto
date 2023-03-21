@@ -61,14 +61,14 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 
 # hdf5in = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 # csvin = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
 
-# hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-# csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)
@@ -78,32 +78,33 @@ print("N_sismogrammi", len(Dati.sismogramma), "N_polarità", len(Dati.metadata["
 semiampiezza = 80       # TODO
 
 # TODO test instance
-# """
+"""
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
 test_sample = len(Dati_test.sismogramma)
 lung = len(Dati.sismogramma[0])
 x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
-# """
+"""
 
 # TODO test Ross
-"""
+# """
 Dati_test = Dati
 Dati_val = ClasseDataset()
 test_sample = len(Dati_test.sismogramma)
 lung = len(Dati.sismogramma[0])
 x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
-"""
+# """
 y = y + 0
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [52, 53, 66]
-nome_file_append = "QUALCODS_tent_"
-labels = ["no shift", "53(primo metodo timeshift)", "66 (secondo metodo)"]  # TODO
+tentativi = [79]
+nome_file_append = "predizioni_shift_Ross_tent_"
+labels = ["no shift", "66 (secondo metodo 5pt)", "79 (secondo metodo 10pt)"]  # TODO
 colori = ["blue", "red", "orange"]
-time_shifts = [(i-30) for i in range(61)]
+time_shifts = [(i-30) for i in range(41)]
 # time_shifts = range(26, 31)
+
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 fig, axs = plt.subplots(1, 2)
 fig.set_figheight(5)
@@ -160,7 +161,7 @@ axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
 # plt.savefig(pat_tent + "/" + "BBBAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
 axs[1].legend()
 path_save = '/home/silvia/Desktop'
-plt.savefig(path_save + "/" + "Timeshift_Instance_Test_53_66", dpi=300)
+plt.savefig(path_save + "/" + "Timeshift_Instance_Test_52_66_79", dpi=300)
 # plt.show()
 # plt.clf()
 
