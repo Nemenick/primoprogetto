@@ -58,11 +58,11 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
-e_test = [43, 45, 9.5, 11.8]
-e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
 
 # hdf5in = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 # csvin = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
@@ -75,10 +75,25 @@ Dati.leggi_custom_dataset(hdf5in, csvin)
 print("N_sismogrammi", len(Dati.sismogramma), "N_polarità", len(Dati.metadata["trace_polarity"]))
 # Dati.elimina_tacce_indici([124709])
 
+
+pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
+tentativi = ["81"]
 semiampiezza = 80       # TODO
 
+save_img = False
+path_save = '/home/silvia/Desktop'
+name_save_img = 'Ross39'
+nome_file_append = "predizioni_shift_Ross_tent_"
+labels = ["no shift", "66 (secondo metodo 5pt)", "79 (secondo metodo 10pt)"]  # TODO
+colori = ["blue", "red", "orange"]
+
+# time_shifts = [(i-9) for i in range(61)]
+time_shifts = range(11,31)
 # TODO test instance
 """
+e_test = [43, 45, 9.5, 11.8]
+e_val = [37.5, 38.5, 14.5, 16]  
+
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
 test_sample = len(Dati_test.sismogramma)
@@ -97,12 +112,6 @@ x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
 # """
 y = y + 0
-pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = [79]
-nome_file_append = "predizioni_shift_Ross_tent_"
-labels = ["no shift", "66 (secondo metodo 5pt)", "79 (secondo metodo 10pt)"]  # TODO
-colori = ["blue", "red", "orange"]
-time_shifts = [(i-30) for i in range(41)]
 # time_shifts = range(26, 31)
 
 predizioni = [[[], [], []] for i in range(len(tentativi))]
@@ -118,7 +127,8 @@ for k in range(len(tentativi)):
         file1 = open(nome_file_append + str(tentativo) + ".txt", "a")  # TODO append mode
         for i in range(len(Dati_test.sismogramma)):
             x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
-
+        # for j in range(len(Dati_val.sismogramma)):
+        #     x[j+len(Dati_test.sismogramma)] = Dati_val.sismogramma[j][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
         predizione = model.evaluate(x, y, batch_size=1024)
         predizioni[k][0].append(time_shift)
         predizioni[k][1].append(predizione[0])
@@ -160,8 +170,8 @@ axs[1].axhline(0.75, color='k', ls='dashed', lw=1)
 # plt.xlabel("T (translation point)")
 # plt.savefig(pat_tent + "/" + "BBBAccuracy_vs_Kernel_su_val_test_timeshift", dpi=300)
 axs[1].legend()
-path_save = '/home/silvia/Desktop'
-plt.savefig(path_save + "/" + "Timeshift_Instance_Test_52_66_79", dpi=300)
+if save_img:
+    plt.savefig(path_save + "/" + name_save_img, dpi=300)
 # plt.show()
 # plt.clf()
 

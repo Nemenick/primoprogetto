@@ -747,12 +747,19 @@ filehdf5.close()
 
 # TODO confronto timeshift plot
 """
-numero_confronto = 2
+pat = 'Predizioni_shift/'
+file = [open(pat+'predizioni_shift_Ross_tent_39.txt', "r")]
+numero_confronto = len(file)
 predizioni = [[[] for j in range(3)] for i in range(numero_confronto)]
-file = [open("predizioni_shift_Ross_tent_66.txt", "r"), open("predizioni_tent_52.txt", "r")]  # TODO append mode
-# labels = ["66", "53"]
-labels = ["Timeshift in training set", "NO Timeshift in training set"]
-colori = ["blue", "red"]
+# file = [open(pat+"predizioni_shift_Instance_tent_52.txt", "r"), open(pat+"predizioni_shift_Instance_tent_53.txt", "r"),
+#         open(pat+"predizioni_shift_Instance_tent_66.txt", "r"), open(pat+"predizioni_shift_Instance_tent_79.txt", "r"),
+#         open(pat+"predizioni_shift_Instance_tent_39.txt", "r") ]
+
+path_save = '/home/silvia/Desktop'
+name_save = "Timeshift_39_Ross"
+labels = ["39", "53", "66", "79", "39(old)"]
+# labels = ["Timeshift in training set", "NO Timeshift in training set"]
+colori = ["blue", "red", "orange", "green","purple"]
 
 for k in range(numero_confronto):
     for line in file[k]:
@@ -768,11 +775,11 @@ fig, axs = plt.subplots(1, 2)
 fig.set_figheight(5)
 fig.set_figwidth(10)
 for k in range(numero_confronto):
-    axs[0].plot(predizioni[k][0][20:41], predizioni[k][1][20:41], label=labels[k], color=colori[k])  # TODO plt.
+    axs[0].plot(predizioni[k][0], predizioni[k][1], label=labels[k], color=colori[k])  # TODO plt.
     axs[0].legend()
     axs[0].set_title('Test Loss')
 
-    axs[1].plot(predizioni[k][0][20:41], predizioni[k][2][20:41], label=labels[k], color=colori[k])
+    axs[1].plot(predizioni[k][0], predizioni[k][2], label=labels[k], color=colori[k])
 
 axs[1].set_title('Test Accuracy')
 axs[1].axhline(0.5, color='k', ls='dashed', lw=1)
@@ -782,8 +789,9 @@ axs[1].legend()
 for ax in axs.flat:
     ax.set(xlabel='T  (translation samples in test set)')
 
-path_save = '/home/silvia/Desktop'
-plt.savefig(path_save + "/" + "Timeshift_66_52", dpi=300)
+
+axs[1].axvline(linestyle="--", color="red", linewidth="0.5")
+plt.savefig(path_save + "/" + name_save, dpi=300)
 """
 
 # TODO data from Hara
@@ -811,5 +819,37 @@ Hara.crea_custom_dataset(hdf, csv)
 Hara.plotta(visualizzare, namepng="Hara_figure_normalizzate", percosro_cartellla=pat)
 """
 
-# # 133532
+# TODO ricava indici test e classi (Som_updown_secondo)
+"""
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 
+hdfout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/Test.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/Test.csv'
+classi_out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses_test.txt'
+indici_out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/indici_test.txt'
+dati = ClasseDataset()
+dati.leggi_custom_dataset(hdf5in, csvin)
+dati.leggi_classi_txt('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses.txt')
+
+estremi_test = [43, 45, 9.5, 11.8]
+indici_test = []
+
+for k in range(len(dati.sismogramma)):
+    if estremi_test[0] < dati.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+            < dati.metadata['source_longitude_deg'][k] < estremi_test[3]:
+        indici_test.append(k)  # li farò eliminare dal trainset
+dati_test = dati.seleziona_indici(indici_test)
+dati_test.crea_custom_dataset(hdfout,csvout)
+classi_test = pd.DataFrame.from_dict({"classi_test": dati_test.classi},dtype=int)
+classi_test.to_csv(classi_out,index=False)
+
+indici_test = pd.DataFrame.from_dict({"indici_test": indici_test},dtype=int)
+indici_test.to_csv(indici_out,index=False)
+"""
+
+# 133532
+
+
+csv = '/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv'
+csvout = '/home/silvia/Desktop/Pollino_All/Pollino_All_events_lat_lon.csv'

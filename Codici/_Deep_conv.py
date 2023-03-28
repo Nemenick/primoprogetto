@@ -62,13 +62,12 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
-# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
-# percorso di dove sono contenuti i metadata
-# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-# percorso di Dove sono contenute le tracce
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.hdf5'
 
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
 # TODO controlla perchè data_Velocimeter_Buone_4s_Normalizzate SENZA POLLINO mi da errore !!!!!!!!!!!!!!!!!!!!
 
 """
@@ -85,16 +84,16 @@ e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 invertito = False
 # e_test, e_val, invertito = e_val, e_test, True
-tentativi = [76,77,78]
+tentativi = [82,83,84]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
 
-semiampiezza = 75
+semiampiezza = 80
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
-pazienza = 10
+pazienza = 8
 drop = 0.5
 # lr = 0.01
 
@@ -262,8 +261,7 @@ for tentativo in tentativi:
                "\nLearning rate = " + str(lr) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
                "\nHO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
-               "\nPULIZIA SOM" + \
-               "\n###############  HO INCLUSO DATI POLLINO  ###############"
+               "\n###############  HO ESCLUSO DATI POLLINO  ###############"
     if invertito:
         dettagli = dettagli + "\n############### Inverto test e val ###############"
 # "\nOptimizer: SGD con momento = " + str(momento) + \

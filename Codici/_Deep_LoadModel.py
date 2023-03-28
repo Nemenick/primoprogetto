@@ -17,11 +17,11 @@ from Classe_sismogramma_v3 import ClasseDataset
 # hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/data_U_class34.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/metadata_U_class34.csv'
 
-hdf5_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_data_Normalizzate_1-1.hdf5'
-csv_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_metadata_Normalizzate_1-1.csv'
+# hdf5_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_data_Normalizzate_1-1.hdf5'
+# csv_predicting = '/home/silvia/Desktop/Hara/Test/Hara_test_metadata_Normalizzate_1-1.csv'
 
-# hdf5_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_data_100Hz_normalizzate_New1-1.hdf5"
-# csv_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv"
+hdf5_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_data_100Hz_normalizzate_New1-1.hdf5"
+csv_predicting = "/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv"
 
 Data_predicting = ClasseDataset()
 Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
@@ -30,37 +30,41 @@ sample_train = len(Data_predicting.sismogramma)
 lung = len(Data_predicting.sismogramma[0])
 semi_amp = 75
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativo = 78
-
+tentativo = 83
+salva_predizioni = False
+nome_predizione = "/Predizioni_Instance_test_L_tentativo_"
 # TODO predict Instance Test
-# estremi_test = [43, 45, 9.5, 11.8]
-# xtest = []
-# y_test_true = []
-# test_indici = []
-# for k in range(len(Data_predicting.sismogramma)):
-#     if estremi_test[0] < Data_predicting.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
-#             < Data_predicting.metadata['source_longitude_deg'][k] < estremi_test[3]:
-#         xtest.append(Data_predicting.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp])
-#         test_indici.append(k)  # TODO salvo posizioni tracce di test
-#         if Data_predicting.metadata["trace_polarity"][k] == "positive":
-#             y_test_true.append(1)
-#         elif Data_predicting.metadata["trace_polarity"][k] == "negative":
-#             y_test_true.append(0)
-
+"""
+estremi_test = [43, 45, 9.5, 11.8]
+xtest = []
+y_test_true = []
+test_indici = []
+for k in range(len(Data_predicting.sismogramma)):
+    if estremi_test[0] < Data_predicting.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+            < Data_predicting.metadata['source_longitude_deg'][k] < estremi_test[3]:
+        xtest.append(Data_predicting.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp])
+        test_indici.append(k)  # TODO salvo posizioni tracce di test
+        if Data_predicting.metadata["trace_polarity"][k] == "positive":
+            y_test_true.append(1)
+        elif Data_predicting.metadata["trace_polarity"][k] == "negative":
+            y_test_true.append(0)
+Data_predicting = Data_predicting.seleziona_indici(test_indici)
+"""
 
 # TODO predict other than Instance
+# """
 xtest = np.zeros((sample_train, semi_amp * 2))
 for k in range(sample_train):
     xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
 y_test_true = np.array([Data_predicting.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)])
 y_test_true = y_test_true + 0
-
+# """
 model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
 model.summary()
 
 xtest = np.array(xtest)
 print("XSHAPEEEEEEEEEEEE", xtest.shape)
-y_predicted = model.predict(xtest)
+y_predicted = model.predict(xtest, batch_size=2048)
 print(y_predicted, len(y_predicted), "\n", y_predicted, len(y_predicted))
 y_predicted_ok = []
 
@@ -79,18 +83,19 @@ for i in range(len(y_predicted_ok)):
         predizioni_errate = predizioni_errate+1
 print("totali/giuste/errate: ", predizioni_totali, "-", predizioni_giuste, "-", predizioni_errate, "-")
 print(predizioni_giuste/predizioni_totali)
-# Dati_test = Dati_.seleziona_indici(test_indici)
-# dizio_val = {"traccia": Dati_test.metadata["trace_name"], "y_Mano": ytest_true, "y_predict": y_predicted_ok,
-#              "delta": delta_y}
-# print(len(Dati_.metadata["trace_name"]), len(ytest_true), len(y_predicted_ok), len(delta_y))
 
 dizio_val = {"traccia": Data_predicting.metadata["trace_name"], "y_Mano": y_test_true, "y_predict": y_predicted_ok,
              "delta": delta_y}
 print(len(Data_predicting.metadata["trace_name"]), len(y_test_true), len(y_predicted_ok), len(delta_y))
+#
+# dizio_val = {"traccia": Data_predicting.metadata["trace_name"], "y_Mano": y_test_true, "y_predict": y_predicted_ok,
+#              "delta": delta_y}
+# print(len(Data_predicting.metadata["trace_name"]), len(y_test_true), len(y_predicted_ok), len(delta_y))
 datapandas_val = pd.DataFrame.from_dict(dizio_val)
 # TODO cambia nome del file
-datapandas_val.to_csv(pat_tent + str(tentativo) +
-                      "/Predizioni_up_l_1_perc_class_34_tentativo_" + str(tentativo) + ".csv", index=False)
+if salva_predizioni:
+    datapandas_val.to_csv(pat_tent + str(tentativo) +
+                      nome_predizione + str(tentativo) + ".csv", index=False)
 # TODO cambia se vuoi inserire la predizione nel file di metadata
 # Data_predicting.metadata["Pred_tent_" + str(tentativo)] = y_predicted_ok
 # Data_predicting.crea_custom_dataset(hdf5_predicting, csv_predicting)
