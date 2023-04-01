@@ -848,8 +848,110 @@ indici_test = pd.DataFrame.from_dict({"indici_test": indici_test},dtype=int)
 indici_test.to_csv(indici_out,index=False)
 """
 
+
+# TODO ricava indici test e classi METODO GIUSTO (Som_updown_secondo)
+"""
+hdf5inup = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
+csvinup = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
+
+hdf5indown = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
+csvindown = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
+
+hdfout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/Test.hdf5'
+csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/Test.csv'
+classi_out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses_test.txt'
+indici_out = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/indici_test_ordine_up_down.txt'
+
+dati_all = ClasseDataset()
+dati_up = ClasseDataset()
+dati_down = ClasseDataset()
+dati_up.leggi_custom_dataset(hdf5inup, csvinup)
+dati_down.leggi_custom_dataset(hdf5indown, csvindown)
+
+dati_all.leggi_classi_txt('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses.txt')
+
+estremi_test = [43, 45, 9.5, 11.8]
+indici_test_ordine_up_down = []
+
+for k in range(len(dati_up.sismogramma)):
+    if estremi_test[0] < dati_up.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+            < dati_up.metadata['source_longitude_deg'][k] < estremi_test[3]:
+        indici_test_ordine_up_down.append(k+1)
+a = len(dati_up.sismogramma)
+for k in range(len(dati_down.sismogramma)):
+    if estremi_test[0] < dati_down.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+            < dati_down.metadata['source_longitude_deg'][k] < estremi_test[3]:
+        indici_test_ordine_up_down.append(k+a+1)
+
+indici_test = pd.DataFrame.from_dict({"indici_test": indici_test_ordine_up_down},dtype=int)
+indici_test.to_csv(indici_out,index=False, header= False)
+
+######################################### AlTRa sezione#################################àà
+predizioni_test = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52/Predizioni_test_tentativo_52.csv'
+up_errate_pat = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/indici_up_errate.txt'
+down_errate_pat = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/indici_down_errate.txt'
+pred_up, pred_down = pd.read_csv(predizioni_test), pd.read_csv(predizioni_test)
+
+pred_up = pred_up.loc[pred_up["y_Mano_test"] == 1 ]
+pred_down = pred_down.loc[pred_down["y_Mano_test"] == 0 ]
+
+pred_up.index = [i+1 for i in range(len(pred_up.index))]
+pred_down.index = [i+1 + len(pred_up.index) for i in range(len(pred_down.index))]
+# STO QUI ora ho gli indici del test in ordine. nel senso da 1 a 5567 up il resto down. incrocio con il file
+# indici_test_ordine_up_down.txt per capire quale è la classe di appartenenza
+
+pred_up_errate = pred_up.loc[pred_up["delta_test"] >= 0.5 ]
+pred_down_errate = pred_down.loc[pred_down["delta_test"] >= 0.5 ]
+# FIXME a questo punto ho gli indici delle tracce misclassified, partendo da 1!
+# se trovo 330 in pred_up_errate.index significa che la traccia 330-esima delle tracce del test ordinate prima up e poi down ha predizione errata
+# se trovo 6087 in pred_down_errate.index significa che la traccia 6087-esima delle tracce del test ordinate prima up e poi down ha predizione errata
+# controllo incrociato con indici_test_ordine_up_down mi darà gli indici sbagliati!!!
+# indici_test_ordine_up_down[pred_up.index] mi restituisce gli indici delle tracce up del test che la rete sbaglia
+# (indici rispetto tutte le 161198 tracce ordinate prima up poi down)
+
+pred_up_errate_indici = pd.DataFrame.from_dict({"indici_test_errati_up": pred_up_errate.index},dtype=int)
+pred_up_errate_indici.to_csv(up_errate_pat, index=False, header=False)
+
+pred_down_errate_indici = pd.DataFrame.from_dict({"indici_test_errati_down": pred_down_errate.index},dtype=int)
+pred_down_errate_indici.to_csv(down_errate_pat, index=False, header= False)
+"""
+"""
+hdf5in= '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
+
+pred = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52/Predizioni_test_tentativo_52.csv'
+
+txt_u = "/home/silvia/Desktop/SOM/SOM_errori/Tentativo_52/Instance_test/Instance_up_test_errate"
+txt_d = "/home/silvia/Desktop/SOM/SOM_errori/Tentativo_52/Instance_test/Instance_down_test_errate"
+
+Dati = ClasseDataset()
+Dati.leggi_custom_dataset(hdf5in, csvin)
+
+estremi_test = [43, 45, 9.5, 11.8]
+indici_test=[]
+for k in range(len(Dati.sismogramma)):
+    if estremi_test[0] < Dati.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+            < Dati.metadata['source_longitude_deg'][k] < estremi_test[3]:
+        indici_test.append(k)
+
+Dati = Dati.seleziona_indici(indici_test)
+
+prediz = pd.read_csv(pred)
+up_sbagliate = []
+down_sbagliate = []
+
+for i in range(len(Dati.sismogramma)):
+    if prediz["delta_test"][i] >= 0.5:
+        if prediz.y_Mano_test[i] == 0:
+            down_sbagliate.append(i)
+        else:
+            up_sbagliate.append(i)
+
+Data_u_err = Dati.seleziona_indici(up_sbagliate)
+Data_d_err = Dati.seleziona_indici(down_sbagliate)
+Data_u_err.to_txt(txt_u)
+Data_d_err.to_txt(txt_d)
+print(len(Data_u_err.sismogramma))
+print(len(Data_d_err.sismogramma))"""
+
 # 133532
-
-
-csv = '/home/silvia/Desktop/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv'
-csvout = '/home/silvia/Desktop/Pollino_All/Pollino_All_events_lat_lon.csv'

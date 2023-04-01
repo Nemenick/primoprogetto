@@ -91,7 +91,7 @@ print(ECE)
 """
 
 # TODO grafica mappa
-# """
+"""
 csv_pol = '/home/silvia/Desktop/Pollino_All/Pollino_All_events_lat_lon.csv'
 Data_pol = pd.read_csv(csv_pol)
 min_lat_pol = 39.4  # np.min(Data.metadata['source_latitude_deg'])
@@ -205,8 +205,47 @@ map3.plot(x_pol, y_pol, zorder=2, linewidth=2, color="blue")
 print("sciao")
 plt.savefig('/home/silvia/Desktop/ITA_pol_scatter.jpg', dpi=500, bbox_inches='tight')
 # plt.show()
-# """
+"""
 
+# TODO grafico di confronto timeshift
+"""
+pat = 'Predizioni_shift/'
+file = [open(pat+"predizioni_shift_Instance_tent_52.txt", "r"), open(pat+"predizioni_shift_Instance_tent_66.txt", "r"),
+        open(pat+"predizioni_shift_Instance_tent_79.txt", "r")]
+numero_confronto = len(file)
+predizioni = [[[] for j in range(3)] for i in range(numero_confronto)]
+# file = [open(pat+"predizioni_shift_Instance_tent_52.txt", "r"), open(pat+"predizioni_shift_Instance_tent_53.txt", "r"),
+#         open(pat+"predizioni_shift_Instance_tent_66.txt", "r"), open(pat+"predizioni_shift_Instance_tent_79.txt", "r"),
+#         open(pat+"predizioni_shift_Instance_tent_39.txt", "r") ]
+
+path_save = '/home/silvia/Desktop'
+name_save = "Figure Timeshift"
+labels = ["NO timeshift in training set", "Timeshift N=5", "Timeshift N=10"]
+# labels = ["Timeshift in training set", "NO Timeshift in training set"]
+colori = ["red", "blue", "green","purple"]
+
+for k in range(numero_confronto):
+    for line in file[k]:
+        a = line.split()
+        # print(a)
+        predizioni[k][0].append(int(a[0]))
+        for i in range(1, 3):
+            predizioni[k][i].append(float(a[i]))
+
+
+print(predizioni)
+plt.figure(figsize=(5,6))
+for k in range(numero_confronto):
+    plt.plot(predizioni[k][0][10:-10], predizioni[k][2][10:-10], label=labels[k], color=colori[k])
+
+plt.title('Test Accuracy')
+plt.axhline(0.5, color='k', ls='dashed', lw=1)
+plt.axhline(0.75, color='k', ls='dashed', lw=1)
+plt.legend()
+plt.xlabel('T  (translation samples in test set)')
+plt.axvline(linestyle="--", color="red", linewidth="0.5")
+plt.savefig(path_save + "/" + name_save, dpi=300)
+"""
 # plt.savefig('/home/silvia/Desktop/quiii')
 
 

@@ -11,12 +11,16 @@ print(False in [i == data.index[i] for i in range(len(data.index))])    # ORA MI
 
 data = data.set_index("station_channels")
 data.head()
-data = data.drop(["HN", "HL"]) # rimuovo colonne
+data = data.drop(["HN", "HL"]) # rimuovo dati che hanno questo valore di colonne
 
 data = data.set_index("trace_polarity")
 data.head()
 data = data.drop(["undecidable"])
 
+# Delete Rows by Checking Conditions
+df = pd.DataFrame(technologies)
+df1 = df.loc[df["Discount"] >=1500 ]
+print(df1)
 
 data.to_csv('/home/silvia/Desktop/ciao.csv')
 
