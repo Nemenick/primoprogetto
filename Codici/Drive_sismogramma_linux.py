@@ -482,11 +482,12 @@ print(max_ac)
 # TODO matrice confusione Predizione TEST
 """
 # "y_Mano_test", "y_predict_test"
-fig_name = ['Ross_tentativo_52_1']
-titoli = ["Ross test set"]                                  # TODO cambia
+fig_name = ['Hara_tentativo_55']
+titoli = ["Western Japan test set"]                                  # TODO cambia
 path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
-ipath = '/home/silvia/Desktop/CFM_images'
-tentativi = ['52']
+ipath = '/home/silvia/Desktop/'
+predizione = '/Predizioni_Hara_tentativo_'  # '/Predizioni_test_tentativo_'
+tentativi = ['55']
 
 le = len(tentativi)
 
@@ -494,8 +495,8 @@ le = len(tentativi)
 # predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
 for i in range(le):
     tp, tn, fp, fn = 0, 0, 0, 0
-    # predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_test_tentativo_' + tentativi[i] + '.csv') # TODO
-    predizioni = pd.read_csv(path + '/' + tentativi[i] + '/Predizioni_Roos_Normalizzate20_Testset_tentativo_' + tentativi[i] + '.csv')
+    # predizioni = pd.read_csv(path + '/' + tentativi[i] + predizione + tentativi[i] + '.csv') # TODO
+    predizioni = pd.read_csv(path + '/' + tentativi[i] + predizione + tentativi[i] + '.csv')
     for j in range(len(predizioni["traccia"])):
         # predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:          # TODO
         # predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
@@ -510,16 +511,20 @@ for i in range(le):
             fp += 1
     print("SONO TUTTI ? (tutti), tp+tn+..", len(predizioni["y_predict"]), tp+tn+fp+fn)
     print(tp, fn, "\n", fp, tn)
+    print((tp+tn) / (fp+fn+tn+tp))
     df = pd.DataFrame([[tp, fn], [fp, tn]], columns=["Positive", "Negative"])
 
     # plot a heatmap with annotation
     ax = seaborn.heatmap(df, annot=True, fmt=".7g", annot_kws={"size": 20}, cmap="Blues", cbar=False)
-    plt.xlabel("Predicted polarity (network)", fontsize=13, labelpad=15)
-    plt.ylabel("Assigned polarity (catalogue)", fontsize=13, labelpad=15)
-    plt.title(titoli[i], fontsize=15, pad=19)
-    ax.set_yticklabels(['Positive', 'Negative'])
-    plt.savefig(ipath+'/Confusion_matrix_'+fig_name[i]+".png", bbox_inches='tight')
-    # plt.show()
+    plt.xlabel("Predicted polarity (network)", fontsize=23, labelpad=33)
+    plt.ylabel("Assigned polarity (catalogue)", fontsize=23, labelpad=33)
+    plt.title(titoli[i], fontsize=23, pad=30)
+    ax.set_yticklabels(['Positive', 'Negative'], fontsize=15)
+    ax.set_xticklabels(['Positive', 'Negative'], fontsize=15)
+    ax.text(-0.1, 1.35,  r'$\mathbf{B}$', transform=ax.transAxes, fontsize=30,
+            verticalalignment='top')
+    plt.savefig(ipath+'/Confusion_matrix_'+fig_name[i]+".jpg", bbox_inches='tight', dpi=300)
+    plt.show()
 """
 
 # TODO istogrammi vari
@@ -952,6 +957,9 @@ Data_d_err = Dati.seleziona_indici(down_sbagliate)
 Data_u_err.to_txt(txt_u)
 Data_d_err.to_txt(txt_d)
 print(len(Data_u_err.sismogramma))
-print(len(Data_d_err.sismogramma))"""
+print(len(Data_d_err.sismogramma))
+"""
+
+
 
 # 133532

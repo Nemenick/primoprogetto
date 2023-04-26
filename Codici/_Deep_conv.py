@@ -82,9 +82,9 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-invertito = False
+invertito = False       # Per invertire test e val
 # e_test, e_val, invertito = e_val, e_test, True
-tentativi = [82,83,84]
+tentativi = [83]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -93,13 +93,13 @@ for tentativo in tentativi:
 semiampiezza = 80
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
-pazienza = 8
-drop = 0.5
+pazienza = 3
+drop = 0.0
 # lr = 0.01
 
-lrs = [0.01 for i in range(3)]
+lrs = [0.001 for i in range(3)]
 momenti = [0.8 for _ in range(3)]
-epsilons = [10**(-3), 5*10**(-3), 0.5*10**(-3)]
+epsilons = [10**(-3), 10**(-3), 5*10**(-3), 0.5*10**(-3)]
 indice_tent = 0
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -110,9 +110,9 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 
 for tentativo in tentativi:
-    lr = lrs[indice_tent]
-    momento = momenti[indice_tent]
-    # epsilon = epsilons[indice_tent]  # TODO cambia (al prossimo....)
+    # lr = lrs[indice_tent]
+    # momento = momenti[indice_tent]
+    epsilon = epsilons[indice_tent]  # TODO cambia (al prossimo....)
     # print('\n\tepsilon = ', epsilon)
     # momento = 0.8
     # print('\n\tmomento = ', momento)
@@ -179,8 +179,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        optimizer=optimizers.SGD(momentum=momento, learning_rate=lr),  # TODO CAMBIA
-        # optimizer=optimizers.Adam(epsilon=epsilon),
+        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -257,8 +257,6 @@ for tentativo in tentativi:
                "\nIn questo train train,test,val sono instance" + \
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-               "\nOptimizer: SGD con momento = " + str(momento) + \
-               "\nLearning rate = " + str(lr) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
                "\nHO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
                "\n###############  HO ESCLUSO DATI POLLINO  ###############"

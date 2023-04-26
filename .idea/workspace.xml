@@ -7,9 +7,14 @@
     <list default="true" id="e59a045a-66fa-43b7-abb2-30250a02ac46" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/52/Predizioni_test_tentativo_52 (copia).csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/52/Predizioni_test_tentativo_52 (seconda copia).csv" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Tutorial_pandas.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tutorial_pandas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/27/Predizioni_Roos_Normalizzate20_Testset_tentativo_27.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/41/Predizioni_test_tentativo_41.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/41/Predizioni_test_tentativo_41.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/45/Predizioni_Roos_Normalizzate20_Testset_tentativo_45.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/45/Predizioni_Roos_Normalizzate20_Testset_tentativo_45.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/45/Predizioni_test_tentativo_45.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/45/Predizioni_test_tentativo_45.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/Dettagli_tentativi.odt.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/Dettagli_tentativi.odt.odt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/Ross_Hara_SOM_not.odt" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tentativi/Ross_Hara_SOM_not.odt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/_Disegni.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Disegni.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +59,7 @@
       <recent name="$PROJECT_DIR$/Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Drive_sismogramma_linux">
+  <component name="RunManager" selected="Python._Disegni">
     <configuration name="Drive_sismogramma_linux" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -97,7 +102,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="_Deep_LoadModel_timeshift" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="_Deep_conv" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -109,7 +114,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_LoadModel_timeshift.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_conv.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -162,11 +167,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python._Disegni" />
-        <item itemvalue="Python._Test" />
         <item itemvalue="Python._Deep_LoadModel" />
-        <item itemvalue="Python._Deep_LoadModel_timeshift" />
+        <item itemvalue="Python._Deep_conv" />
+        <item itemvalue="Python.Drive_sismogramma_linux" />
+        <item itemvalue="Python._Test" />
       </list>
     </recent_temporary>
   </component>
@@ -191,16 +196,5 @@
         </entry>
       </map>
     </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py</url>
-          <line>379</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
