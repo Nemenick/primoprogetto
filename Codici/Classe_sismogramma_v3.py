@@ -385,7 +385,7 @@ class ClasseDataset:
         """
         data = []
         dizio_metadata = {}
-        classi_som = []
+        classi_som = []  # Verificato funziona
         append_class = True if len(self.classi) == len(self.sismogramma) else False
         for key in self.metadata.keys():
             dizio_metadata[key] = []

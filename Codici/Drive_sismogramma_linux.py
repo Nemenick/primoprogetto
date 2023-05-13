@@ -614,42 +614,66 @@ txt_data = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/dat
 txt_metadata = '/home/silvia/Desktop/Instance_Data/Tre_4s/Up_1_iterazione/2_5_25/metadata_up_2_5_25.txt'
 Data.to_txt(txt_data, txt_metadata)
 """
-# TODO predict tracce mislabeled (analisi som)
+# TODO predict tracce mislabeled (analisi som, heterogeneous)
 """
-csv_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_up_Velocimeter_4s.csv'
-hdf5_up = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+houtu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_up_sotto_1_perc.hdf5'
+coutu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_up_sotto_1_perc.csv'
+houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_down_sotto_1_perc.hdf5'
+coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_down_sotto_1_perc.csv'
+Data = ClasseDataset()
+Data.leggi_custom_dataset(hdf5in,csvin)
 
-csv_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_down_Velocimeter_4s.csv'
-hdf5_do = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_down_Velocimeter_4s.hdf5'
+selezionau = []
+selezionad = []
 
-percorsoclassi = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/NEWclasses.txt'
-Du, Dd = ClasseDataset(), ClasseDataset()
-Du.leggi_custom_dataset(hdf5_up, csv_up)
-Dd.leggi_custom_dataset(hdf5_do, csv_do)
-print(len(Du.sismogramma), len(Dd.sismogramma))
+# Data.leggi_classi_txt('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt')
+for i in range(len(Data.sismogramma)):
+    if Data.metadata["trace_polarity"][i] == 'positive':
+        selezionau.append(i)
+    else:
+        selezionad.append(i)
+        # print(i)
+Datau = Data.seleziona_indici(selezionau)
+Datad = Data.seleziona_indici(selezionad)
 
 classi = []
-with open(percorsoclassi, 'r') as f:
+with open('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt', 'r') as f:
     for line in f:
         if line:  # avoid blank lines
             classi.append(int(float(line.strip())))
-Du.classi = classi[0:len(Du.sismogramma)]
-Dd.classi = classi[len(Du.sismogramma):]
+Datau.classi = classi[0:len(Datau.sismogramma)]
+Datad.classi = classi[len(Datau.sismogramma):]
+# print(len(Datad.sismogramma), len(Datau.sismogramma), len(Datau.classi), len(Datad.classi))
 
-# classi_up_l_1 = [18, 33, 41, 49]
-# classi_down_l_1 = [24, 30, 31, 39, 40, 46, 52, 53]
-classi_up_l_1 = [34]
-classi_down_l_1 = [55]
+classi_up_l_1_1 = [18, 33, 41, 49]
+classi_up_l_1_2 = [34]
+classi_down_l_1_1 = [24, 30, 31, 39, 40, 46]
+classi_down_l_1_2 = [47, 54]
+
 cl_up_indici, cl_down_indici = [], []
-Du.ricava_indici_classi(classi_up_l_1, cl_up_indici)
-Dd.ricava_indici_classi(classi_down_l_1, cl_down_indici)
+Datau.ricava_indici_classi(classi_up_l_1_1, cl_up_indici)
+Datad.ricava_indici_classi(classi_down_l_1_1, cl_down_indici)
+Datau_1 = Datau.seleziona_indici(cl_up_indici)
+Datad_1 = Datad.seleziona_indici(cl_down_indici)
 
-Du = Du.seleziona_indici(cl_up_indici)
-print(len(cl_down_indici), len(cl_up_indici), cl_down_indici[-1], cl_up_indici[-1])
-Dd = Dd.seleziona_indici(cl_down_indici)
+cl_up_indici, cl_down_indici = [], []
+Datau.ricava_indici_classi(classi_up_l_1_2, cl_up_indici)
+Datad.ricava_indici_classi(classi_down_l_1_2, cl_down_indici)
+Datau_2 = Datau.seleziona_indici(cl_up_indici)
+Datad_2 = Datad.seleziona_indici(cl_down_indici)
 
-Du.crea_custom_dataset('/home/silvia/Desktop/data_U_class34.hdf5', '/home/silvia/Desktop/metadata_U_class34.csv')
-Dd.crea_custom_dataset('/home/silvia/Desktop/data_D_class55.hdf5', '/home/silvia/Desktop/metadata_D_class55.csv')
+Datau.sismogramma = np.concatenate((Datau_1.sismogramma, Datau_2.sismogramma))
+for key in Datau.metadata:
+    Datau.metadata[key] = Datau_1.metadata[key] + Datau_2.metadata[key]
+Datad.sismogramma = np.concatenate((Datad_1.sismogramma, Datad_2.sismogramma))
+for key in Datad.metadata:
+    Datad.metadata[key] = Datad_1.metadata[key] + Datad_2.metadata[key]
+# print(len(Datad.sismogramma), len(Datau.sismogramma))
+
+Datau.crea_custom_dataset(houtu,coutu)
+Datad.crea_custom_dataset(houtd,coutd)
 """
 
 # TODO Affidabilità predizioni
@@ -824,7 +848,7 @@ Hara.crea_custom_dataset(hdf, csv)
 Hara.plotta(visualizzare, namepng="Hara_figure_normalizzate", percosro_cartellla=pat)
 """
 
-# TODO ricava indici test e classi (Som_updown_secondo)
+# TODO ricava indici test e classi (Som_updown_secondo) (ERRATO)
 """
 hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
@@ -959,7 +983,77 @@ Data_d_err.to_txt(txt_d)
 print(len(Data_u_err.sismogramma))
 print(len(Data_d_err.sismogramma))
 """
+#
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
+# houtu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_up_sotto_1_perc.hdf5'
+# coutu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_up_sotto_1_perc.csv'
+# houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_down_sotto_1_perc_NON_NORMALIZZ.hdf5'
+# coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_down_sotto_1_perc_NON_NORMALIZZ.csv'
+# Data = ClasseDataset()
+# Data.leggi_custom_dataset(hdf5in,csvin)
+#
+# selezionau = []
+# selezionad = []
+#
+# # Data.leggi_classi_txt('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt')
+# for i in range(len(Data.sismogramma)):
+#     if Data.metadata["trace_polarity"][i] == 'positive':
+#         selezionau.append(i)
+#     else:
+#         selezionad.append(i)
+#         # print(i)
+# Datau = Data.seleziona_indici(selezionau)
+# Datad = Data.seleziona_indici(selezionad)
+#
+# classi = []
+# with open('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt', 'r') as f:
+#     for line in f:
+#         if line:  # avoid blank lines
+#             classi.append(int(float(line.strip())))
+# Datau.classi = classi[0:len(Datau.sismogramma)]
+# Datad.classi = classi[len(Datau.sismogramma):]
+# # print(len(Datad.sismogramma), len(Datau.sismogramma), len(Datau.classi), len(Datad.classi))
+#
+# classi_up_l_1_1 = [18, 33, 41, 49]
+# classi_up_l_1_2 = [34]
+# classi_down_l_1_1 = [24, 30, 31, 39, 40, 46]
+# classi_down_l_1_2 = [47, 54]
+#
+# cl_up_indici, cl_down_indici = [], []
+# Datau.ricava_indici_classi(classi_up_l_1_1, cl_up_indici)
+# Datad.ricava_indici_classi(classi_down_l_1_1, cl_down_indici)
+# Datau_1 = Datau.seleziona_indici(cl_up_indici)
+# Datad_1 = Datad.seleziona_indici(cl_down_indici)
+#
+# cl_up_indici, cl_down_indici = [], []
+# Datau.ricava_indici_classi(classi_up_l_1_2, cl_up_indici)
+# Datad.ricava_indici_classi(classi_down_l_1_2, cl_down_indici)
+# Datau_2 = Datau.seleziona_indici(cl_up_indici)
+# Datad_2 = Datad.seleziona_indici(cl_down_indici)
+#
+# Datau.sismogramma = np.concatenate((Datau_1.sismogramma, Datau_2.sismogramma))
+# for key in Datau.metadata:
+#     Datau.metadata[key] = Datau_1.metadata[key] + Datau_2.metadata[key]
+# Datad.sismogramma = np.concatenate((Datad_1.sismogramma, Datad_2.sismogramma))
+# for key in Datad.metadata:
+#     Datad.metadata[key] = Datad_1.metadata[key] + Datad_2.metadata[key]
+# # print(len(Datad.sismogramma), len(Datau.sismogramma))
+#
+# # Datau.crea_custom_dataset(houtu,coutu)
+# Datad.crea_custom_dataset(houtd,coutd)
 
+from tensorflow import keras
+
+semi_amp = 80
+pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
+tentativo = 52
+salva_predizioni = True
+nome_predizione = "/Predizioni_data_up_sotto_1_perc_tentativo_"
+model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
+model.summary()
+print("\n\n\n\n\n")
+print(model.optimizer.learning_rate)
 
 
 # 133532

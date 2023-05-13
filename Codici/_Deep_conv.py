@@ -84,7 +84,7 @@ e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 invertito = False       # Per invertire test e val
 # e_test, e_val, invertito = e_val, e_test, True
-tentativi = [83]
+tentativi = [84]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
@@ -93,7 +93,7 @@ for tentativo in tentativi:
 semiampiezza = 80
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
-pazienza = 3
+pazienza = 10
 drop = 0.0
 # lr = 0.01
 
@@ -111,8 +111,8 @@ x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_tra
 
 for tentativo in tentativi:
     # lr = lrs[indice_tent]
-    # momento = momenti[indice_tent]
-    epsilon = epsilons[indice_tent]  # TODO cambia (al prossimo....)
+    momento = momenti[indice_tent]
+    # epsilon = epsilons[indice_tent]  # TODO cambia (al prossimo....)
     # print('\n\tepsilon = ', epsilon)
     # momento = 0.8
     # print('\n\tmomento = ', momento)
@@ -164,13 +164,13 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        Dropout(drop),
+        # Dropout(drop),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(drop),
+        # Dropout(drop),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -179,8 +179,8 @@ for tentativo in tentativi:
     ])
 
     model.compile(
-        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        optimizer=optimizers.Adam(epsilon=epsilon),
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
@@ -258,7 +258,7 @@ for tentativo in tentativi:
                "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
                "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
-               "\nHO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
+               "\nNON HO DROPOUT (" + str(drop) + ") dopo 1o e 4o cpnv" + \
                "\n###############  HO ESCLUSO DATI POLLINO  ###############"
     if invertito:
         dettagli = dettagli + "\n############### Inverto test e val ###############"

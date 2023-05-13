@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e59a045a-66fa-43b7-abb2-30250a02ac46" name="Changes" comment="" />
+    <list default="true" id="e59a045a-66fa-43b7-abb2-30250a02ac46" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Disegni.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Disegni.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -156,9 +163,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python._Disegni" />
+        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python._Deep_LoadModel" />
         <item itemvalue="Python._Deep_conv" />
-        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python._Test" />
       </list>
     </recent_temporary>

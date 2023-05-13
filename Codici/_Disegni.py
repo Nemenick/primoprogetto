@@ -45,9 +45,9 @@ def textonly(ax, txt, fontsize = 14, loc = 2, *args, **kwargs):
     ax.add_artist(at)
     return at
 
-# TODO reliability
-# """
-n_bin = 12
+# TODO reliability - ECE
+"""
+n_bin = 10
 ipath = '/home/silvia/Desktop/Immagini'
 x = np.arange(0, n_bin)/n_bin
 y_optimum_up = (np.arange(0, n_bin) + 0.5) / n_bin           # TODO caso in cui affidabilità singola classe
@@ -61,11 +61,9 @@ colors = ['#bdbcdb', '#3a3da7']
 cmap = LinearSegmentedColormap.from_list('my_palette', colors)
 custom_cmap = [cmap(i/n_bin) for i in range(n_bin)]
 
+fig, ax = plt.subplots(figsize=(9,7))
 
-fig, ax = plt.subplots()
-
-
-rects = ax.bar(x, y1-y_excess, width=1/n_bin, label='CFM calibration', edgecolor="black",
+rects = ax.bar(x, y1-y_excess, width=1/n_bin, label='', edgecolor="black",
                color=custom_cmap, align='edge', zorder=1)
 ax.bar(x, y_excess, width=1/n_bin, label='Exceeding calibration', edgecolor="black", color='blue', align='edge',
        zorder=2, hatch='//', bottom=y1-y_excess)
@@ -73,9 +71,9 @@ index = 0
 for rect in rects:
     height = rect.get_height()
     ax.text(rect.get_x() + rect.get_width() / 2, max(y1[index],y_optimum_up[index]) , predizioni[1][index],
-            ha='center', va='bottom', color='red')
+            ha='center', va='bottom', color='red', fontsize=14)
     ax.text(rect.get_x() + rect.get_width() / 2, max(y1[index], y_optimum_up[index]) + 0.05, predizioni[2][index],
-            ha='center', va='bottom', color='blue')
+            ha='center', va='bottom', color='blue', fontsize=14)
     index += 1
 
 # background
@@ -83,22 +81,23 @@ ax.bar(x, y_optimum_up, width=1 / n_bin, label='Deficit calibration', edgecolor=
        align='edge', zorder=-1)
 ax.bar(x, y_optimum_up, width=1 / n_bin, label='Optimal Calibration', align='edge', zorder=2, color=(0, 1, 0, 0.000001),
        edgecolor=(0, 0.65, 0, 1), linewidth=1.5)
-ax.grid(color='gray', linestyle=':', linewidth=1, alpha=0.3)
+ax.grid(color='gray', linestyle=':', linewidth=2, alpha=0.3)
 ax.set_axisbelow(True)
 # plt.plot([0, 1], [0, 1], linestyle="--", color='grey', linewidth="2")
 
 ax.set_xlim(0, 1.)
 ax.set_ylim(0, 1.1)
-ax.set_title('P(polarity(x) = up | CFM(x))')
-ax.set_xlabel('Predicted probability')
-ax.set_ylabel('Fraction of positive class (upward)')
-plt.legend()
-# plt.show()
-plt.savefig(ipath + '/Reliability4.jpg')
+ax.set_title('CFM calibration', fontsize=18.5)
+ax.set_xlabel('Predicted probability', fontsize=17.5)
+ax.set_ylabel('Fraction of positive class (upward)', fontsize=17.5)
+ax.tick_params(axis='both', which='major', labelsize=13.5)
+plt.legend(fontsize=15.5)
+
 ECE = sum(predizioni[0]*abs(y1-y_optimum_up))/sum(predizioni[0])
-# plt.savefig(ipath + '/Reliability.jpg', dpi=300)
 print(ECE)
-# """
+plt.savefig(ipath + '/Reliability11.jpg', dpi=300, bbox_inches='tight')
+plt.show()
+"""
 
 # TODO grafica mappa
 """
@@ -279,7 +278,7 @@ for k in range(numero_confronto):
 
 
 print(predizioni)
-plt.figure(figsize=(5,6))
+plt.figure(figsize=(3.34646,4.01575))
 for k in range(numero_confronto):
     plt.plot(predizioni[k][0][10:-10], predizioni[k][2][10:-10], label=labels[k], color=colori[k])
 
@@ -288,8 +287,9 @@ plt.axhline(0.5, color='k', ls='dashed', lw=1)
 plt.axhline(0.75, color='k', ls='dashed', lw=1)
 plt.legend(fontsize=9.5)
 plt.xlabel('T  (translation samples in test set)')
+plt.ylabel('Accuracy')
 plt.axvline(linestyle="--", color="red", linewidth="0.5")
-plt.savefig(path_save + "/" + name_save, dpi=300)
+plt.savefig(path_save + "/" + name_save + ".jpg", dpi=300, bbox_inches='tight')
 """
 
 # TODO 4 figure heterogeneous
@@ -349,7 +349,7 @@ for i,j in [[0,0], [0,1], [1,0], [1,1]]:
         stringa = stringa + "positive [" + str(round(list_pred[i][j]*100,1)) + "%]"
     else:
         stringa = stringa + "negative [" + str(100-round(list_pred[i][j] * 100, 1)) + "%]"
-    textonly(axes[i][j], stringa, loc=2, fontsize=12)
+    textonly(axes[i][j], stringa, loc=2, fontsize=13)
     # legend_ins = [mlines.Line2D([], [],   linestyle='None',
     #                            label='Training events'),
     #                    mlines.Line2D([], [],  linestyle='None',
@@ -360,8 +360,8 @@ for i,j in [[0,0], [0,1], [1,0], [1,1]]:
 for ax in fig.get_axes():
     ax.label_outer()
 fig.supxlabel('Time ($10^{-2} s$)', fontsize=20)
-fig.supylabel('Normalized ground motion (counts)', fontsize=20, x=0.05)
-plt.savefig(path_save + "/" + name_save, dpi=300)
+fig.supylabel('Normalized ground motion', fontsize=20, x=0.05)
+plt.savefig(path_save + "/" + name_save, dpi=300, bbox_inches='tight')
 plt.show()
 
 """
