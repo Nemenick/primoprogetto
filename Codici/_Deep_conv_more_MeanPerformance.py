@@ -61,20 +61,20 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
-csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
-# percorso di dove sono contenuti i metadata
-hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
-# percorso di Dove sono contenute le tracce
+
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativo = 168
-n_train = 10     # number of train to mean
+n_train = 7     # number of train to mean
+tentativo = "1"
+tentativo = str(n_train) + "_" + tentativo
+#path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
 
-path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'+str(168)
 os.mkdir(path_tentativi)
 for i in range(n_train):
     os.mkdir(path_tentativi + "/" + str(i))
@@ -83,6 +83,7 @@ semiampiezza = 80
 epoche = 100
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 3
+drop = 0.0
 
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -107,11 +108,13 @@ for tent in range(n_train):
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
+        # Dropout(drop),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
+        # Dropout(drop),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -166,6 +169,7 @@ for tent in range(n_train):
 
     # TODO predict
     # """
+    model = keras.models.load_model(path_tentativi + "/" + str(tent) + "/Tentativo_"+str(tent)+".hdf5")
     yp_test = model.predict(x_test)
     print(y_test, len(y_test), "\n", yp_test, len(yp_test))
     yp_ok_test = []
@@ -221,7 +225,13 @@ for tent in range(n_train):
     # """
 
 
-dizio_acc = {"Acc_val": list_acc_val, "Acc_test": list_acc_test}
+lista_media_test, lista_std_test = ["" for i in range(len(list_acc_test))], ["" for i in range(len(list_acc_test))]
+lista_media_val, lista_std_val = ["" for i in range(len(list_acc_test))], ["" for i in range(len(list_acc_test))]
+lista_media_test[0] = np.mean(list_acc_test)
+lista_std_test[0] = np.std(list_acc_test)
+lista_media_val[0] = np.mean(list_acc_val)
+lista_std_val[0] = np.std(list_acc_val)
+dizio_acc = {"Acc_val": list_acc_val, "Acc_test": list_acc_test, "Mean_val": list_acc_val, "Std_val": lista_std_val, "Mean_test": list_acc_test, "Std_test": lista_std_test}
 
 datapandas_acc = pd.DataFrame.from_dict(dizio_acc)
 datapandas_acc.to_csv(path_tentativi +
@@ -229,20 +239,19 @@ datapandas_acc.to_csv(path_tentativi +
 
 file = open(path_tentativi  + "/_Dettagli_"+str(tentativo)+".txt", "w")
 # TODO Cambia i dettagli
-dettagli = "Rete numero " + str(rete) + \
-           "\nbatchsize = " + str(batchs) +\
-           "\nsemiampiezza = " + str(semiampiezza) +\
-           "\ndati normalizzati con primo metodo " + hdf5in +\
-           "\nsample_train = " + str(len(x_train)/2) +\
-           "\nIn questo train train,test,val sono instance" + \
-           "\ncoordinate test = " + str(e_test) + "con "+str(len(x_test))+" dati di test" + \
-           "\ncoordinate val = " + str(e_val) + "con "+str(len(x_val))+" dati di val" + \
-           "\nOptimizer: ADAM con epsilon = " + str(epsilon) + \
-           "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True"
-           # "\n###############  HO TOLTO DATI DEL POLLINO  ###############"
+dettagli =  f"""Rete numero  {rete}
+            batchsize = {batchs}
+            semiampiezza = {semiampiezza} 
+            dati normalizzati con primo metodo {hdf5in}
+            sample_train = {len(x_train)/2}
+            In questo train train,test,val sono instance
+            coordinate test = {e_test}) con {len(x_test)} dati di test 
+            coordinate val = {e_val}) con {len(x_val)} dati di val 
+            Optimizer: ADAM con epsilon = {epsilon}) 
+            Early_stopping con patiente = {pazienza})  restore_best_weights = True
+            DROPOUT ({drop}) dopo 1o e 4o cpnv\n
+            HO FATTO {n_train} train diversi, devo controllare medie """
 
-# "\nEarly_stopping    con    patiente = "+str(pazienza)+", restore_best_weights = True" +\
-#     "\nHo messo DROPOUT dopo primo poolong e prima ultimo conv1D"
 file.write(dettagli)
 file.close()
 # predizione = model.evaluate(x_test, y_test)
