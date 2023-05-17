@@ -1,0 +1,62 @@
+Cosa[0]
+data 	 <class 'numpy.ndarray'> 	 [-1.2703488e-06 -1.3712719e-06 -1.6468077e-06 ...  1.1037457e-06
+  1.0028226e-06  9.1151134e-07]
+id 	 <class 'str'> 	 CI.BOM..HHE
+meta 	 <class 'obspy.core.trace.Stats'> 	          network: CI
+         station: BOM
+        location: 
+         channel: HHE
+       starttime: 2020-10-01T00:00:00.008300Z
+         endtime: 2020-10-01T00:02:59.998300Z
+   sampling_rate: 100.0
+           delta: 0.01
+            npts: 18000
+           calib: 1.0
+         _format: MSEED
+           mseed: AttribDict({'dataquality': 'D', 'number_of_records': 18, 'encoding': 'FLOAT32', 'byteorder': '>', 'record_length': 4096, 'filesize': 3538944})
+stats 	 <class 'obspy.core.trace.Stats'> 	          network: CI
+         station: BOM
+        location: 
+         channel: HHE
+       starttime: 2020-10-01T00:00:00.008300Z
+         endtime: 2020-10-01T00:02:59.998300Z
+   sampling_rate: 100.0
+           delta: 0.01
+            npts: 18000
+           calib: 1.0
+         _format: MSEED
+           mseed: AttribDict({'dataquality': 'D', 'number_of_records': 18, 'encoding': 'FLOAT32', 'byteorder': '>', 'record_length': 4096, 'filesize': 3538944})
+
+
+cosa[0].stats
+calib 	 <class 'float'> 	 1.0
+channel 	 <class 'str'> 	 HHE
+defaults 	 <class 'dict'> 	 {'sampling_rate': 1.0, 'delta': 1.0, 'starttime': UTCDateTime(1970, 1, 1, 0, 0), 'endtime': UTCDateTime(1970, 1, 1, 0, 0), 'npts': 0, 'calib': 1.0, 'network': '', 'station': '', 'location': '', 'channel': ''}
+delta 	 <class 'float'> 	 0.01
+do_not_warn_on 	 <class 'list'> 	 []
+endtime 	 <class 'obspy.core.utcdatetime.UTCDateTime'> 	 2020-10-01T00:02:59.998300Z
+location 	 <class 'str'> 	 
+mseed 	 <class 'obspy.core.util.attribdict.AttribDict'> 	 AttribDict({'dataquality': 'D', 'number_of_records': 18, 'encoding': 'FLOAT32', 'byteorder': '>', 'record_length': 4096, 'filesize': 3538944})
+network 	 <class 'str'> 	 CI
+npts 	 <class 'int'> 	 18000
+readonly 	 <class 'list'> 	 ['endtime']
+sampling_rate 	 <class 'float'> 	 100.0
+starttime 	 <class 'obspy.core.utcdatetime.UTCDateTime'> 	 2020-10-01T00:00:00.008300Z
+station 	 <class 'str'> 	 BOM
+warn_on_non_default_key 	 <class 'bool'> 	 False
+
+stats keys KeysView(Stats({'sampling_rate': 100.0, 'delta': 0.01, 'starttime': UTCDateTime(2020, 10, 1, 0, 0, 0, 8300), 'endtime': UTCDateTime(2020, 10, 1, 0, 2, 59, 998300), 'npts': 18000, 'calib': 1.0, 'network': 'CI', 'station': 'BOM', 'location': '', 'channel': 'HHE', 'mseed': AttribDict({'dataquality': 'D', 'number_of_records': 18, 'encoding': 'FLOAT32', 'byteorder': '>', 'record_length': 4096, 'filesize': 3538944}), '_format': 'MSEED'}))
+
+
+
+cosa[0].stats.mseed
+byteorder 	 <class 'str'> 	 >
+dataquality 	 <class 'str'> 	 D
+defaults 	 <class 'dict'> 	 {}
+do_not_warn_on 	 <class 'list'> 	 []
+encoding 	 <class 'str'> 	 FLOAT32
+filesize 	 <class 'int'> 	 3538944
+number_of_records 	 <class 'int'> 	 18
+readonly 	 <class 'list'> 	 []
+record_length 	 <class 'int'> 	 4096
+warn_on_non_default_key 	 <class 'bool'> 	 False

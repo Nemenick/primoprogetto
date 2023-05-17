@@ -1,11 +1,14 @@
 import obspy
 import numpy as np
-from obspy import read
+from obspy import read, Stream, Trace
 import datetime
 import pandas as pd
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
-""" VEDI PRIMA CODICE IN _Sposta_cartelle """
+
+# TODO Np_Data+Dictionary_Metadata from sac
+"""
+# VEDI PRIMA CODICE IN _Sposta_cartelle
 
 # path = "/home/silvia/Desktop/Pollino/*/*Z.sac"
 path = "/home/silvia/Desktop/Waveforms_Pollino_buone/*/*Z.sac"
@@ -42,7 +45,7 @@ data = []                               # ok
 data_list = ['nzyear', 'nzjday', 'nzhour', 'nzmin', 'nzsec', 'nzmsec']
 for i in range(len(tracce_sac)):
     # TODO per arrival sample
-    # """
+
     # print(start.datetime, type(start.datetime), type(start))
     d = []
     for j in data_list:
@@ -125,5 +128,33 @@ DatasetPollino.crea_custom_dataset(hdf5out, csvout)
 # plt.plot(np_cosa)
 # plt.axvline(x=int(arrival*100), c="r", ls="--", lw="1")
 # plt.show()
-# """
+"""
 
+# TODO mseed from Np_Data+Dictionary_Metadata
+# """
+# in stream.Trace.data metto i data in stream.Trace.stats info standard,
+# la domanda è in stream.Trace.stats.mseed posso mettere tutto quello che voglio come dizionario??????????????
+hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+
+Dati_ori = ClasseDataset()
+Dati_ori.leggi_custom_dataset(hdf5in, csvin)
+
+
+Data_stream = Stream()
+# for i in range(len(Dati_ori.sismogramma)):
+for i in range(len(10)):
+# Create a Trace object with the data. header =... fill my trace.stats
+    trace = Trace(data=Dati_ori.sismogramma[i],
+              header={'network': 'network_value',
+                      'station': 'station_value',
+                      'location': 'location_value',
+                      'channel': 'channel_value',
+                      'starttime': starttime_value,
+                      'sampling_rate': sampling_rate_value})
+    # trace.stats = metadata
+    trace.id = Dati_ori.metadata["trace_name"]  # ok
+
+    Data_stream.append(trace)
+
+# """

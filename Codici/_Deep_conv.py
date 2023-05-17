@@ -84,7 +84,7 @@ e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 invertito = False       # Per invertire test e val
 # e_test, e_val, invertito = e_val, e_test, True
-tentativi = [84]
+tentativi = [157]
 
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:

@@ -1,1 +1,24 @@
-ù
+'trace_name','station_code','station_channels','trace_start_time','trace_P_arrival_sample',
+'trace_polarity','trace_P_uncertainty_s','source_magnitude','source_magnitude_type','source_origin_time',
+'source_latitude_deg','source_longitude_deg','trace_Z_snr_db'
+
+
+
+'sampling_rate'
+'delta'
+'starttime' UTCDateTime(2020, 10, 1, 0, 0, 0, 8300)
+'endtime': UTCDateTime(2020, 10, 1, 0, 2, 59, 998300)
+'npts': 18000, 'calib': 1.0
+'network': 'CI'
+'station': 'BOM'
+'locatio
+'channel': 'HHE'
+'_format': 'MSEED'
+
+'mseed': AttribDict({
+    'dataquality': 'D'
+    'number_of_records': 18
+    'encoding': 'FLOAT32'
+    'byteorder': '>'
+    'record_length': 4096
+    'filesize': 3538944}),

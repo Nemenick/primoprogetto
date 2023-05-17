@@ -1043,17 +1043,5 @@ print(len(Data_d_err.sismogramma))
 # # Datau.crea_custom_dataset(houtu,coutu)
 # Datad.crea_custom_dataset(houtd,coutd)
 
-from tensorflow import keras
-
-semi_amp = 80
-pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativo = 52
-salva_predizioni = True
-nome_predizione = "/Predizioni_data_up_sotto_1_perc_tentativo_"
-model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
-model.summary()
-print("\n\n\n\n\n")
-print(model.optimizer.learning_rate)
-
 
 # 133532
