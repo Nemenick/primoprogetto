@@ -62,8 +62,11 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+#csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+#hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+
+hdf5in ='/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_New1-1.csv'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
@@ -71,19 +74,18 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 n_train = 7     # number of train to mean
-tentativo = "1"
-tentativo = str(n_train) + "_" + tentativo
-#path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
+tentativo = "8"
+path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
 
 os.mkdir(path_tentativi)
 for i in range(n_train):
     os.mkdir(path_tentativi + "/" + str(i))
 
 semiampiezza = 80
-epoche = 100
+epoche = 85
 batchs = 512                                # TODO CAMBIA parametri
-pazienza = 3
-drop = 0.0
+pazienza = 10
+drop = 0.5
 
 x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
                                                                                             semiampiezza, Dati)
@@ -98,23 +100,23 @@ list_acc_val = []
 
 for tent in range(n_train):
 
-    epsilon = 10**(-3)  # TODO cambia (al prossimo....)
-    print('\n\tepsilon = ', epsilon)
-    # momento = 0.75
-    # print('\n\tmomento = ', momento)
+    # epsilon = 10**(-2)  # TODO cambia (al prossimo....)
+    # print('\n\tepsilon = ', epsilon)
+    momento = 0.8
+    print('\n\tmomento = ', momento)
 
     #  TODO Seconda rete
     # """
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        # Dropout(drop),
+        Dropout(drop),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        # Dropout(drop),
+        Dropout(drop),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -123,14 +125,15 @@ for tent in range(n_train):
     ])
 
     model.compile(
-        # optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        optimizer=optimizers.Adam(epsilon=epsilon),
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
     # """
 
-    model.summary()
+    model.summary() 
+    print(f"######################Inizio il {int(tent)+1}o training ######################")
 
     # Inizio il train
 
@@ -141,7 +144,7 @@ for tent in range(n_train):
                        validation_data=(x_val, y_val),
                        callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
     print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
-    model.save(path_tentativi + "/" + str(tent) + "/Tentativo_"+str(tent)+".hdf5")
+    model.save(path_tentativi + "/" + str(tent) + f"/Tentativo_More_{tentativo}_"+str(tent)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
     print(storia.history.keys())
 
@@ -153,19 +156,19 @@ for tent in range(n_train):
     plt.plot(range(len(acc_train)), acc_train, label="acc_train")
     plt.plot(range(len(acc_val)), acc_val, label="acc_val")
     plt.legend()
-    plt.savefig(path_tentativi + "/" + str(tent) + "/accuracy_"+str(tent))
+    plt.savefig(path_tentativi + "/" + str(tent) + f"/accuracy_More_{tentativo}_"+str(tent))
     plt.clf()
 
     plt.yscale("log")
     plt.plot(range(len(loss_train)), loss_train, label="loss_train")
     plt.plot(range(len(loss_val)), loss_val, label="loss_val")
     plt.legend()
-    plt.savefig(path_tentativi + "/" + str(tent) + "/loss_"+str(tent))
+    plt.savefig(path_tentativi + "/" + str(tent) + f"/loss_More_{tentativo}_"+str(tent))
     plt.clf()
 
     dizio = {"loss_train": loss_train, "loss_val": loss_val, "acc_train": acc_train, "acc_val": acc_val}
     data_pandas = pd.DataFrame.from_dict(dizio)
-    data_pandas.to_csv(path_tentativi + "/" + str(tent) + '/Storia_train_' + str(tent) + '.csv', index=False)
+    data_pandas.to_csv(path_tentativi + "/" + str(tent) + f'/Storia_train_More_{tentativo}_' + str(tent) + '.csv', index=False)
 
     # TODO predict
     # """
@@ -219,9 +222,9 @@ for tent in range(n_train):
     datapandas_test = pd.DataFrame.from_dict(dizio_test)
     datapandas_val = pd.DataFrame.from_dict(dizio_val)
     datapandas_test.to_csv(path_tentativi + "/" + str(tent) +
-                           "/Predizioni_test_tentativo_" + str(tent) + ".csv", index=False)
+                           f"/Predizioni_test_tentativo_More_{tentativo}_" + str(tent) + ".csv", index=False)
     datapandas_val.to_csv(path_tentativi + "/" + str(tent) +
-                          "/Predizioni_val_tentativo_" + str(tent) + ".csv", index=False)
+                          f"/Predizioni_val_tentativo_More_{tentativo}_" + str(tent) + ".csv", index=False)
     # """
 
 
@@ -231,13 +234,13 @@ lista_media_test[0] = np.mean(list_acc_test)
 lista_std_test[0] = np.std(list_acc_test)
 lista_media_val[0] = np.mean(list_acc_val)
 lista_std_val[0] = np.std(list_acc_val)
-dizio_acc = {"Acc_val": list_acc_val, "Acc_test": list_acc_test, "Mean_val": list_acc_val, "Std_val": lista_std_val, "Mean_test": list_acc_test, "Std_test": lista_std_test}
+dizio_acc = {"Acc_val": list_acc_val, "Acc_test": list_acc_test, "Mean_val": lista_media_val, "Std_val": lista_std_val, "Mean_test": lista_media_test, "Std_test": lista_std_test}
 
 datapandas_acc = pd.DataFrame.from_dict(dizio_acc)
 datapandas_acc.to_csv(path_tentativi +
                       "/Accuratezze_vari_train" + ".csv", index=False)
 
-file = open(path_tentativi  + "/_Dettagli_"+str(tentativo)+".txt", "w")
+file = open(path_tentativi  + "/_Dettagli_More_"+str(tentativo)+".txt", "w")
 # TODO Cambia i dettagli
 dettagli =  f"""Rete numero  {rete}
             batchsize = {batchs}
@@ -247,7 +250,7 @@ dettagli =  f"""Rete numero  {rete}
             In questo train train,test,val sono instance
             coordinate test = {e_test}) con {len(x_test)} dati di test 
             coordinate val = {e_val}) con {len(x_val)} dati di val 
-            Optimizer: ADAM con epsilon = {epsilon}) 
+            Optimizer: SGD con momento = {momento}) 
             Early_stopping con patiente = {pazienza})  restore_best_weights = True
             DROPOUT ({drop}) dopo 1o e 4o cpnv\n
             HO FATTO {n_train} train diversi, devo controllare medie """

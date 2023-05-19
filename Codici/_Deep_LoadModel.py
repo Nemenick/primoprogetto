@@ -7,15 +7,15 @@ from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
 from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
-houtu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_up_sotto_1_perc.hdf5'
-coutu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_up_sotto_1_perc.csv'
+# houtu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_up_sotto_1_perc.hdf5'
+# coutu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_up_sotto_1_perc.csv'
 # houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_down_sotto_1_perc.hdf5'
 # coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_down_sotto_1_perc.csv'
-houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_down_sotto_1_perc.hdf5'
-coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_down_sotto_1_perc.csv'
+# houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_down_sotto_1_perc.hdf5'
+# coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_down_sotto_1_perc.csv'
 
-hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+# hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+# csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
 # hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
@@ -31,8 +31,11 @@ csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzat
 
 # hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_D_class47_54.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_D_class47_54.csv'
-hdf5_predicting = houtu
-csv_predicting = coutu
+
+hdf5_predicting ='/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5'
+csv_predicting = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_New1-1.csv'
+
+
 Data_predicting = ClasseDataset()
 Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
 sample_train = len(Data_predicting.sismogramma)
@@ -40,11 +43,11 @@ sample_train = len(Data_predicting.sismogramma)
 lung = len(Data_predicting.sismogramma[0])
 semi_amp = 80
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativo = 84
-salva_predizioni = True
+tentativo = 52
+salva_predizioni = False
 nome_predizione = "/Predizioni_data_up_sotto_1_perc_tentativo_"
 # TODO predict Instance Test
-"""
+#"""
 estremi_test = [43, 45, 9.5, 11.8]
 xtest = []
 y_test_true = []
@@ -59,16 +62,16 @@ for k in range(len(Data_predicting.sismogramma)):
         elif Data_predicting.metadata["trace_polarity"][k] == "negative":
             y_test_true.append(0)
 Data_predicting = Data_predicting.seleziona_indici(test_indici)
-"""
+# """
 
 # TODO predict other than Instance
-# """
+"""
 xtest = np.zeros((sample_train, semi_amp * 2))
 for k in range(sample_train):
     xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
 y_test_true = np.array([Data_predicting.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)])
 y_test_true = y_test_true + 0
-# """
+"""
 model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
 model.summary()
 

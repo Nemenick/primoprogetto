@@ -67,8 +67,12 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
 # hdf5in = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
 # csvin = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
 
-hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+# hdf5in = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+# csvin = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+
+hdf5in = '/home/silvia/Desktop/Hara/Test/Hara_test_data_Normalizzate_1-1.hdf5'
+csvin = '/home/silvia/Desktop/Hara/Test/Hara_test_metadata_Normalizzate_1-1.csv'
+HARA = True
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)
@@ -77,18 +81,18 @@ print("N_sismogrammi", len(Dati.sismogramma), "N_polarità", len(Dati.metadata["
 
 
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
-tentativi = ["81"]
-semiampiezza = 80       # TODO
+tentativi = ["55"]
+semiampiezza = 75       # TODO
 
-save_img = False
+save_img = True
 path_save = '/home/silvia/Desktop'
-name_save_img = 'Ross39'
-nome_file_append = "predizioni_shift_Ross_tent_"
-labels = ["no shift", "66 (secondo metodo 5pt)", "79 (secondo metodo 10pt)"]  # TODO
+name_save_img = 'Hara55'
+nome_file_append = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Predizioni_shift/predizioni_shift_Hara_tent_"
+labels = ["55 no shift", "66 (secondo metodo 5pt)", "79 (secondo metodo 10pt)"]  # TODO
 colori = ["blue", "red", "orange"]
 
 # time_shifts = [(i-9) for i in range(61)]
-time_shifts = range(11,31)
+time_shifts = range(-3,4)
 # TODO test instance
 """
 e_test = [43, 45, 9.5, 11.8]
@@ -102,7 +106,7 @@ x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
 """
 
-# TODO test Ross
+# TODO test other than Instance
 # """
 Dati_test = Dati
 Dati_val = ClasseDataset()
@@ -112,7 +116,7 @@ x = np.zeros((len(Dati_test.sismogramma), semiampiezza*2))
 y = np.array([Dati_test.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati_test.sismogramma))])
 # """
 y = y + 0
-# time_shifts = range(26, 31)
+
 
 predizioni = [[[], [], []] for i in range(len(tentativi))]
 fig, axs = plt.subplots(1, 2)
@@ -124,11 +128,21 @@ for k in range(len(tentativi)):
     model.summary()
 
     for time_shift in time_shifts:
+        # Timeshift == +1 SPOSTO LA FINESTRA IN AVANTI! (pick indietro, ho più onda e meno rumore)
         file1 = open(nome_file_append + str(tentativo) + ".txt", "a")  # TODO append mode
         for i in range(len(Dati_test.sismogramma)):
-            x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
-        # for j in range(len(Dati_val.sismogramma)):
-        #     x[j+len(Dati_test.sismogramma)] = Dati_val.sismogramma[j][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
+            if 'HARA' not in locals() or 'cosa' in globals():
+                # se non perdico Hara tutto ok
+                x[i] = Dati_test.sismogramma[i][lung // 2 - semiampiezza + time_shift:lung // 2 + semiampiezza + time_shift]
+            else:
+                # se predico Hara, loro mi danno solo i 75*2.. come faccio shift? faccio "padding"
+                if time_shift >= 0: # a dx DEVO dare non 0 ma il livello a cui sto gia...
+                    x[i][0:semiampiezza*2-time_shift] = Dati_test.sismogramma[i][time_shift:]
+                    x[i][semiampiezza*2-time_shift:] = Dati_test.sismogramma[i][-1]
+                else:
+                    x[i][-time_shift:] = Dati_test.sismogramma[i][0:time_shift]
+                    x[i][:-time_shift] = Dati_test.sismogramma[i][0]
+                    
         predizione = model.evaluate(x, y, batch_size=1024)
         predizioni[k][0].append(time_shift)
         predizioni[k][1].append(predizione[0])

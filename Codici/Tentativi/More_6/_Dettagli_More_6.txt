@@ -1,0 +1,13 @@
+Rete numero  2
+            batchsize = 512
+            semiampiezza = 80 
+            dati normalizzati con primo metodo /home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5
+            sample_train = 132246.0
+            In questo train train,test,val sono instance
+            coordinate test = [43, 45, 9.5, 11.8]) con 8411 dati di test 
+            coordinate val = [37.5, 38.5, 14.5, 16]) con 9662 dati di val 
+            Optimizer: ADAM con eps = 0.01) 
+            Early_stopping con patiente = 10)  restore_best_weights = True
+            DROPOUT (0.0) dopo 1o e 4o cpnv
+
+            HO FATTO 7 train diversi, devo controllare medie 
