@@ -1,4 +1,7 @@
+# nohup /home/silvia/Documents/GitHub/primoprogetto/venv/bin/python /home/silvia/Documents/GitHub/primoprogetto/Codici/Drive_sismogramma_linux.py &> Codici/Zoutput.txt
+
 # import dask.dataframe as dd
+import os
 import h5py
 import math
 import seaborn
@@ -13,21 +16,25 @@ import numpy as np
 import matplotlib.colors as colors
 from mpl_toolkits.basemap import Basemap
 from Classe_sismogramma_v3 import ClasseDataset
-
+from tensorflow import keras
+from keras.layers import  Dropout
+import gc
 
 # TODO acquisisci new
-"""
+""" 
 Dati = ClasseDataset()
-hdf5 = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k.hdf5'
-hdf5_mio = '/home/silvia/Desktop/Sample_dataset/data/Instance_events_gm_10k_mio.hdf5'
-csv = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k.csv'
-csv_mio = '/home/silvia/Desktop/Sample_dataset/metadata/metadata_Instance_events_10k_mio.csv'
-# colonne = ["trace_name", "station_channels", "trace_P_arrival_sample", "trace_polarity",
-#            "trace_P_uncertainty_s", "source_magnitude", "source_magnitude_type"] ! RICVEDI
+hdf5 = '/home/silvia/Desktop/Instance_Data/data'
+csv = '/home/silvia/Desktop/Instance_Data/metadata_Instance_events_v2.csv'
+hdf5_mio = /home/silvia/Desktop/Instance_undecidable_data.hdf5'
+csv_mio = /home/silvia/Desktop/Instance_undecidable_metadata.csv'
+colonne = ['trace_name','station_code','station_channels','trace_start_time','trace_P_arrival_sample',
+'trace_polarity','trace_P_uncertainty_s','source_magnitude','source_magnitude_type','source_origin_time',
+'source_latitude_deg','source_longitude_deg','trace_Z_snr_db']
 Dati.acquisisci_new(hdf5, csv, colonne)
 Dati.finestra(400)
+Dati.demean()
 Dati.crea_custom_dataset(hdf5_mio, csv_mio)
-"""
+ """
 
 # TODO ricava longitudine, latitudine metadata
 """
@@ -194,7 +201,7 @@ Dataset.leggi_custom_dataset(hdf5, csv)
 Dataset.to_txt(txt_data, txt_metadata)
 """
 
-# Todo Dividi dataset up/down o altro
+# TODO Dividi dataset up/down o altro
 """
 # hdf5 = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_data_100Hz_sbagliati27.hdf5'
 # csv = '/home/silvia/Desktop/SOM_Pollino/Pollino_All_metadata_100Hz_sbagliati27.csv'
@@ -323,7 +330,6 @@ plt.show()
 # hdf5out = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_primi100.hdf5'  # TODO
 # csvout = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_primi100.csv'
 
-vettore_indici = []  # TODO
 
 Datain = ClasseDataset()
 Datain.leggi_custom_dataset(hdf5in, csvin)
@@ -332,6 +338,7 @@ path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 tentativi = "27"
 predizioni = pd.read_csv(path + '/' + tentativi + '/Predizioni_Pollino_tentativo_' + tentativi + '.csv')
 
+vettore_indici = []  # TODO
 for i in range(len(predizioni["delta"])):
     if predizioni["delta"][i] >= 0.5:
         vettore_indici.append(i)
@@ -877,7 +884,6 @@ indici_test = pd.DataFrame.from_dict({"indici_test": indici_test},dtype=int)
 indici_test.to_csv(indici_out,index=False)
 """
 
-
 # TODO ricava indici test e classi METODO GIUSTO (Som_updown_secondo)
 """
 hdf5inup = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_up_Velocimeter_4s.hdf5'
@@ -983,65 +989,140 @@ Data_d_err.to_txt(txt_d)
 print(len(Data_u_err.sismogramma))
 print(len(Data_d_err.sismogramma))
 """
-#
-# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
-# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
-# houtu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_up_sotto_1_perc.hdf5'
-# coutu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_up_sotto_1_perc.csv'
-# houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_down_sotto_1_perc_NON_NORMALIZZ.hdf5'
-# coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_down_sotto_1_perc_NON_NORMALIZZ.csv'
-# Data = ClasseDataset()
-# Data.leggi_custom_dataset(hdf5in,csvin)
-#
-# selezionau = []
-# selezionad = []
-#
-# # Data.leggi_classi_txt('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt')
-# for i in range(len(Data.sismogramma)):
-#     if Data.metadata["trace_polarity"][i] == 'positive':
-#         selezionau.append(i)
-#     else:
-#         selezionad.append(i)
-#         # print(i)
-# Datau = Data.seleziona_indici(selezionau)
-# Datad = Data.seleziona_indici(selezionad)
-#
-# classi = []
-# with open('/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/NEWclasses.txt', 'r') as f:
-#     for line in f:
-#         if line:  # avoid blank lines
-#             classi.append(int(float(line.strip())))
-# Datau.classi = classi[0:len(Datau.sismogramma)]
-# Datad.classi = classi[len(Datau.sismogramma):]
-# # print(len(Datad.sismogramma), len(Datau.sismogramma), len(Datau.classi), len(Datad.classi))
-#
-# classi_up_l_1_1 = [18, 33, 41, 49]
-# classi_up_l_1_2 = [34]
-# classi_down_l_1_1 = [24, 30, 31, 39, 40, 46]
-# classi_down_l_1_2 = [47, 54]
-#
-# cl_up_indici, cl_down_indici = [], []
-# Datau.ricava_indici_classi(classi_up_l_1_1, cl_up_indici)
-# Datad.ricava_indici_classi(classi_down_l_1_1, cl_down_indici)
-# Datau_1 = Datau.seleziona_indici(cl_up_indici)
-# Datad_1 = Datad.seleziona_indici(cl_down_indici)
-#
-# cl_up_indici, cl_down_indici = [], []
-# Datau.ricava_indici_classi(classi_up_l_1_2, cl_up_indici)
-# Datad.ricava_indici_classi(classi_down_l_1_2, cl_down_indici)
-# Datau_2 = Datau.seleziona_indici(cl_up_indici)
-# Datad_2 = Datad.seleziona_indici(cl_down_indici)
-#
-# Datau.sismogramma = np.concatenate((Datau_1.sismogramma, Datau_2.sismogramma))
-# for key in Datau.metadata:
-#     Datau.metadata[key] = Datau_1.metadata[key] + Datau_2.metadata[key]
-# Datad.sismogramma = np.concatenate((Datad_1.sismogramma, Datad_2.sismogramma))
-# for key in Datad.metadata:
-#     Datad.metadata[key] = Datad_1.metadata[key] + Datad_2.metadata[key]
-# # print(len(Datad.sismogramma), len(Datau.sismogramma))
-#
-# # Datau.crea_custom_dataset(houtu,coutu)
-# Datad.crea_custom_dataset(houtd,coutd)
+
+# TODO Metti insime predizioni bag
+"""
+import os
+list_csv = []
+pat = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/'
+a=os.scandir(pat)
+for it in a:
+    if it.path[-1] == "v":
+        list_csv.append(it.path)
+list_csv.sort()
+
+datapandas1 = pd.read_csv(list_csv[0])
+for i in list_csv[1:]:
+    datapandas2 = pd.read_csv(i)
+    for j in list(datapandas2.columns):
+        datapandas1[j] = datapandas2[j]
+datapandas1.to_csv("/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/File_buono.csv", index= False)
+"""
+"""
+# Metti insieme predizioni versione 2
+import pandas as pd
+
+pred = ["/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/0/Predizioni_Instance_Undecidable_More_1_0.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/1/Predizioni_Instance_Undecidable_More_1_1.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/2/Predizioni_Instance_Undecidable_More_1_2.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/3/Predizioni_Instance_Undecidable_More_1_3.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/4/Predizioni_Instance_Undecidable_More_1_4.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/5/Predizioni_Instance_Undecidable_More_1_5.csv",
+ "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/6/Predizioni_Instance_Undecidable_More_1_6.csv",
+ ]
+predizioni = [0 for i in range(7)]
+
+for i, p in enumerate(pred):
+    predizioni[i] = pd.read_csv(p)
+for i, p in enumerate(predizioni):
+    p[f"y_predict_{i}"] =  p[f"y_predict"] 
+newdataframe = pd.DataFrame.from_dict(predizioni[0]["traccia"])
+for i, p in enumerate(predizioni):
+    newdataframe[f"y_predict_{i}"] =p[f"y_predict_{i}"] 
+newdataframe["y_mano"] = "unndecidable"
+newdataframe.to_csv("/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/Predizioni_Instance_undecidable.csv")
+newdataframe"""
+
+# TODO predizioni 70 reti ROSS
+"""
+import pandas as pd
+import numpy as np
+pat_und = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/Predizioni_ross_undecidable_shift+1_more1_to_more10/File_buono.csv"
+pat_pol = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/Predizioni_ross_polarity_shift+1_more1_to_more10/File_buono.csv"
+datapd_pol = pd.read_csv(pat_pol)
+datapd_und = pd.read_csv(pat_und)
+mean_pol = datapd_pol.loc[:,list(datapd_pol.columns)[2:]].mean(axis=1)  # elimino col traccia e y_mano!
+mean_und = datapd_und.mean(axis=1)
+
+lis = []
+for i, col in enumerate(datapd_pol.columns):
+    if i > 1:
+        lis.append(col)
+
+df_bool_pol = (datapd_pol.loc[:,lis] >=0.5)
+votation_pol = df_bool_pol.sum(axis=1)
+
+lis = []
+for i, col in enumerate(datapd_und.columns):
+    if i > 1:
+        lis.append(col)
+
+df_bool_und = (datapd_und.loc[:,lis] >=0.5)
+votation_und = df_bool_und.sum(axis=1)
+
+binnaggio = 100
+import matplotlib.pyplot as plt
+fig, axi = plt.subplots(2,2, figsize=(13,7.5))
+mean_pol.hist(bins=binnaggio, edgecolor="black", ax=axi[0][0], weights=np.ones(len(mean_pol)) / len(mean_pol))
+mean_pol.hist(bins=40, edgecolor="black", ax=axi[0][1], weights=np.ones(len(mean_pol)) / len(mean_pol))
+mean_und.hist(bins=binnaggio, edgecolor="black",   ax=axi[1][0],weights=np.ones(len(mean_und)) / len(mean_und))
+mean_und.hist(bins=40, edgecolor="black",   ax=axi[1][1],weights=np.ones(len(mean_und)) / len(mean_und))
+"""
+
+# TODO MCDropout
+#"""
+class MCDropout(Dropout):
+    def call(self, inputs):
+        return super().call(inputs, training=True)
+
+hdf5_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_data_tot_no0.hdf5"
+csv_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_metadata_tot_no0.csv"
+
+Data_predicting = ClasseDataset()
+Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
+sample_train = len(Data_predicting.sismogramma)
+print("Ho Letto dataset")
+lung = len(Data_predicting.sismogramma[0])
+semi_amp = 80
+tent = "More_1_4"
+model_pat = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/4/Tentativo_{tent}.hdf5'
+nome_predizione = f"/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/MCDrop_Instance_undecidable_{tent}.csv"
+quante_predizioni = 1
+salva_predizioni = True
+time_shift = 0
+
+xtest = np.zeros((sample_train, semi_amp * 2))
+for k in range(sample_train):
+    xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp + time_shift:lung // 2 + semi_amp + time_shift]
+xtest = np.array(xtest)
+print("XSHAPEEEEEEEEEEEE", xtest.shape)
+model = keras.models.load_model(model_pat)
+model.summary()
+
+model_MCD = keras.models.Sequential([
+        model.get_layer(index=0),
+        MCDropout(0.5),
+        model.get_layer(index=2),
+        model.get_layer(index=3),
+        model.get_layer(index=4),
+        model.get_layer(index=5),
+        model.get_layer(index=6),
+        MCDropout(0.5),
+        model.get_layer(index=8),
+        model.get_layer(index=9),
+        model.get_layer(index=10),
+        model.get_layer(index=11),
+        model.get_layer(index=12),
+    ])
+model_MCD.summary()
+pred = pd.DataFrame.from_dict({"traccia":Data_predicting.metadata["trace_name"], "y_mano": "unndecidable"})
+
+for i in range(quante_predizioni):
+    y_predicted = model.predict(xtest, batch_size=2048)
+    y_predicted = np.reshape(y_predicted,len(y_predicted))
+    pred[f"pred_n_{i}"] = y_predicted
 
 
-# 133532
+if salva_predizioni:
+    pred.to_csv(nome_predizione)
+# """

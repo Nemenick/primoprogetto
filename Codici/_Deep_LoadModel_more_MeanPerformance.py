@@ -15,8 +15,8 @@ from Classe_sismogramma_v3 import ClasseDataset
 # houtd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/data_down_sotto_1_perc.hdf5'
 # coutd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/Dati_sotto_1_perc/metadata_down_sotto_1_perc.csv'
 
-hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
-csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
+# hdf5_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_data.hdf5'
+# csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzate20_New1-1_metadata.csv'
 
 # hdf5_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/data_U_class34.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo/metadata_U_class34.csv'
@@ -38,17 +38,23 @@ csv_predicting = '/home/silvia/Desktop/SCSN(Ross)/Ross_test_polarity_Normalizzat
 # hdf5_predicting ='/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_New1-1.csv'
 
+# hdf5_predicting = f'/home/silvia/Desktop/SCSN(Ross)/Normaliz/Ross_test_polarity_data_Normalizzate{str(asoglia)}_New1-1.hdf5'
+# csv_predicting = f'/home/silvia/Desktop/SCSN(Ross)/Normaliz/Ross_test_polarity_metadata_Normalizzate{str(asoglia)}_New1-1.csv'
+
+hdf5_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_data_tot_no0.hdf5"
+csv_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_metadata_tot_no0.csv"
+
 Data_predicting = ClasseDataset()
 Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
 sample_train = len(Data_predicting.sismogramma)
 
 lung = len(Data_predicting.sismogramma[0])
 semi_amp = 80
-time_shift = 1
-tentativo = "8"
+tentativo = "8"                # More_10
 path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
-salva_predizioni = True
-nome_predizione = "/Predizioni_Ross_shift_+1"
+salva_predizioni = False
+time_shift = 0
+nome_predizione = "/Predizioni_Instance_Pol_Test"
 
 # TODO predict Instance Test
 """
@@ -87,7 +93,7 @@ for it in os.scandir(path_tentativi):
         model.summary()
 
         
-        yp_test = model.predict(xtest, batch_size=2048)
+        yp_test = model.predict(xtest, batch_size=4096)
         
         # print(y_test_true, len(y_test_true), "\n", yp_test, len(yp_test))
         yp_ok_test = []

@@ -9,6 +9,7 @@ import matplotlib.colors as colors
 from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import matplotlib.lines as mlines
+import seaborn
 
 def calibration(tentativo: str = '52', nbin = 10):
     percorso = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/" + tentativo
@@ -365,6 +366,124 @@ plt.savefig(path_save + "/" + name_save, dpi=300, bbox_inches='tight')
 plt.show()
 
 """
+
+# TODO matrice confusione Predizione TEST
+"""
+# "y_Mano_test", "y_predict_test"
+fig_name = ['Ross_Shift_tentativo_52']
+titoli = ["SCSN test set"]                                  # TODO cambia
+path = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
+ipath = '/home/silvia/Desktop/'
+predizione = '/Predizioni_Ross_shift+1_tentativo_'  # '/Predizioni_test_tentativo_'
+tentativi = ['52']
+
+le = len(tentativi)
+
+# predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:
+# predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
+for i in range(le):
+    tp, tn, fp, fn = 0, 0, 0, 0
+    # predizioni = pd.read_csv(path + '/' + tentativi[i] + predizione + tentativi[i] + '.csv') # TODO
+    predizioni = pd.read_csv(path + '/' + tentativi[i] + predizione + tentativi[i] + '.csv')
+    for j in range(len(predizioni["traccia"])):
+        # predizioni["y_Mano_test"][j] == 1 and predizioni["delta_test"][j] < 0.5:          # TODO
+        # predizioni["y_Mano_pol"][j] == 1 and predizioni["delta_val"][j] < 0.5:
+
+        if predizioni["y_Mano"][j] == 1 and predizioni["delta"][j] < 0.5:
+            tp += 1
+        if predizioni["y_Mano"][j] == 0 and predizioni["delta"][j] < 0.5:
+            tn += 1
+        if predizioni["y_Mano"][j] == 1 and predizioni["delta"][j] >= 0.5:
+            fn += 1
+        if predizioni["y_Mano"][j] == 0 and predizioni["delta"][j] >= 0.5:
+            fp += 1
+    print("SONO TUTTI ? (tutti), tp+tn+..", len(predizioni["y_predict"]), tp+tn+fp+fn)
+    print(tp, fn, "\n", fp, tn)
+    print((tp+tn) / (fp+fn+tn+tp))
+    df = pd.DataFrame([[tp, fn], [fp, tn]], columns=["Positive", "Negative"])
+
+    # plot a heatmap with annotation
+    ax = seaborn.heatmap(df, annot=True, fmt=".7g", annot_kws={"size": 20}, cmap="Blues", cbar=False)
+    plt.xlabel("Predicted polarity (network)", fontsize=23, labelpad=33)
+    plt.ylabel("Assigned polarity (catalogue)", fontsize=23, labelpad=33)
+    plt.title(titoli[i], fontsize=23, pad=30)
+    ax.set_yticklabels(['Positive', 'Negative'], fontsize=15)
+    ax.set_xticklabels(['Positive', 'Negative'], fontsize=15)
+    ax.text(-0.1, 1.35,  r'$\mathbf{B}$', transform=ax.transAxes, fontsize=30,
+            verticalalignment='top')
+    plt.savefig(ipath+'/Confusion_matrix_'+fig_name[i]+".jpg", bbox_inches='tight', dpi=300)
+    plt.show()
+"""
+
+path_save = "/home/silvia/Desktop/Immagini"
+name_save = "figure_heterogeneous"
+hdf5u = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_U_class34.hdf5'
+csvu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_U_class34.csv'
+hdf5d = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_D_class47_54.hdf5'
+csvd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_D_class47_54.csv'
+Dati_down = ClasseDataset()
+Dati_down.leggi_custom_dataset(hdf5d, csvd)
+Dati_up = ClasseDataset()
+Dati_up.leggi_custom_dataset(hdf5u, csvu)
+
+# predizioni
+pat_pred_up = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52'+"/secondo_buono_data_U_class34.hdf5tentativo_52.csv"
+pat_pred_do = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52'+"/secondo_buono_data_D_class47_54.hdf5tentativo_52.csv"
+pred_up = pd.read_csv(pat_pred_up)
+pred_do = pd.read_csv(pat_pred_do)
+
+
+
+dati_do = []
+metadati_do = []
+dati_up = []
+metadati_up = []
+for i in range(len(Dati_down.sismogramma)):
+    dati_do.append(Dati_down.sismogramma[i])
+    metadati_do.append([Dati_down.metadata["trace_polarity"][i],
+                    Dati_down.metadata["source_magnitude"][i],
+                    Dati_down.metadata["trace_Z_snr_db"][i]])
+
+for i in range(len(Dati_up.sismogramma)):
+    dati_up.append(Dati_up.sismogramma[i])
+    metadati_up.append([Dati_up.metadata["trace_polarity"][i],
+                    Dati_up.metadata["source_magnitude"][i],
+                    Dati_up.metadata["trace_Z_snr_db"][i]])
+
+print(len(metadati_up), len(metadati_do))
+# s = [12,41,10,17] forse scambia 25 41 # I migliori fino ad ora
+s = [12,41,10,17] # Quelli buoni (classe 34 up e 47 down)
+list_dati = [[np.array(dati_up[s[0]]), np.array(dati_up[s[1]])], [np.array(dati_do[s[2]]), np.array(dati_do[s[3]])]]
+list_metadati = [[metadati_up[s[0]], metadati_up[s[1]]], [metadati_do[s[2]], metadati_do[s[3]]]]
+list_pred = [[pred_up["y_predict"][s[0]], pred_up["y_predict"][s[1]]], [pred_do["y_predict"][s[2]],pred_do["y_predict"][s[3]]]]
+
+fig, axes = plt.subplots(2,2, figsize=(15.3, 7.5))
+for i,j in [[0,0], [0,1], [1,0], [1,1]]:
+    a = list_dati[i][j][100:300]
+    axes[i][j].plot(list_dati[i][j][100:300]/max(np.max(a),-np.min(a)), color='k')
+    axes[i][j].axvline(x=100, c="r", ls="--", lw=1)
+    titolino = "M = " + str(list_metadati[i][j][1]) + ", SNR = " + str(round(list_metadati[i][j][2],1)) + "dB"
+    axes[i][j].set_title(titolino)
+    prob = round(list_pred[i][j]*100,1)
+    stringa =  "P$_{assigned}$: " + str(list_metadati[i][j][0]) + "\nP$_{predicted}$: "
+    if prob > 50:
+        stringa = stringa + "positive [" + str(round(list_pred[i][j]*100,1)) + "%]"
+    else:
+        stringa = stringa + "negative [" + str(100-round(list_pred[i][j] * 100, 1)) + "%]"
+    textonly(axes[i][j], stringa, loc=2, fontsize=13)
+    # legend_ins = [mlines.Line2D([], [],   linestyle='None',
+    #                            label='Training events'),
+    #                    mlines.Line2D([], [],  linestyle='None',
+    #                            label='Validaton events')]
+
+
+    # axes[i][j].legend(handles=legend_ins)
+for ax in fig.get_axes():
+    ax.label_outer()
+fig.supxlabel('Time ($10^{-2} s$)', fontsize=20)
+fig.supylabel('Normalized ground motion', fontsize=20, x=0.05)
+# plt.savefig(path_save + "/" + name_save, dpi=300, bbox_inches='tight')
+plt.show()
 
 
 

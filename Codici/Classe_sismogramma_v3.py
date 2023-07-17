@@ -170,7 +170,7 @@ class ClasseDataset:
         dizio = self.metadata
         dizio["centrato"] = self.centrato   # Mette tutta la "colonna" al valore self.centrato
         dizio["demeaned"] = self.demeaned   # (fa in modo che ogni colonna abbia stesso shape)
-        datapandas = pd.DataFrame.from_dict(dizio)
+        datapandas = pd.DataFrame.from_dict(dizio)         
         datapandas.to_csv(percorsocsvout_pandas, index=False)
         filehdf5.close()
         print("\n\n PANDAS HA AGITO", time.perf_counter() - startp)
@@ -180,11 +180,13 @@ class ClasseDataset:
         legge TUTTE le tracce di questo custom_dataset
         le ho salvate(solo componenteZ) in un unico dataset nel file percorsohdf5
         """
-        # start = time.perf_counter()
+        
         filehdf5 = h5py.File(percorsohdf5, 'r')
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
-        # print("ho caricato hdf5", time.perf_counter()-start)
+        self.metadata = 0
+        #self.metadata = pd.read_csv(percorsocsv)
+        # DICTIONARY TO PDDATAFRAME
         datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int, "source_magnitude": 'object'})
         # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
         # print("ho letto csv", time.perf_counter()-start)
@@ -284,14 +286,15 @@ class ClasseDataset:
                     sismogramma[i] = self.sismogramma[i][int(self.metadata["trace_P_arrival_sample"][i]) - semiampiezza:
                                                          int(self.metadata["trace_P_arrival_sample"][i]) + semiampiezza]
                 else:
+                    print(f"short waveform! {i}")
                     stringa = "#"
-                    for _ in range(300):
+                    for _ in range(100):
                         stringa = stringa + "#"
                     warnings.warn("\n"+stringa+"\nATTENTO, SCEGLI FINESTRA PIU PICCOLA!,"
                                                "continuo senza centrare nulla\n"+stringa)
                     print("semiampiezza = ", semiampiezza, "ArrivoP = ", self.metadata["trace_P_arrival_sample"][i])
                     input()
-                    return 1
+                    # return 1
 
             self.sismogramma = np.array(sismogramma)
 
@@ -333,22 +336,35 @@ class ClasseDataset:
         # TODO penso ciascuna traccia debba avere come valore massimo 1
         Metodo 1, prova
         """
-        lung_traccia = len(self.sismogramma[0])
-        self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
-        for i in range(len(self.sismogramma)):
-            max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
-            min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
-            if soglia*max(max_rumore, -min_rumore) == 0:
-                print("questa è la traccia in cui divido per 0\t", i)
-            self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
-            for j in range(lung_traccia):
-                self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
-                self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
+        if soglia == "None" or soglia == None:
+            print("Normalizzo al massimo")
+            
+            self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
+            for i in range(len(self.sismogramma)):
+                max_ = np.max(self.sismogramma[i][0:])
+                min_ = np.min(self.sismogramma[i][0:])
+                self.sismogramma[i] = self.sismogramma[i]/max(max_, -min_)
 
-            self.sismogramma[i] = self.sismogramma[i] / np.max([np.max(self.sismogramma[i]),
-                                                                -np.min(self.sismogramma[i])])
-            if i % 1000 == 0:
-                print("normalizzo, sto alla ", i)
+                if i % 1000 == 0:
+                    print("normalizzo, sto alla ", i)
+
+        else:
+            lung_traccia = len(self.sismogramma[0])
+            self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
+            for i in range(len(self.sismogramma)):
+                max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
+                min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
+                if soglia*max(max_rumore, -min_rumore) == 0:
+                    print("questa è la traccia in cui divido per 0\t", i)
+                self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
+                for j in range(lung_traccia):
+                    self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
+                    self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
+
+                self.sismogramma[i] = self.sismogramma[i] / np.max([np.max(self.sismogramma[i]),
+                                                                    -np.min(self.sismogramma[i])])
+                if i % 1000 == 0:
+                    print("normalizzo, sto alla ", i)
 
     def elimina_tacce_indici(self, vettore_indici: list):
         """
@@ -383,6 +399,7 @@ class ClasseDataset:
         restituisco un ClasseDataset delle selezionate
         operazione del tipo Dataout = self.seleziona_indici(vettore_indici)
         """
+        # TODO DICTIONARY TO PDDATAFRAME
         data = []
         dizio_metadata = {}
         classi_som = []  # Verificato funziona
@@ -478,7 +495,7 @@ class ClasseDataset:
                     nome_cartella = percosro_cartellla + "/" + namepng
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
-
+print("tottoapporsto")
 
 if __name__ == "main":
     print("ciao")

@@ -62,11 +62,47 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
-#csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
-#hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate10_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate10_New1-1.csv'
+# soglia = 10
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate12_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate12_New1-1.csv'
+# soglia = 12
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate15_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate15_New1-1.csv'
+# soglia = 15
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate30_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate30_New1-1.csv'
+# soglia = 30
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate40_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate40_New1-1.csv'
+# soglia = 40
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate50_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate50_New1-1.csv'
+# soglia = 50
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate75_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate75_New1-1.csv'
+# soglia = 75
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_Normalizzate100_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_Normalizzate100_New1-1.csv'
+# soglia = 100
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/data_Velocimeter_4s_NormalizzateNone_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/Normaliz/metadata_Velocimeter_4s_NormalizzateNone_New1-1.csv'
+# soglia = "None"
 
 hdf5in ='/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5'
 csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_New1-1.csv'
+
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
@@ -74,14 +110,14 @@ Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
 n_train = 7     # number of train to mean
-tentativo = "8"
+tentativo = "15"
 path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
 
 os.mkdir(path_tentativi)
 for i in range(n_train):
     os.mkdir(path_tentativi + "/" + str(i))
 
-semiampiezza = 80
+semiampiezza = 75
 epoche = 85
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 10
@@ -105,8 +141,31 @@ for tent in range(n_train):
     momento = 0.8
     print('\n\tmomento = ', momento)
 
+    #  TODO prima rete
+    """
+    rete = 1
+    model = keras.models.Sequential([
+        Conv1D(64, 3, input_shape=(len(x_train[0]), 1), activation="relu"),
+        MaxPooling1D(2),
+        Dropout(drop),
+        Conv1D(128, 3, activation="relu"),
+        MaxPooling1D(2),
+        Conv1D(32, 3, activation="relu"),
+        MaxPooling1D(2),                     
+        Flatten(),                           
+        Dense(50, activation="relu"),        
+        Dense(1, activation="sigmoid")
+    ])
+    
+    model.compile(
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        # optimizer=optimizers.Adam(epsilon=epsilon),
+        loss="binary_crossentropy",
+        metrics=['accuracy']
+    )
+    """
     #  TODO Seconda rete
-    # """
+    
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
@@ -130,7 +189,7 @@ for tent in range(n_train):
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    # """
+    
 
     model.summary() 
     print(f"######################Inizio il {int(tent)+1}o training ######################")
@@ -172,9 +231,9 @@ for tent in range(n_train):
 
     # TODO predict
     # """
-    model = keras.models.load_model(path_tentativi + "/" + str(tent) + "/Tentativo_"+str(tent)+".hdf5")
+    model = keras.models.load_model(path_tentativi + "/" + str(tent) + f"/Tentativo_More_{tentativo}_"+str(tent)+".hdf5")
     yp_test = model.predict(x_test)
-    print(y_test, len(y_test), "\n", yp_test, len(yp_test))
+    # print(y_test, len(y_test), "\n", yp_test, len(yp_test))
     yp_ok_test = []
     for i in yp_test:
         yp_ok_test.append(i[0])
@@ -182,7 +241,7 @@ for tent in range(n_train):
     delta_y_test = np.abs(y_test - yp_ok_test)
 
     yp_val = model.predict(x_val)
-    print(y_val, len(y_val), "\n", yp_val, len(yp_val))
+    # print(y_val, len(y_val), "\n", yp_val, len(yp_val))
     yp_ok_val = []
     for i in yp_val:
         yp_ok_val.append(i[0])
@@ -253,7 +312,9 @@ dettagli =  f"""Rete numero  {rete}
             Optimizer: SGD con momento = {momento}) 
             Early_stopping con patiente = {pazienza})  restore_best_weights = True
             DROPOUT ({drop}) dopo 1o e 4o cpnv\n
-            HO FATTO {n_train} train diversi, devo controllare medie """
+            HO FATTO {n_train} train diversi, devo controllare medie 
+            conv -> max -> drop -> conv -> max -> conv -> max -> dense -> dense
+            """
 
 file.write(dettagli)
 file.close()

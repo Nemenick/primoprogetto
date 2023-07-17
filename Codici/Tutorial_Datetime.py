@@ -16,3 +16,11 @@ a = datetime.datetime(2017, 11, 28, 23, 55, 58, 0)
 c = datetime.time(0, 0, 59)
 d = datetime.time(11, 34, 56, 234566)
 # c-d NON E VALIDO!
+
+
+"""from obspy import UTCDateTime
+print(cosini["source_origin_time"][0])
+# cos_data = datetime.time(cosini["source_origin_time"][0])
+# cos_data
+utc_time = UTCDateTime(cosini["source_origin_time"][0])
+print(utc_time,type(utc_time))"""

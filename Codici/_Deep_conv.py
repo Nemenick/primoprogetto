@@ -164,13 +164,13 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        # Dropout(drop),
+        Dropout(drop),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        # Dropout(drop),
+        Dropout(drop),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),

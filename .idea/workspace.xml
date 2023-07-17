@@ -5,11 +5,47 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e59a045a-66fa-43b7-abb2-30250a02ac46" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Codici/_Dettagli_mseed_coltot.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Codici/Drive_Obs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Drive_Obs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/AAAAAAAccuracy_vs_Kernel_su_val_test.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/AAAAAAAccuracy_vs_Kernel_su_val_test_timeshift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/AAAAALoss_vs_Kernel_su_val_test.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/AAAAALoss_vs_Kernel_su_val_test_timeshift.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/AAAAQUALCOSA.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Classe_sismogramma_v3.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Drive_Obs.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Drive_sismogramma.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Drive_sismogramma_linux.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/MNIST_convnet.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Paths.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/More_1/Predizioni_Instance_buone_More_1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/More_1/Predizioni_Ross_More_1.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tentativi/More_1/Predizioni_Ross_shift_+1_More_1.csv" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Codici/Tutorial obspy.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tutorial obspy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tutorial_Datetime.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/Tutorial_Datetime.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/Tutorial_Obspy.ipynb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Cosa.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_LoadModel_more_MeanPerformance.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_LoadModel_more_MeanPerformance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Deep_conv_more_MeanPerformance.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Deep_conv_more_MeanPerformance.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Dettagli_mseed_coltot.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Dettagli_mseed_coltot.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Disegni.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Disegni.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Sposta_cartelle.py" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Sposta_cartelle.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Test.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/Codici/_Test.ipynb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/_Test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/aggiungi_centrato.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/ciao.mseed" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/medie_originali_simpledataset.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Codici/proviamo.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Ferdinando_augmented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Italia_Bella_200x200.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Italia_Tracce_Cattive.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Italia_Tracce_DPI.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rete_2_augmented.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/_Warnings_tensorflow" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata_Instance_events_10k.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/metadata_Instance_events_10k.xlsx" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,14 +71,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "/home/silvia/Desktop/PhaseNet_Prova_1/PhaseNet/phasenet/predict.py",
-    "settings.editor.selected.configurable": "debugger.dataViews.python.type.renderers"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/silvia/Desktop/PhaseNet_Prova_1/PhaseNet/phasenet/predict.py&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;debugger.dataViews.python.type.renderers&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/Codici" />
@@ -53,7 +89,7 @@
       <recent name="$PROJECT_DIR$/Codici" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Tutorial obspy">
+  <component name="RunManager" selected="Python._Deep_LoadModel_more_MeanPerformance">
     <configuration name="Drive_sismogramma_linux" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -117,7 +153,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="_Deep_conv" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="_Deep_LoadModel_more_MeanPerformance" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="primoprogetto" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -129,7 +165,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_conv.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Codici/_Deep_LoadModel_more_MeanPerformance.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -161,11 +197,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python._Deep_LoadModel_more_MeanPerformance" />
+        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python.Tutorial obspy" />
         <item itemvalue="Python._Disegni" />
-        <item itemvalue="Python.Drive_sismogramma_linux" />
         <item itemvalue="Python._Deep_LoadModel" />
-        <item itemvalue="Python._Deep_conv" />
       </list>
     </recent_temporary>
   </component>

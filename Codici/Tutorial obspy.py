@@ -34,6 +34,7 @@ print("\nkeys", cosa[0].stats.keys)
 
 # TODO Plot
 """
+
 cosa = read("/home/silvia/Desktop/PhaseNet_Prova_1/PhaseNet/test_data/sac/unito.mseed") # plotta tutte le tracce
 cosa[0:2].plot()
 
@@ -100,7 +101,7 @@ trace.stats = metadata
 stream.append(trace)
 """
 
-
+"""
 
 path = '/home/silvia/Desktop/PhaseNet_Prova_1/PhaseNet/test_data/sac/unito.mseed'
 cosa = obspy.read(path, format="MSEED")
@@ -125,3 +126,7 @@ b = obspy.read("ciao.mseed")
 #print(a[0].stats.keys)
 
 #cosa.write('/home/silvia/Desktop/PhaseNet_Prova_1/PhaseNet/test_data/sac/unito.mseed')
+"""
+
+
+

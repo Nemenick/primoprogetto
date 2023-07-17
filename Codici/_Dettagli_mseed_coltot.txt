@@ -1,5 +1,6 @@
-'trace_name','station_code','station_channels','trace_start_time','trace_P_arrival_sample',
-'trace_polarity','trace_P_uncertainty_s','source_magnitude','source_magnitude_type','source_origin_time',
+'trace_name','station_code','station_channels','trace_start_time',
+'trace_P_arrival_sample','trace_polarity','trace_P_uncertainty_s',
+'source_magnitude','source_magnitude_type','source_origin_time',
 'source_latitude_deg','source_longitude_deg','trace_Z_snr_db'
 
 
