@@ -50,7 +50,7 @@ semi_amp = 80
 pat_tent = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/'
 shiftRoss = 1
 tentativo = 52
-salva_predizioni = True
+salva_predizioni = False
 nome_predizione = "/Predizioni_Ross_shift+1"
 # TODO predict Instance Test
 """

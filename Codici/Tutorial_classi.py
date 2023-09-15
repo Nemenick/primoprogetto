@@ -33,3 +33,10 @@ print(d.a)"""
 
 d = Classe2()
 d.fun2(errore=False)"""
+
+# TODO eridarietà
+"""
+class MCDropout(Dropout):
+    def call(self, inputs):
+        return super().call(inputs, training=True)
+"""

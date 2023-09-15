@@ -415,61 +415,38 @@ for i in range(le):
     plt.show()
 """
 
-path_save = "/home/silvia/Desktop/Immagini"
-name_save = "figure_heterogeneous"
-hdf5u = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_U_class34.hdf5'
-csvu = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_U_class34.csv'
-hdf5d = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/data_D_class47_54.hdf5'
-csvd = '/home/silvia/Desktop/Instance_Data/Tre_4s/Som_updown/secondo_buono/metadata_D_class47_54.csv'
-Dati_down = ClasseDataset()
-Dati_down.leggi_custom_dataset(hdf5d, csvd)
-Dati_up = ClasseDataset()
-Dati_up.leggi_custom_dataset(hdf5u, csvu)
+path_save = "/home/silvia/Desktop"
+name_save = "Figure_Hara_Misclassified.jpg"
+hH = "/home/silvia/Desktop/Hara/Test/Hara_test_data.hdf5"
+cH = "/home/silvia/Desktop/Hara/Test/Hara_test_metadata.csv"
+DataH = ClasseDataset()
+DataH.leggi_custom_dataset(hH, cH)
+
+indi = [1416, 39, 2397, 139]
+# indi = [139, 180, 265, 439]
+titoli = [["A", "B"], ["C", "D"]]
 
 # predizioni
-pat_pred_up = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52'+"/secondo_buono_data_U_class34.hdf5tentativo_52.csv"
-pat_pred_do = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/52'+"/secondo_buono_data_D_class47_54.hdf5tentativo_52.csv"
-pred_up = pd.read_csv(pat_pred_up)
-pred_do = pd.read_csv(pat_pred_do)
 
+pat_pred = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/55/Predizioni_Hara_tentativo_55.csv"
+pred = pd.read_csv(pat_pred)
 
-
-dati_do = []
-metadati_do = []
-dati_up = []
-metadati_up = []
-for i in range(len(Dati_down.sismogramma)):
-    dati_do.append(Dati_down.sismogramma[i])
-    metadati_do.append([Dati_down.metadata["trace_polarity"][i],
-                    Dati_down.metadata["source_magnitude"][i],
-                    Dati_down.metadata["trace_Z_snr_db"][i]])
-
-for i in range(len(Dati_up.sismogramma)):
-    dati_up.append(Dati_up.sismogramma[i])
-    metadati_up.append([Dati_up.metadata["trace_polarity"][i],
-                    Dati_up.metadata["source_magnitude"][i],
-                    Dati_up.metadata["trace_Z_snr_db"][i]])
-
-print(len(metadati_up), len(metadati_do))
-# s = [12,41,10,17] forse scambia 25 41 # I migliori fino ad ora
-s = [12,41,10,17] # Quelli buoni (classe 34 up e 47 down)
-list_dati = [[np.array(dati_up[s[0]]), np.array(dati_up[s[1]])], [np.array(dati_do[s[2]]), np.array(dati_do[s[3]])]]
-list_metadati = [[metadati_up[s[0]], metadati_up[s[1]]], [metadati_do[s[2]], metadati_do[s[3]]]]
-list_pred = [[pred_up["y_predict"][s[0]], pred_up["y_predict"][s[1]]], [pred_do["y_predict"][s[2]],pred_do["y_predict"][s[3]]]]
 
 fig, axes = plt.subplots(2,2, figsize=(15.3, 7.5))
 for i,j in [[0,0], [0,1], [1,0], [1,1]]:
-    a = list_dati[i][j][100:300]
-    axes[i][j].plot(list_dati[i][j][100:300]/max(np.max(a),-np.min(a)), color='k')
-    axes[i][j].axvline(x=100, c="r", ls="--", lw=1)
-    titolino = "M = " + str(list_metadati[i][j][1]) + ", SNR = " + str(round(list_metadati[i][j][2],1)) + "dB"
-    axes[i][j].set_title(titolino)
-    prob = round(list_pred[i][j]*100,1)
-    stringa =  "P$_{assigned}$: " + str(list_metadati[i][j][0]) + "\nP$_{predicted}$: "
+    a = DataH.sismogramma[indi[2*i+j]]
+    axes[i][j].plot(a/max(np.max(a),-np.min(a)), color='k')
+    axes[i][j].axvline(x=75, c="r", ls="--", lw=0.5)
+    titolino = titoli[i][j]
+    axes[i][j].set_title(titolino, fontweight="bold")
+    
+    prob = round(pred["y_predict"][indi[2*i+j]]*100,1)
+    stringa =  "P$_{assigned}$: " + str(DataH.metadata["trace_polarity"][indi[2*i+j]]) + "\nP$_{predicted}$: "
     if prob > 50:
-        stringa = stringa + "positive [" + str(round(list_pred[i][j]*100,1)) + "%]"
+        stringa = stringa + "positive [" + str(prob) + "%]"
     else:
-        stringa = stringa + "negative [" + str(100-round(list_pred[i][j] * 100, 1)) + "%]"
+        stringa = stringa + "negative [" + str(100-prob) + "%]"
+
     textonly(axes[i][j], stringa, loc=2, fontsize=13)
     # legend_ins = [mlines.Line2D([], [],   linestyle='None',
     #                            label='Training events'),
@@ -482,7 +459,7 @@ for ax in fig.get_axes():
     ax.label_outer()
 fig.supxlabel('Time ($10^{-2} s$)', fontsize=20)
 fig.supylabel('Normalized ground motion', fontsize=20, x=0.05)
-# plt.savefig(path_save + "/" + name_save, dpi=300, bbox_inches='tight')
+plt.savefig(path_save + "/" + name_save, dpi=300,bbox_inches='tight')
 plt.show()
 
 

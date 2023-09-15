@@ -1075,7 +1075,13 @@ class MCDropout(Dropout):
     def call(self, inputs):
         return super().call(inputs, training=True)
 
-hdf5_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_data_tot_no0.hdf5"
+def predici(modello, dati, pred, i, batch=2048):
+    y_predicted = modello.predict(dati, batch_size=batch)
+    y_predicted = np.reshape(y_predicted,len(y_predicted))
+    pred[f"pred_n_{i}"] = y_predicted
+
+
+hdf5_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_data_tot_no0_semiamp_80.hdf5"
 csv_predicting = "/home/silvia/Desktop/Instance_Data/Undecidable/Instance_undecidable_metadata_tot_no0.csv"
 
 Data_predicting = ClasseDataset()
@@ -1084,17 +1090,18 @@ sample_train = len(Data_predicting.sismogramma)
 print("Ho Letto dataset")
 lung = len(Data_predicting.sismogramma[0])
 semi_amp = 80
-tent = "More_1_4"
-model_pat = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_1/4/Tentativo_{tent}.hdf5'
-nome_predizione = f"/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/MCDrop_Instance_undecidable_{tent}.csv"
-quante_predizioni = 1
+impostazione = "8"
+replica = "4"
+quante_predizioni = 7
 salva_predizioni = True
 time_shift = 0
 
-xtest = np.zeros((sample_train, semi_amp * 2))
-for k in range(sample_train):
-    xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp + time_shift:lung // 2 + semi_amp + time_shift]
-xtest = np.array(xtest)
+tent = f"More_{impostazione}_{replica}"
+model_pat = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{impostazione}/{replica}/Tentativo_{tent}.hdf5'
+nome_predizione = f"/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/Bag_predictions/MCDrop_Instance_undecidable_{tent}_vers_3.csv"
+
+xtest = Data_predicting.sismogramma
+
 print("XSHAPEEEEEEEEEEEE", xtest.shape)
 model = keras.models.load_model(model_pat)
 model.summary()
@@ -1118,11 +1125,14 @@ model_MCD.summary()
 pred = pd.DataFrame.from_dict({"traccia":Data_predicting.metadata["trace_name"], "y_mano": "unndecidable"})
 
 for i in range(quante_predizioni):
-    y_predicted = model.predict(xtest, batch_size=2048)
+    predici(model_MCD, xtest, pred, i, batch=2048)
+    for k in range(15):
+        gc.collect()
+    """y_predicted = model_MCD.predict(xtest, batch_size=2048)
     y_predicted = np.reshape(y_predicted,len(y_predicted))
-    pred[f"pred_n_{i}"] = y_predicted
+    pred[f"pred_n_{i}"] = y_predicted"""
 
 
 if salva_predizioni:
-    pred.to_csv(nome_predizione)
+    pred.to_csv(nome_predizione, index=False)
 # """

@@ -495,7 +495,6 @@ class ClasseDataset:
                     nome_cartella = percosro_cartellla + "/" + namepng
                     plt.savefig(nome_cartella + "/" + namepng + "_" + str(i))
                     plt.clf()
-print("tottoapporsto")
 
 if __name__ == "main":
     print("ciao")
