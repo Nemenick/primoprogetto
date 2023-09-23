@@ -35,7 +35,7 @@ def create_gitignore(fold_gitignore: str, **kwargs):
         names = []
         for entry in fold_gitignore_files:
             names.append(entry.path)
-        print ("\n\nnomi: ", names)
+        # print ("\n\nnomi: ", names)
         if f"{fold_gitignore}/.gitignore" in names:
             os.rename(f"{fold_gitignore}/.gitignore", f"{fold_gitignore}/.gitignore_ori")
             print("\n\n\n############################## HO RINOMINATO ##############################")
