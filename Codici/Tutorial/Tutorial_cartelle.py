@@ -3,6 +3,7 @@ from obspy import read
 import shutil
 
 """
+Spostacartelle:
 Alcune cartelle presentano dei file sac che provando a leggere danno il seguente errore :
 obspy.io.sac.util.SacIOError: Actual and theoretical file size are inconsistent.
 Actual/Theoretical: 93032/93028

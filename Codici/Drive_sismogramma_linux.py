@@ -19,6 +19,7 @@ from Classe_sismogramma_v3 import ClasseDataset
 from tensorflow import keras
 from keras.layers import  Dropout
 import gc
+import shutil
 
 # TODO acquisisci new
 """ 

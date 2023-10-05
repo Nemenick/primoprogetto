@@ -15,6 +15,7 @@ import os
 
 def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset, timeshift=0):
     """
+    Il train sarà 6-uplicato in taglia: shift_0, shift_-,shift_+  e le corrispettive flipped
     :param estremi_val:     estremi della validation set, [lat_min, lat_max, lon_min, lon_max]
     :param estremi_test:    idem di e_val
     :param semi_amp:        Semiampiezza della traccia da considerare
@@ -84,9 +85,10 @@ def dividi_train_test_val_2(estremi_test: list, estremi_val: list, semi_amp: int
     :param dati:            dataset da suddividere
     :param timeshift:       effettuo un timeshift con dist. uniforme in [0,t] e [-t,0] per le sole tracce del train
     :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
+    train 4-uplicato in taglia.
     ora xtrain sara: [dati_normali[0:tot], dati_norm_shifted+[pari], dati_norm_shifted-[pari]]+
-                     [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]+
-                     non pari ma quelli per cui k>sample_train/2
+                     [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]
+                     non pari ma quelli per cui k>sample_train/2 !!!
     """
 
     lung = len(dati.sismogramma[0])  # lunghezza traccia
@@ -132,6 +134,8 @@ def dividi_train_test_val_2(estremi_test: list, estremi_val: list, semi_amp: int
             shift_1 = random.randint(1, timeshift)     # ""    alla traccia normale negativo
             shift_11 = random.randint(1, timeshift)    # ""    alla traccia flipped positivo
             shift_1_1 = random.randint(1, timeshift)   # ""    alla traccia flipped negativo
+            # cast in int serve solo perchè come indicizzazione vuole un int SICURO. In realtà sample_train % 2 == 0
+            # vedi fig per capire xtrain
             xtrain[int(k- sample_train/2 + sample_train)] = dati.sismogramma[k][lung // 2 - semi_amp + shift1:lung // 2 + semi_amp + shift1]
             xtrain[int(k- sample_train/2 + 3*sample_train/2)] = dati.sismogramma[k][lung // 2 - semi_amp - shift_1:lung // 2 + semi_amp - shift_1]
             xtrain[int(k -sample_train/2 + 7*sample_train/2)] = -dati.sismogramma[k][lung // 2 - semi_amp + shift_11:lung // 2 + semi_amp + shift_11]

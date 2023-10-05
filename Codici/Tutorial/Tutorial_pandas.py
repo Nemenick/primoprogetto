@@ -24,3 +24,6 @@ print(df1)
 
 data.to_csv('/home/silvia/Desktop/ciao.csv')
 
+pred.iloc[:,0:4]                # considera tutte le righe delle colonne 0:4
+pred[pred["predizione_0"]<0.5]  # seleziona con singola condizione
+ani[(ani > 0.3) & (ani < 0.7)]  # selezione condizioni multiple

@@ -1,3 +1,5 @@
+# Faccio predizione con tutti i tentativi More
+
 # nohup /home/silvia/Documents/GitHub/primoprogetto/venv/bin/python /home/silvia/Documents/GitHub/primoprogetto/Codici/Deep_Load_bag.py &> Codici/Tentativi/Bag_predictions/Zoutput.txt
 # /home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_6/2/Tentativo_More_6_2.hdf5
 import time
