@@ -60,7 +60,7 @@ path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/
 time_shift = 0
 #nome_predizione = f"Instance_Undecidable_normalized"
 nome_predizione = f"Instance_New_pol_shift_{time_shift}"          # RICORDA su noise la parte "_shift{time_shift} viene eliminata!!!"
-salva_predizioni = True
+salva_predizioni = False
 
 # TODO predict Instance noise
 """
