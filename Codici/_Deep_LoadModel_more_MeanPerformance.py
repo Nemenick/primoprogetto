@@ -1,12 +1,12 @@
 # Faccio predizioni con Tentativi More_1 , More_2... etc
 
-import time
+# import time
 import os
 import pandas as pd
 import numpy as np
-import tensorflow as tf
+# import tensorflow as tf
 from tensorflow import keras
-from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
+# from keras.layers import Dense, Conv1D, MaxPooling1D, Flatten
 from keras.utils.np_utils import to_categorical
 from matplotlib import pyplot as plt
 from Classe_sismogramma_v3 import ClasseDataset
@@ -34,8 +34,8 @@ from Classe_sismogramma_v3 import ClasseDataset
 # csv_predicting = "/home/silvia/Desktop/Data/Pollino_All/Pollino_All_metadata_100Hz_normalizzate_New1-1.csv"
 
 
-# hdf5_predicting = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-# csv_predicting = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
+hdf5_predicting = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
+csv_predicting = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
 
 # hdf5_predicting ='/home/silvia/Desktop/Data/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate_New1-1.hdf5'
 # csv_predicting = '/home/silvia/Desktop/Data/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate_New1-1.csv'
@@ -43,11 +43,11 @@ from Classe_sismogramma_v3 import ClasseDataset
 # hdf5_predicting = f'/home/silvia/Desktop/Data/SCSN(Ross)/Normaliz/Ross_test_polarity_data_Normalizzate{str(asoglia)}_New1-1.hdf5'
 # csv_predicting = f'/home/silvia/Desktop/Data/SCSN(Ross)/Normaliz/Ross_test_polarity_metadata_Normalizzate{str(asoglia)}_New1-1.csv'
 
-# hdf5_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_data_tot_no0.hdf5"
-# csv_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_metadata_tot_no0.csv"
+#hdf5_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_data_normalized.hdf5"
+#csv_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_metadata_normalized.csv"
 
-hdf5_predicting = "/home/silvia/Desktop/Data/Instance_noise/data_Instance_noise.hdf5"
-csv_predicting = "/home/silvia/Desktop/Data/Instance_noise/metadata_Instance_noise.csv"
+# hdf5_predicting = "/home/silvia/Desktop/Data/Instance_noise/data_Instance_noise.hdf5"
+# csv_predicting = "/home/silvia/Desktop/Data/Instance_noise/metadata_Instance_noise.csv"
 
 Data_predicting = ClasseDataset()
 Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
@@ -57,12 +57,13 @@ lung = len(Data_predicting.sismogramma[0])
 semi_amp = 80
 tentativo = "1"                # More_tentativo
 path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
-time_shift = -10
-nome_predizione = f"Instance_Noise_shift_{time_shift}"          # RICORDA su noise la parte "_shift{time_shift} viene eliminata!!!"
+time_shift = 0
+#nome_predizione = f"Instance_Undecidable_normalized"
+nome_predizione = f"Instance_New_pol_shift_{time_shift}"          # RICORDA su noise la parte "_shift{time_shift} viene eliminata!!!"
 salva_predizioni = True
 
 # TODO predict Instance noise
-# """
+"""
 randomseed = 678902
 np.random.rand(randomseed)
 
@@ -73,7 +74,7 @@ for k in range(N_samples):
     xtest[k] = xtest[k] - np.mean(xtest[k])
     xtest[k] = xtest[k] / np.max([np.max(xtest[k]), - np.min(xtest[k])])
 
-y_test_true = "noise"
+y_test_true = ["noise" for i in range(len(xtest))]
 
 nome = nome_predizione.split("_")
 nome_predizione = nome[0]
@@ -82,10 +83,10 @@ for i in nome[1:-1]:
         nome_predizione = nome_predizione + "_" + i
 nome_predizione = nome_predizione + f"_randomseed_{randomseed}"
 print("\n\n#####################Ho finito di mettere dati#####################\n\n")
-# """
+"""
 
 # TODO predict Instance Test
-"""
+#"""
 estremi_test = [43, 45, 9.5, 11.8]
 xtest = []
 y_test_true = []
@@ -100,15 +101,18 @@ for k in range(len(Data_predicting.sismogramma)):
         elif Data_predicting.metadata["trace_polarity"][k] == "negative":
             y_test_true.append(0)
 Data_predicting = Data_predicting.seleziona_indici(test_indici)
-"""
+#"""
 
-# TODO predict other than Instance
+# TODO predict other than Instance polarity test
 """
 xtest = np.zeros((N_samples, semi_amp * 2))
 for k in range(N_samples):
     xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp + time_shift:lung // 2 + semi_amp + time_shift]
-y_test_true = np.array([Data_predicting.metadata["trace_polarity"][_] == "positive" for _ in range(N_samples)])
-y_test_true = y_test_true + 0
+if Data_predicting.metadata["trace_polarity"][0] == "positive" or Data_predicting.metadata["trace_polarity"][0] == "negative":
+    y_test_true = np.array([Data_predicting.metadata["trace_polarity"][_] == "positive" for _ in range(N_samples)])
+    y_test_true = y_test_true + 0
+else:
+    y_test_true = [Data_predicting.metadata["trace_polarity"][0] for i in range(len(xtest))]
 """
 xtest = np.array(xtest)
 
@@ -168,49 +172,5 @@ if salva_predizioni and type(y_test_true[0]) != str:
     datapandas_acc = pd.DataFrame.from_dict(dizio_acc)
     datapandas_acc.to_csv(f"{path_tentativi}/Performances_{nome_predizione}_More_{tentativo}.csv", index=False)
 
-
-
-
-
-
-
-# model = keras.models.load_model(pat_tent+str(tentativo)+'/Tentativo_'+str(tentativo)+'.hdf5')
-# model.summary()
-
-# xtest = np.array(xtest)
-# print("XSHAPEEEEEEEEEEEE", xtest.shape)
-# y_predicted = model.predict(xtest, batch_size=2048)
-# print(y_predicted, len(y_predicted), "\n", y_predicted, len(y_predicted))
-# y_predicted_ok = []
-
-# for i in y_predicted:
-#     y_predicted_ok.append(i[0])
-# y_predicted_ok = np.array(y_predicted_ok)
-# delta_y = np.abs(y_test_true - y_predicted_ok)
-
-# predizioni_totali = len(y_predicted_ok)
-# predizioni_giuste = 0
-# predizioni_errate = 0
-# for i in range(len(y_predicted_ok)):
-#     if abs(y_test_true[i] - y_predicted_ok[i]) < 0.5:
-#         predizioni_giuste = predizioni_giuste+1
-#     else:
-#         predizioni_errate = predizioni_errate+1
-# print("totali/giuste/errate: ", predizioni_totali, "-", predizioni_giuste, "-", predizioni_errate, "-")
-# print(predizioni_giuste/predizioni_totali)
-
-# dizio_val = {"traccia": Data_predicting.metadata["trace_name"], "y_Mano": y_test_true, "y_predict": y_predicted_ok,
-#              "delta": delta_y}
-# print(len(Data_predicting.metadata["trace_name"]), len(y_test_true), len(y_predicted_ok), len(delta_y))
-
-
-# datapandas_val = pd.DataFrame.from_dict(dizio_val)
-# # TODO cambia nome del file
-# if salva_predizioni:
-#     datapandas_val.to_csv(pat_tent + str(tentativo) +
-#                       nome_predizione + str(tentativo) + ".csv", index=False)
-# # TODO cambia se vuoi inserire la predizione nel file di metadata
-# # Data_predicting.metadata["Pred_tent_" + str(tentativo)] = y_predicted_ok
-# # Data_predicting.crea_custom_dataset(hdf5_predicting, csv_predicting)
 
 

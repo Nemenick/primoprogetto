@@ -15,9 +15,9 @@ class ClasseDataset:
         """
         inserisci qui tutte le proprietà di classe con i ripsettivi tipi
         """
-        self.centrato = False           # dice se ho tagliato e centrato la finestra temporale (bool)
-        self.demeaned = False           # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
-
+        self.centrato = False               # dice se ho tagliato e centrato la finestra temporale (bool)
+        self.demeaned = False               # dice se la media è tolta. Due tipi medie : sarà stringa, "rumore" o "totale"
+        self.normalized = False             # dice se è normalizzato. Due tipi: sarà stringa, "Max_traccia" o "Soglia_Num_samples_traccia"
         self.sismogramma = np.array([])     # np.array (,)
         self.metadata = {}                  # dizionario di lista, non np.array (non so come li tratta pandas)
         self.classi = []                    # lista di int
@@ -170,6 +170,7 @@ class ClasseDataset:
         dizio = self.metadata
         dizio["centrato"] = self.centrato   # Mette tutta la "colonna" al valore self.centrato
         dizio["demeaned"] = self.demeaned   # (fa in modo che ogni colonna abbia stesso shape)
+        dizio["normalized"] = self.normalized
         datapandas = pd.DataFrame.from_dict(dizio)         
         datapandas.to_csv(percorsocsvout_pandas, index=False)
         filehdf5.close()
@@ -196,6 +197,8 @@ class ClasseDataset:
             # print("ho caricato la key ", key, time.perf_counter() - start)
         self.centrato = self.metadata["centrato"][1]
         self.demeaned = self.metadata["demeaned"][1]
+        if "normalized" in self.metadata.keys():
+            self.normalized = self.metadata["normalized"][1]
         # print(self.sismogramma.shape, len(self.sismogramma))
         filehdf5.close()
 
@@ -241,25 +244,6 @@ class ClasseDataset:
                     vettore_indici.append(i)
         # print("vettore indici interno funzione", vettore_indici)
 
-    def calcola_media(self, nome_medie):
-        """
-            Calcola le medie (prima dell'onda o tutta traccia) max per ciascun sismogramma
-            e le  salva nel file nome_medie
-        """
-        medie = []
-        medie_rumore = []
-        massimo_abs = []
-        for i in range(len(self.sismogramma)):
-            massimo_abs.append(max(self.sismogramma[i].max(), -self.sismogramma[i].min()))
-            medie.append(np.mean(self.sismogramma[i]))
-            if self.centrato:
-                medie_rumore.append(np.mean(self.sismogramma[i][:len(self.sismogramma[i]) // 2 - 5]))
-            else:
-                medie_rumore.append(np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 10]))
-
-        pd_mean_max = pd.DataFrame({"media_totale": medie, "media_rumore": medie_rumore, "max": massimo_abs})
-        pd_mean_max.to_excel(nome_medie + ".xlsx", index=False)
-
     def finestra(self, semiampiezza=0):
         """
             taglia e se necessario centra la finestra
@@ -300,71 +284,85 @@ class ClasseDataset:
 
             self.centrato = True
 
-    def demean(self, metodo: str = 'rumore'):
+    def demean(self, metodo: str = 'rumore', semiamp: int = 80):
         """
             scrive su file media e media_rumore diviso il valore massimo per ciascun sismogramma
             metodo totale -> toglie tutta la media
             metodo rumore -> toglie la media calcolata su valori prima dell'arrivo dell'onda P
         """
-        # self.calcola_media("con_media")
         if metodo == "totale":
             self.demeaned = "totale"
             for i in range(len(self.sismogramma)):
-                self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i])
+                self.sismogramma = self.sismogramma - np.mean(self.sismogramma, axis=1).reshape(len(self.sismogramma),1)
 
         if metodo == "rumore":
             self.demeaned = "rumore"
             if self.centrato:
-                for i in range(len(self.sismogramma)):
-                    lung = len(self.sismogramma[0])
-                    self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i][:lung//2-5])
+                lung = len(self.sismogramma[0])
+                self.sismogramma = self.sismogramma - np.mean(self.sismogramma[ : , lung//2-semiamp : lung//2-5], axis=1).reshape(len(self.sismogramma),1)
+                # Deprecated
+                # for i in range(len(self.sismogramma)):
+                #     lung = len(self.sismogramma[0])
+                #     self.sismogramma[i] = self.sismogramma[i] - np.mean(self.sismogramma[i][:lung//2-5])
             else:
                 for i in range(len(self.sismogramma)):
+                    start_5 = self.metadata["trace_P_arrival_sample"][i] - 5
                     self.sismogramma[i] = self.sismogramma[i] - \
-                                          np.mean(self.sismogramma[i][:self.metadata["trace_P_arrival_sample"][i] - 5])
+                                          np.mean(self.sismogramma[i][start_5 - semiamp : start_5])
 
         if metodo != "rumore" and metodo != "totale":
             print("attento, metodo demean sbagliato\n rumore o totale? (NON SO SE FUNZIONa ORA)")
             metodo = input()
             if metodo == "rumore" or metodo == "totale":
                 self.demean(metodo)
-        # self.calcola_media("senza_media")
 
-    def normalizza(self, soglia=20):
+
+    def normalizza(self, soglia=20.):
         """
         # TODO implementa giusta normalizzazione (da decidere)
         # TODO penso ciascuna traccia debba avere come valore massimo 1
         Metodo 1, prova
         """
         if soglia == "None" or soglia == None:
-            print("Normalizzo al massimo")
+            print("Normalizzo al massimo intera traccia")
             
             self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
-            for i in range(len(self.sismogramma)):
-                max_ = np.max(self.sismogramma[i][0:])
-                min_ = np.min(self.sismogramma[i][0:])
-                self.sismogramma[i] = self.sismogramma[i]/max(max_, -min_)
+            self.sismogramma = self.sismogramma / np.max([np.max(self.sismogramma,axis=1),-np.min(self.sismogramma,axis = 1)], axis = 0).reshape(len(self.sismogramma),1)
+            # DEPRECATED
+            # for i in range(len(self.sismogramma)):
+            #     max_ = np.max(self.sismogramma[i][0:])
+            #     min_ = np.min(self.sismogramma[i][0:])
+            #     self.sismogramma[i] = self.sismogramma[i]/max(max_, -min_)
 
-                if i % 1000 == 0:
-                    print("normalizzo, sto alla ", i)
-
+            #     if i % 1000 == 0:
+            #         print("normalizzo, sto alla ", i)
+            self.normalized = f"Max_traccia_{len(self.sismogramma[0])}_di_samples"
         else:
             lung_traccia = len(self.sismogramma[0])
             self.sismogramma = self.sismogramma * 1.0                 # ATTENTISSIMO, altrimenti ho np array di interi
-            for i in range(len(self.sismogramma)):
-                max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
-                min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
-                if soglia*max(max_rumore, -min_rumore) == 0:
-                    print("questa è la traccia in cui divido per 0\t", i)
-                self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
-                for j in range(lung_traccia):
-                    self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
-                    self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
+            sism_0_arr = self.sismogramma[:,0:lung_traccia//2-5]
+            self.sismogramma = self.sismogramma / (soglia * np.max([np.max(sism_0_arr,axis=1),-np.min(sism_0_arr,axis = 1)], axis = 0).reshape(len(sism_0_arr),1))
+            self.sismogramma[self.sismogramma > 1.0] = 1.0
+            self.sismogramma[self.sismogramma < -1.0] = -1.0
+            self.sismogramma = self.sismogramma / (np.max([np.max(self.sismogramma,axis=1),-np.min(self.sismogramma,axis = 1)], axis = 0).reshape(len(self.sismogramma),1))
+            self.normalized = f"Soglia={soglia}_traccia_di_{len(self.sismogramma[0])}_samples"
+            tmp = np.max([np.max(sism_0_arr,axis=1),-np.min(sism_0_arr,axis = 1)], axis = 0).reshape(len(sism_0_arr),1)
+            print(np.where(tmp==0))
+            # DEPRECATED
+            # for i in range(len(self.sismogramma)):
+            #     max_rumore = np.max(self.sismogramma[i][0:lung_traccia//2-5])
+            #     min_rumore = np.min(self.sismogramma[i][0:lung_traccia//2-5])
+            #     if soglia*max(max_rumore, -min_rumore) == 0:
+            #         print("questa è la traccia in cui divido per 0\t", i)
+            #     self.sismogramma[i] = self.sismogramma[i]/(soglia*max(max_rumore, -min_rumore))
+            #     for j in range(lung_traccia):
+            #         self.sismogramma[i][j] = min(self.sismogramma[i][j], 1)
+            #         self.sismogramma[i][j] = max(self.sismogramma[i][j], -1)
 
-                self.sismogramma[i] = self.sismogramma[i] / np.max([np.max(self.sismogramma[i]),
-                                                                    -np.min(self.sismogramma[i])])
-                if i % 1000 == 0:
-                    print("normalizzo, sto alla ", i)
+            #     self.sismogramma[i] = self.sismogramma[i] / np.max([np.max(self.sismogramma[i]),
+            #                                                         -np.min(self.sismogramma[i])])
+            #     if i % 1000 == 0:
+            #         print("normalizzo, sto alla ", i)
 
     def elimina_tacce_indici(self, vettore_indici: list):
         """

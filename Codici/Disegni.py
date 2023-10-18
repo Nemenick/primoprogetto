@@ -10,6 +10,7 @@ from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import matplotlib.lines as mlines
 import seaborn
+import plotly.graph_objects as go
 
 def calibration(tentativo: str = '52', nbin = 10):
     percorso = "/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/" + tentativo
@@ -415,6 +416,8 @@ for i in range(le):
     plt.show()
 """
 
+# TODO non so cosa sia
+"""
 path_save = "/home/silvia/Desktop"
 name_save = "Figure_Hara_Misclassified.jpg"
 hH = "/home/silvia/Desktop/Hara/Test/Hara_test_data.hdf5"
@@ -461,6 +464,62 @@ fig.supxlabel('Time ($10^{-2} s$)', fontsize=20)
 fig.supylabel('Normalized ground motion', fontsize=20, x=0.05)
 plt.savefig(path_save + "/" + name_save, dpi=300,bbox_inches='tight')
 plt.show()
+"""
+
+# TODO  DETECT data : plot eventi picked vs size vs magnitudo
+"""
+# plot picked in base a magnitudo e num. pick
+import pandas as pd
+import plotly.graph_objects as go
+from matplotlib.colors import LinearSegmentedColormap
+import math
+
+map_events_picked = pd.read_csv("/home/silvia/Desktop/Data/DETECT/Map_events_Picks.csv")
+colorscale_custom = [
+    [0.0, 'red'],           # a 0 rossi
+    [0.042, 'red'],         # tra 1 e 6 rossi
+    [0.069, 'blue'],        # Valori tra 7 e 10 saranno rosso-blu
+    [0.14, 'green'],        # Valori tra 10 e 20 saranno blu-verdi
+    [1.0, 'green'],         # Valori superiori a 20 saranno verdi
+]
+
+sizes = []
+for i in map_events_picked["source_magnitude"]:
+    if not math.isnan(i):
+        sizes.append(i*2.0+4.5)
+    else:
+        sizes.append(1.5)
+
+df = map_events_picked[["source_latitude_deg","source_longitude_deg", "source_depth"]]
 
 
+# Create an interactive 3D scatter plot
+fig = go.Figure()
 
+fig.add_trace(go.Scatter3d(
+    x=df['source_latitude_deg'],
+    y=df['source_longitude_deg'],
+    z=df['source_depth'],
+    mode='markers',
+    marker=dict(
+        size=sizes,
+        opacity=0.7,
+        color=map_events_picked["number_P_picks"],
+        colorscale=colorscale_custom,  # Usa la colormap personalizzata
+        colorbar=dict(title='Color Scale', tickvals=[7, 10, 20], ticktext=['7<: Red','10 Blue', '>20: green']),  # Aggiungi la colorbar personalizzata
+    ),
+    name='Picked'
+))
+
+fig.update_layout(
+    scene=dict(
+        xaxis_title='Latitude',
+        yaxis_title='Longitude',
+        zaxis_title='Depth'
+    ),
+    title='Mappa eventi in base a numero di tracce con pick'
+)
+
+# Save the plot to an HTML file
+fig.write_html("/home/silvia/Desktop/Plot_qualcosa.html")
+"""

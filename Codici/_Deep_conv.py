@@ -62,12 +62,12 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     ytrain = ytrain + 0
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.hdf5'
+# csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1_NO_Pollino.hdf5'
 
 
-# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
-# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
+csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
 # TODO controlla perchè data_Velocimeter_Buone_4s_Normalizzate SENZA POLLINO mi da errore !!!!!!!!!!!!!!!!!!!!
 
 """

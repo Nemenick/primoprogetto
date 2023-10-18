@@ -15,6 +15,7 @@ import os
 
 def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset, timeshift=0):
     """
+    Il train sarà 6-uplicato in taglia: shift_0, shift_-,shift_+  e le corrispettive flipped
     :param estremi_val:     estremi della validation set, [lat_min, lat_max, lon_min, lon_max]
     :param estremi_test:    idem di e_val
     :param semi_amp:        Semiampiezza della traccia da considerare
@@ -76,17 +77,92 @@ def dividi_train_test_val(estremi_test: list, estremi_val: list, semi_amp: int, 
     return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
 
 
+def dividi_train_test_val_2(estremi_test: list, estremi_val: list, semi_amp: int, dati: ClasseDataset, timeshift=0):
+    """
+    :param estremi_val:     estremi della validation set, [lat_min, lat_max, lon_min, lon_max]
+    :param estremi_test:    idem di e_val
+    :param semi_amp:        Semiampiezza della traccia da considerare
+    :param dati:            dataset da suddividere
+    :param timeshift:       effettuo un timeshift con dist. uniforme in [0,t] e [-t,0] per le sole tracce del train
+    :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
+
+    train 4-uplicato in taglia.
+    ora xtrain sara: [dati_normali[0:tot], dati_norm_shifted+[pari], dati_norm_shifted-[pari]]+
+                     [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]
+                     non pari ma quelli per cui k>sample_train/2 !!!
+    """
+
+    lung = len(dati.sismogramma[0])  # lunghezza traccia
+    (xval, yval, xtest, ytest) = ([], [], [], [])
+    indici_test = []
+    indici_val = []
+    for k in range(len(dati.sismogramma)):
+        if estremi_test[0] < dati.metadata['source_latitude_deg'][k] < estremi_test[1] and estremi_test[2] \
+                < dati.metadata['source_longitude_deg'][k] < estremi_test[3]:
+            indici_test.append(k)                   # li farò eliminare dal trainset
+            shift = random.randint(-timeshift, timeshift) * 0  # TODO
+            xtest.append(dati.sismogramma[k][lung // 2 - semi_amp + shift:lung // 2 + semi_amp + shift])
+            if dati.metadata["trace_polarity"][k] == "positive":
+                ytest.append(1)
+            elif dati.metadata["trace_polarity"][k] == "negative":
+                ytest.append(0)
+        if estremi_val[0] < dati.metadata['source_latitude_deg'][k] < estremi_val[1] and estremi_val[2] \
+                < dati.metadata['source_longitude_deg'][k] < estremi_val[3]:
+            indici_val.append(k)                   # li farò eliminare dal trainset
+            shift = random.randint(-timeshift, timeshift) * 0  # TODO
+            xval.append(dati.sismogramma[k][lung // 2 - semi_amp + shift:lung // 2 + semi_amp + shift])
+            if dati.metadata["trace_polarity"][k] == "positive":
+                yval.append(1)
+            elif dati.metadata["trace_polarity"][k] == "negative":
+                yval.append(0)
+    (xval, yval, xtest, ytest) = (np.array(xval), np.array(yval), np.array(xtest), np.array(ytest))
+    print("\n\nPrint da funzione dividi.. : lunghezze val,test", len(xval), len(yval), len(xtest), len(ytest), "\n\n")
+
+    dati_test = dati.seleziona_indici(indici_test)
+    dati_val = dati.seleziona_indici(indici_val)
+
+    indici_test_val = indici_test + indici_val
+    dati.elimina_tacce_indici(indici_test_val)
+    sample_train = len(dati.sismogramma)
+    if sample_train % 2 == 1:
+        sample_train -= 1
+    xtrain = np.zeros((sample_train * 4, semi_amp * 2))
+    for k in range(sample_train):
+        xtrain[k] = dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        xtrain[k + 2*sample_train] = -dati.sismogramma[k][lung // 2 - semi_amp:lung // 2 + semi_amp]
+        if k > sample_train/2:
+            shift1 = random.randint(1, timeshift)      # shift alla traccia normale positivo
+            shift_1 = random.randint(1, timeshift)     # ""    alla traccia normale negativo
+            shift_11 = random.randint(1, timeshift)    # ""    alla traccia flipped positivo
+            shift_1_1 = random.randint(1, timeshift)   # ""    alla traccia flipped negativo
+            # cast in int serve solo perchè come indicizzazione vuole un int SICURO. In realtà sample_train % 2 == 0
+            # vedi fig per capire xtrain
+            xtrain[int(k- sample_train/2 + sample_train)] = dati.sismogramma[k][lung // 2 - semi_amp + shift1:lung // 2 + semi_amp + shift1]
+            xtrain[int(k- sample_train/2 + 3*sample_train/2)] = dati.sismogramma[k][lung // 2 - semi_amp - shift_1:lung // 2 + semi_amp - shift_1]
+            xtrain[int(k -sample_train/2 + 7*sample_train/2)] = -dati.sismogramma[k][lung // 2 - semi_amp + shift_11:lung // 2 + semi_amp + shift_11]
+            xtrain[int(k-sample_train/2 + 3 * sample_train)] = -dati.sismogramma[k][lung // 2 - semi_amp - shift_1_1:lung // 2 + semi_amp - shift_1_1]
+
+    ytrain = \
+        np.array([dati.metadata["trace_polarity"][_] == "positive" for _ in range(sample_train)] +
+                 [dati.metadata["trace_polarity"][_] == "positive" for _ in range(int(sample_train/2), sample_train)]*2
+                 + [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(sample_train)] +
+                 [1 - (dati.metadata["trace_polarity"][_] == "positive") for _ in range(int(sample_train/2),
+                                                                                        sample_train)]*2)
+    ytrain = ytrain + 0
+    return xtrain, ytrain, xtest, ytest, xval, yval, dati_test, dati_val
+
+
 csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'
-# percorso di dove sono contenuti i metadata
 hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-# percorso di Dove sono contenute le tracce
+# csvin = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/metadata_Velocimeter_Buone_4s_Normalizzate.csv'
+# hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Buone/data_Velocimeter_Buone_4s_Normalizzate.hdf5'
 
 Dati = ClasseDataset()
 Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
 
 e_test = [43, 45, 9.5, 11.8]
 e_val = [37.5, 38.5, 14.5, 16]              # TODO cambia qui e controlla se non esistono già le cartelle
-tentativi = [79]
+tentativi = [81]
 path_tentativi = '/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi'
 for tentativo in tentativi:
     os.mkdir(path_tentativi + "/" + str(tentativo))
@@ -94,9 +170,10 @@ for tentativo in tentativi:
 semiampiezza = 80
 epoche = 100
 batchs = 512
-pazienza = 10
+pazienza = 3
 shift_samples = 10
-x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val(e_test, e_val,
+versione_shift = "2"
+x_train, y_train, x_test, y_test, x_val, y_val, Dati_test, Dati_val = dividi_train_test_val_2(e_test, e_val,
                                                                                             semiampiezza, Dati,
                                                                                             timeshift=shift_samples)
 
@@ -139,13 +216,13 @@ for tentativo in tentativi:
     rete = 2
     model = keras.models.Sequential([
         Conv1D(32, 5, input_shape=(len(x_train[0]), 1), activation="relu", padding="same"),
-        Dropout(0.5),
+        # Dropout(0.5),
         Conv1D(64, 4, activation="relu"),
         MaxPooling1D(2),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Conv1D(256, 5, activation="relu", padding="same"),
-        Dropout(0.5),
+        # Dropout(0.5),
         Conv1D(128, 3, activation="relu"),
         MaxPooling1D(2),
         Flatten(),
@@ -234,10 +311,11 @@ for tentativo in tentativi:
                "\ncoordinate val = " + str(e_val) + "con " + str(len(x_val)) + " dati di val" + \
                "\nOptimizer: SGD con epsilon = " + str(momento) + \
                "\nEarly_stopping con patiente = " + str(pazienza) + ", restore_best_weights = True" + \
-               "\nHO DROPOUT (0.5) dopo primo e 4o conv" + \
+               "\nNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO DROPOUT (0.5) dopo primo e 4o conv" + \
                "\nSENZA PULIZIA SOM" + \
                "\nAGUMENTATION TIMESHIFT: test e val non hanno timeshift, shift samples = " + str(shift_samples) + \
-               "\n###############  HO INCLUSO DATI DEL POLLINO  ###############"
+               "\n###############  HO INCLUSO DATI DEL POLLINO  ###############" + \
+                "\n VERSIONE shift = " + versione_shift
     # Early_stopping    con    patiente = 3, restore_best_weights = True
     file.write(dettagli)
     file.close()
@@ -293,55 +371,4 @@ for tentativo in tentativi:
 # print(len(predizione), y_test.shape, type(predizione), type(y_test))
 # print("predict", predizione)
 
-# TODO vecchia divisione dataset
-"""
-sample_train = len(Dati.sismogramma)                     # num di tracce da dare come train (il resto è validation)
-# tentativo = "18"
 
-# Dati.plotta(range(200),semiampiezza,"normalizzati",'/home/silvia/Desktop')
-lung = len(Dati.sismogramma[0])     # lunghezza traccia
-
-# TODO Agumentation
-
-x_train = np.zeros((sample_train*2, semiampiezza*2))
-for i in range(sample_train):
-    x_train[i] = Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-    x_train[i+sample_train] = -Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(sample_train)] +
-                   [1-(Dati.metadata["trace_polarity"][i] == "positive") for i in range(sample_train)])
-y_train = y_train + 0
-
-Dati_validation = ClasseDataset()
-hdf5val = '/home/silvia/Desktop/Pollino/Pollino_100Hz_data.hdf5'
-csvval = '/home/silvia/Desktop/Pollino/Pollino_100Hz_metadata.csv'
-Dati_validation.leggi_custom_dataset(hdf5val, csvval)
-lung_val = len(Dati_validation.sismogramma[0])
-x_val = np.zeros((len(Dati_validation.sismogramma), semiampiezza*2))
-for i in range(len(Dati_validation.sismogramma)):
-    x_val[i] = Dati_validation.sismogramma[i][lung // 2 - semiampiezza:lung // 2 + semiampiezza]
-y_val = np.array([Dati_validation.metadata["trace_polarity"][i] == "positive"
-                  for i in range(len(Dati_validation.sismogramma))])
-y_val = y_val + 0
-#  uso Pollino come validation
-# sample_val = len(Dati.sismogramma) - sample_train
-# x_val = np.zeros((sample_val, semiampiezza*2))
-# for i in range(sample_val):
-#     x_val[i] = Dati.sismogramma[i+sample_train][lung//2 - semiampiezza:lung//2 + semiampiezza]
-# y_val = np.array(
-#     [Dati.metadata["trace_polarity"][i+sample_train] == "positive" for i in range(sample_val)]                )
-# y_val = y_val + 0
-# # (x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
-# # (x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
-
-
-
-#  NON Agumentation
-
-x_train = np.zeros((len(Dati.sismogramma), semiampiezza*2))
-for i in range(len(Dati.sismogramma)):
-    x_train[i] = Dati.sismogramma[i][lung//2 - semiampiezza:lung//2 + semiampiezza]
-y_train = np.array([Dati.metadata["trace_polarity"][i] == "positive" for i in range(len(Dati.sismogramma))])
-y_train = y_train + 0
-(x_val, y_val) = (x_train[0:len(x_train)//10], y_train[0:len(x_train)//10])
-(x_train, y_train) = (x_train[len(x_train)//10:len(x_train)], y_train[len(x_train)//10:len(x_train)])
-"""
