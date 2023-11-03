@@ -251,21 +251,6 @@ nomepng = "_Presentazione_Undecidable"
 Dataset.plotta(vettore_indici,  namepng=nomepng, semiampiezza=semiampiezza_, percosro_cartellla=cartella)
 """
 
-# TODO genera Custom Normalizzato
-"""
-Dati = ClasseDataset()
-
-csvin = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s.csv'
-hdf5in = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s.hdf5'
-
-csvout = '/home/silvia/Desktop/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate.csv'
-hdf5out = '/home/silvia/Desktop/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate.hdf5'
-
-Dati.leggi_custom_dataset(hdf5in, csvin)  # Leggo il dataset
-Dati.normalizza()
-Dati.crea_custom_dataset(hdf5out, csvout)
-"""
-
 # TODO Grafico Instance Data (mappa)
 """
 # hdf5in = '/home/silvia/Desktop/Instance_Data/Quattro_4s_Cattive/data_Velocimeter_Cattive_4s.hdf5'
@@ -441,7 +426,7 @@ Datapol.leggi_custom_dataset(hdf5pol, csvpol)
 # Datains.crea_custom_dataset(hdf5ins_out, csvins_out)
 """
 
-# TODO Confronta rete
+# TODO Confronta rete grafico
 """
 # SGD con Momentum, momentum = 0.6    18
 # SGD con Momentum, momentum = 0.9    20

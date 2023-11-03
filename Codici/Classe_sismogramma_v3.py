@@ -169,7 +169,7 @@ class ClasseDataset:
         print("ho creato hdf5")
         dizio = self.metadata
         dizio["centrato"] = self.centrato   # Mette tutta la "colonna" al valore self.centrato
-        dizio["demeaned"] = self.demeaned   # (fa in modo che ogni colonna abbia stesso shape)
+        dizio["demeaned"] = self.demeaned   # (fa in modo che ogni colonna abbia stesso shape (lo fa pandas))
         dizio["normalized"] = self.normalized
         datapandas = pd.DataFrame.from_dict(dizio)         
         datapandas.to_csv(percorsocsvout_pandas, index=False)
@@ -316,7 +316,6 @@ class ClasseDataset:
             if metodo == "rumore" or metodo == "totale":
                 self.demean(metodo)
 
-
     def normalizza(self, soglia=20.):
         """
         # TODO implementa giusta normalizzazione (da decidere)
@@ -363,6 +362,14 @@ class ClasseDataset:
             #                                                         -np.min(self.sismogramma[i])])
             #     if i % 1000 == 0:
             #         print("normalizzo, sto alla ", i)
+
+    def calc_SNR(self, semiamp = 100):
+        if "trace_Z_snr_db" in self.metadata.keys():
+            print("SNR is alredy present. Exit from function")
+            exit
+        lung_2 = len(self.sismogramma[0])//2
+        SNRs = np.mean(self.sismogramma[:,lung_2: lung_2 + semiamp ]**2, axis=1) / np.mean(self.sismogramma[:,lung_2 - semiamp: lung_2]**2, axis=1)
+        self.metadata["trace_Z_snr_db"] = SNRs
 
     def elimina_tacce_indici(self, vettore_indici: list):
         """
@@ -451,7 +458,7 @@ class ClasseDataset:
                 plt.axhline(y=0, color='k', ls='dashed', lw=1)
                 stringa = ""
                 for key in self.metadata:
-                    if key != "centrato" and key != "demeaned":
+                    if key != "centrato" and key != "demeaned" and key != "normalized":
                         stringa = stringa + str(self.metadata[key][i]) + " "
                 # stringa = stringa + str(self.indice_csv[i])
                 plt.title(stringa, wrap=True, loc='center')
@@ -483,7 +490,7 @@ class ClasseDataset:
                 plt.axhline(y=0, color='k', ls='--', lw=1)
                 stringa = ""
                 for key in self.metadata:
-                    if key != "centrato" and key != "demeaned":
+                    if key != "centrato" and key != "demeaned" and key != "normalized":
                         stringa = stringa + str(self.metadata[key][i]) + " "
                 # stringa = stringa + str(self.indice_csv[i])
                 plt.title(stringa, wrap=True, loc='center')

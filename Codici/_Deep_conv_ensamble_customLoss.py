@@ -148,9 +148,8 @@ def dividi_train_test_val_shift3(estremi_test: list, estremi_val: list, semi_amp
     :return:                xytrain, xytest, xyval (come np.array), dati_test,dati_val come ClasseDataset
     
     train 4-uplicato in taglia.
-    ora xtrain sara: [dati_normali[0:tot], dati_norm_shifted+[pari], dati_norm_shifted-[pari]]+
-                     [dati_flip[0:tot], dati_flip_shifted+[pari], dati_flip_shifted-[pari]]
-                     non pari ma quelli per cui k>sample_train/2 !!!
+    ora xtrain sara: [dato(i), -dato(i), dato(i) +shift1*(-1^i), -dato(i) + shift-1*(-1^i) for i in range(sample_train)]
+                        dove shift è solo positivo
     """
 
     lung = len(dati.sismogramma[0])  # lunghezza traccia
@@ -215,7 +214,9 @@ def dividi_train_test_val_shift3(estremi_test: list, estremi_val: list, semi_amp
 
 
 def dividi_noise(data: ClasseDataset, semi_amp, N_train, N_val, randomseed):
-    
+    """
+    prendo 
+    """
     np.random.rand(randomseed)
     if N_train + N_val > len(data.sismogramma):
         return None
@@ -320,10 +321,10 @@ def my_acc(y_true,y_pred):
 
 hdf5_pol = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
 csv_pol = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'  # polarity
-hdf5_noi = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-csv_noi = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'  # noise
-hdf5_und = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/data_Velocimeter_4s_Normalizzate_New1-1.hdf5'
-csv_und = '/home/silvia/Desktop/Data/Instance_Data/Tre_4s/metadata_Velocimeter_4s_Normalizzate_New1-1.csv'  # undecidable # DA NORMALIZZARE??=?=?=??
+hdf5_noi = '/home/silvia/Desktop/Data/Instance_noise/data_Instance_noise.hdf5'
+csv_noi = '/home/silvia/Desktop/Data/Instance_noise/metadata_Instance_noise.csv'  # noise
+hdf5_und = '/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_data_normalized_more_undecidable_0.4_0.6_more16.hdf5'
+csv_und = '/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_metadata_normalized_more_undecidable_0.4_0.6_more16.csv'  # undecidable # DA NORMALIZZARE??=?=?=??
 
 Dati_pol = ClasseDataset()
 Dati_pol.leggi_custom_dataset(hdf5_pol, csv_pol)  
@@ -339,7 +340,7 @@ tentativo = "17"
 path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
 
 semiampiezza = 80
-epoche = 85
+epoche_standard = 3
 batchs = 512                                # TODO CAMBIA parametri
 pazienza = 10
 drop = 0.5
@@ -348,7 +349,7 @@ versione_shift = "3"                        # TODO "automatizza" timeshift, scel
 
 randomseed_noise = 678902
 Perc_noise = 0.1
-Perc_und = 0.3
+Perc_und = 0.2
 
 os.mkdir(path_tentativi)
 for i in range(n_train):
@@ -356,25 +357,28 @@ for i in range(n_train):
 
 
 if shift_samples == 0:
-    x_train_pol, y_train_pol, x_test_pol, y_test_pol, x_val_pol, y_val_pol, Dati_test_pol, Dati_val_pol = dividi_train_test_val(e_test, e_val,
+    x_train_inst, y_train_inst, x_test_pol, y_test_pol, x_val_pol, y_val_pol, Dati_test_pol, Dati_val_pol = dividi_train_test_val(e_test, e_val,
                                                                                                 semiampiezza, Dati_pol)
 else:
-    x_train_pol, y_train_pol, x_test_pol, y_test_pol, x_val_pol, y_val_pol, Dati_test_pol, Dati_val_pol = dividi_train_test_val_shift3(e_test, e_val,
+    x_train_inst, y_train_inst, x_test_pol, y_test_pol, x_val_pol, y_val_pol, Dati_test_pol, Dati_val_pol = dividi_train_test_val_shift3(e_test, e_val,
                                                                                             semiampiezza, Dati_pol,
                                                                                             timeshift=shift_samples)
 
 # dividi_noise(data: ClasseDataset, semi_amp, N_train, N_val, randomseed)
 # dividi_undecidable(data: ClasseDataset, semi_amp, N_train, N_val, timeshift=0)
 
-N_train_noise , N_val_noise = (int(len(x_train_pol)*Perc_noise), int(len(x_val_pol)*Perc_noise))
-N_train_undecidable , N_val_undecidable = (int((len(x_train_pol)*Perc_und)//2), int(len(x_val_pol)*Perc_und))
+N_train_noise , N_val_noise = (int(len(x_train_inst)*Perc_noise), int(len(x_val_pol)*Perc_noise))
+N_train_undecidable , N_val_undecidable = (int((len(x_train_inst)*Perc_und)//2), int(len(x_val_pol)*Perc_und))
 
-x_train_noi, y_train_noi = dividi_noise(Dati_noi, semiampiezza, N_train_noise, N_val_noise, randomseed_noise)
+x_train_noi, y_train_noi, x_val_noi, y_val_noi = dividi_noise(Dati_noi, semiampiezza, N_train_noise, N_val_noise, randomseed_noise)
 
-x_train_und, y_train_und = dividi_undecidable(Dati_noi, semiampiezza, N_train_undecidable, N_val_undecidable, timeshift = shift_samples)
+x_train_und, y_train_und, x_val_und, y_val_und= dividi_undecidable(Dati_noi, semiampiezza, N_train_undecidable, N_val_undecidable, timeshift = shift_samples)
 
-x_train = np.concatenate([x_train_pol,x_train_und,x_train_noi])
-y_train = np.concatenate([y_train_pol,y_train_und,y_train_noi])
+x_train = np.concatenate([x_train_inst,x_train_und,x_train_noi])
+y_train = np.concatenate([y_train_inst,y_train_und,y_train_noi])
+
+x_val = np.concatenate([x_val_pol,x_val_und,x_val_noi])
+y_val = np.concatenate([y_val_pol,y_val_und,y_val_noi])
 
 list_acc_test = []
 list_acc_val = []
@@ -406,27 +410,41 @@ for tent in range(n_train):
         Dense(50, activation="softsign"),
         Dense(1, activation="sigmoid")
     ])
-
+############## FASE 1 - alcune epoche con training standard #######################
     model.compile(
         optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
-        # optimizer=optimizers.Adam(epsilon=epsilon),
         loss="binary_crossentropy",
         metrics=['accuracy']
     )
-    
-
     model.summary() 
     print(f"######################Inizio il {int(tent)+1}o training ######################")
+    start = time.perf_counter()
+    storia = model.fit(x_train_inst, y_train_inst,
+                       batch_size=batchs,
+                       epochs=epoche_standard,
+                       validation_data=(x_val_pol, y_val_pol),
+                       callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
+    print("\n\n\nTEMPOO per ", epoche_standard, "epoche: ", time.perf_counter()-start, "\n\n\n")
 
-    # Inizio il train
+############## FASE 2 - altre epoche con training CUSTOM LOSS #######################
 
+    lamb =
+    model.compile(
+        optimizer=optimizers.SGD(momentum=momento),  # TODO CAMBIA
+        loss=my_loss(my_loss(lamb)),
+        metrics=[my_acc]
+    )
+    model.summary() 
+    print(f"######################Inizio il {int(tent)+1}o training ######################")
     start = time.perf_counter()
     storia = model.fit(x_train, y_train,
                        batch_size=batchs,
-                       epochs=epoche,
+                       epochs=,
                        validation_data=(x_val, y_val),
                        callbacks=EarlyStopping(patience=pazienza,  restore_best_weights=True))
-    print("\n\n\nTEMPOO per ", epoche, "epoche: ", time.perf_counter()-start, "\n\n\n")
+    print("\n\n\nTEMPOO per ", model.epoches, "epoche: ", time.perf_counter()-start, "\n\n\n")
+
+############## FASE 3 - cose varie #######################
     model.save(path_tentativi + "/" + str(tent) + f"/Tentativo_More_{tentativo}_"+str(tent)+".hdf5")
     print("\n\nControlla qui\n", storia.history)
     print(storia.history.keys())
@@ -529,9 +547,9 @@ dettagli =  f"""Rete numero  {rete}
             batchsize = {batchs}
             semiampiezza = {semiampiezza} 
             dati normalizzati con primo metodo {hdf5_pol}
-            Sample of polarity = {len(x_train_pol)}
+            Sample of polarity = {len(x_train_inst)}
             Samples of noise = {len(x_train_noi)}
-            Samples of undecidable = {N_und}
+            Samples of undecidable = {len(x_train_und)}
             In questo train train,test,val sono instance
             coordinate test = {e_test}) con {len(x_test_pol)} dati di test 
             coordinate val = {e_val}) con {len(x_val_pol)} dati di val 
