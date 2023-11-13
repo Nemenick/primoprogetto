@@ -466,7 +466,7 @@ plt.savefig(path_save + "/" + name_save, dpi=300,bbox_inches='tight')
 plt.show()
 """
 
-# TODO  DETECT data : plot eventi picked vs size vs magnitudo
+# TODO  DETECT data : plot eventi picked vs size vs magnitudo (colorscale)
 """
 # plot picked in base a magnitudo e num. pick
 import pandas as pd
