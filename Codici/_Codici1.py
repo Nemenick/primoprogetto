@@ -35,6 +35,8 @@ def get_onset(waveform,window_size=100, threshold=0.1, statistics=S_6):
     pre_window = 100
     # lower_bound = np.argmax(np.abs(waveform)) - 10 - window_size
     # upper_bound = len(waveform) - 10
+
+
     
     lower_bound = 1
     upper_bound = len(waveform)
