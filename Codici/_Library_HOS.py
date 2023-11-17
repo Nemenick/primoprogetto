@@ -177,9 +177,11 @@ def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
     diff = np.diff(hos)
     # narrow the search range to a region near the maximum
     pre_window = 100
-    lower_bound = np.argmax(np.abs(waveform)) - 200 - window_size
-    upper_bound = lower_bound + 400
-    lower_bound = np.argmax(hos[lower_bound:upper_bound]) + lower_bound - pre_window
+    # lower_bound = np.argmax(np.abs(waveform)) - 200 - window_size
+    # upper_bound = lower_bound + 400
+    # lower_bound = np.argmax(hos[lower_bound:upper_bound]) + lower_bound - pre_window
+    lower_bound = 1
+    upper_bound = len(waveform)
     try:
         # find the onset larger than 0.1 * maximum of diff
         onset = np.where(diff[lower_bound:upper_bound] > threshold * np.max(diff))[0][0] + lower_bound
@@ -193,4 +195,4 @@ def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
             onset = -1 - window_size//2
     onset_2 = np.argmax(diff[lower_bound:upper_bound])
 
-    return onset + window_size//2, onset_2 + window_size//2, lower_bound
+    return onset + window_size, diff, onset_2 + window_size, lower_bound
