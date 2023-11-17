@@ -156,7 +156,7 @@ def get_onset(waveform,window_size=100, threshold=0.1, statistics=S_6):
         #try:
             # try 2 times the threshold in later part
             # onset = np.where(diff[lower_bound:] > 2*threshold * np.max(diff))[0][0] + lower_bound
-        onset = -1 - window_size
+        onset = -1 - window_size//2
         onset_2 = onset
         # except:
         #     # use trigger position when nothing found
@@ -190,6 +190,7 @@ def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
 
         except:
             # use trigger position when nothing found
-            onset = 1280
+            onset = -1 - window_size//2
+    onset_2 = np.argmax(diff[lower_bound:upper_bound])
 
-    return onset + window_size//2, lower_bound
+    return onset + window_size//2, onset_2 + window_size//2, lower_bound

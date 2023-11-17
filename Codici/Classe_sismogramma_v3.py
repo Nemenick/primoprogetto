@@ -186,15 +186,15 @@ class ClasseDataset:
         self.sismogramma = filehdf5.get("dataset1")
         self.sismogramma = np.array(self.sismogramma)
         self.metadata = 0
-        #self.metadata = pd.read_csv(percorsocsv)
-        # DICTIONARY TO PDDATAFRAME
+        self.metadata = pd.read_csv(percorsocsv)
+        """# DICTIONARY TO PDDATAFRAME
         datd = dd.read_csv(percorsocsv, dtype={"trace_P_arrival_sample": int, "source_magnitude": 'object'})
         # non metto engine, assume missinng etc perchè questi selezionati sembrano buoni
         # print("ho letto csv", time.perf_counter()-start)
         self.metadata = {}
         for key in datd:
             self.metadata[key] = np.array(datd[key])
-            # print("ho caricato la key ", key, time.perf_counter() - start)
+            # print("ho caricato la key ", key, time.perf_counter() - start)"""
         self.centrato = self.metadata["centrato"][1]
         self.demeaned = self.metadata["demeaned"][1]
         if "normalized" in self.metadata.keys():
