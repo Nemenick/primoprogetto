@@ -24,9 +24,9 @@ stat = _Library_HOS.S_4
 # window_width = 100
 # tresh = 0.25
 
-for freq_filter in [1,2,3,5,10]:
-    for window_width in [40,50,80,100,150,200]:
-        for tresh in [0.1,0.2,0.25,0.3,0.4]:
+for freq_filter in [1,2,3,5]:
+    for window_width in [50,100,150,200]:
+        for tresh in [0.2,0.25,0.3,0.4]:
             for ii in range(10):
                 gc.collect()
             string = f"filter freq : {freq_filter} window_width: {window_width} tresh: {tresh}"
@@ -43,6 +43,8 @@ for freq_filter in [1,2,3,5,10]:
             ons_th = np.array(ons_th)
             ons_max = np.array(ons_max)
             
-            uu[f"{string}_ons_th"] = ons_th
-            uu[f"{string}_ons_max"] = ons_max
+            uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_th":ons_th})],axis=1)
+            uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_max":ons_max})],axis=1)
+            #uu[f"{string}_ons_th"] = ons_th
+            #uu[f"{string}_ons_max"] = ons_max
     uu.to_csv("/home/silvia/Desktop/ONSET_POLLINO_S_4.csv",index=False)
