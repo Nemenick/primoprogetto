@@ -52,10 +52,22 @@ df.to_excel(writer, sheet_name='Sheet1', index=False)
 writer.save()
 """
 
-# TODO set index
+# TODO set index from read
 """
 import pandas as pd
 si = pd.read_csv("/home/silvia/Desktop/Data/DETECT/Distanze_interstazione_picked_rad.csv").set_index("Unnamed: 0")
 si
+"""
 
+# TODO remove duplicated columns
+"""
+data = {'A': [1, 2, 1, 4],
+        'B': [5, 6, 7, 8],
+        'C': [1, 2, 1, 4]}  # Colonna duplicata
+df = pd.DataFrame(data)
+
+df_senza_duplicate = df.T.drop_duplicates(keep='last').T
+
+print(df)
+print(df_senza_duplicate)
 """

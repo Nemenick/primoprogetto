@@ -116,7 +116,7 @@ def get_hos(data, window_size, func):
     slid_view =  sliding_window_view(data, (window_size,), (1,))
 
     # apply the function of slid_view along axis 1
-    return func(slid_view)
+    return func(slid_view,axis=-1)
 
 
 

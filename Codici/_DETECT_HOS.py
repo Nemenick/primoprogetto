@@ -17,20 +17,20 @@ uu = pd.DataFrame.from_dict(D.metadata["trace_name"])
 uu["trace_P_arrival_sample"] = D.metadata["trace_P_arrival_sample"]
 
 sampling_rate = 100
-typ_filter = "highpass"
-stat = _Library_HOS.S_4
+typ_filter = "lowpass"
+stat = _Library_HOS.S_6
 
 # freq_filter = 1
 # window_width = 100
 # tresh = 0.25
 
-for freq_filter in [1,2,3,5]:
+for freq_filter in [8,10,15,20]:
     for window_width in [50,100,150,200]:
         for tresh in [0.2,0.25,0.3,0.4]:
             for ii in range(10):
                 gc.collect()
             string = f"filter freq : {freq_filter} window_width: {window_width} tresh: {tresh}"
-            print("sto facendo ", string)
+            print("sto facendo LOWPASS", string)
             ons_th = []
             ons_max = []
             for i in range(len(D.sismogramma)):
@@ -47,4 +47,4 @@ for freq_filter in [1,2,3,5]:
             uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_max":ons_max})],axis=1)
             #uu[f"{string}_ons_th"] = ons_th
             #uu[f"{string}_ons_max"] = ons_max
-    uu.to_csv("/home/silvia/Desktop/ONSET_POLLINO_S_4.csv",index=False)
+    uu.to_csv("/home/silvia/Desktop/ONSET_POLLINO_S_6_lowpass.csv",index=False)
