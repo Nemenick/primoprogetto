@@ -3,7 +3,8 @@ import numpy as np
 import scipy
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
-    """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)  """
+    """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
+        sf sampling frequence  """
     # type_filter: ‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’
 
     freqs=np.array(freqs)
@@ -192,7 +193,34 @@ def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
 
         except:
             # use trigger position when nothing found
-            onset = -1 - window_size//2
+            onset = -1 - window_size
     onset_2 = np.argmax(diff[lower_bound:upper_bound])
 
+    return onset + window_size, diff, onset_2 + window_size, lower_bound
+
+
+def get_onset_ori_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
+    # use hos to pick onset
+
+    # get hos, here we use S 4
+    hos = get_hos(waveform, window_size, statistics)
+    # smooth the S4
+    hos = np.convolve(hos, np.ones(3)/3, mode='valid')
+    # get first derivative
+    diff = np.diff(hos)
+    # narrow the search range to a region near the maximum
+    pre_window = 1000
+    #lower_bound = np.argmax(np.abs(waveform)) - 200 - window_size
+    upper_bound = np.argmax(np.abs(waveform)) + pre_window
+    lower_bound = np.argmax(np.abs(waveform)) - pre_window
+    try:
+        # find the onset larger than 0.1 * maximum of diff
+        onset = np.where(diff[lower_bound:upper_bound] > threshold * np.max(diff))[0][0] + lower_bound
+    except:
+        # use trigger position when nothing found
+        onset = -1-window_size
+    try:
+        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound
+    except:
+        onset_2 = -10000-window_size
     return onset + window_size, diff, onset_2 + window_size, lower_bound
