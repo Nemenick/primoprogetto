@@ -166,9 +166,8 @@ def get_onset(waveform,window_size=100, threshold=0.1, statistics=S_6):
     return onset + window_size//2, diff, onset_2 + window_size//2
 
 
-
 def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
-    # Cannot use the get_onset without upper and lower bounds, original search window for DETECT waveforms is too large
+    # Cannot use the get_onset without upper and lower bounds, original search window for DETECT waveforms is too large?
 
     # get hos, here we use S 4
     hos = get_hos(waveform, window_size, statistics)
@@ -198,9 +197,8 @@ def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
 
     return onset + window_size, diff, onset_2 + window_size, lower_bound
 
-
 def get_onset_ori_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
-    # use hos to pick onset
+    # good for Pollino waveforms
 
     # get hos, here we use S 4
     hos = get_hos(waveform, window_size, statistics)
@@ -224,3 +222,39 @@ def get_onset_ori_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
     except:
         onset_2 = -10000-window_size
     return onset + window_size, diff, onset_2 + window_size, lower_bound
+
+def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origin_sample=0):
+    # Origin sample è il "tempo origine" dell'evento. Evito che becco un segnale precedente!
+    # BOUND on statistics, not on waveforms
+    # Number of threshold arbitrary
+
+
+    # get hos, here we use S 4
+    hos = get_hos(waveform, window_size, statistics)
+    # smooth the S4
+    hos = np.convolve(hos, np.ones(3)/3, mode='valid')
+    # get first derivative
+    diff = np.diff(hos)
+    # narrow the search range to a region near the maximum
+    pre_window = 500
+    #lower_bound = np.argmax(np.abs(waveform)) - 200 - window_size
+
+    lower_bound = np.argmax(np.abs(hos[origin_sample:])) - pre_window + origin_sample
+    upper_bound = np.argmax(np.abs(hos[origin_sample:])) + pre_window + origin_sample               # MODIFIED
+
+    onsets = []
+    for i in range(len(threshold)):
+        try:
+            # find the onset larger than 0.1 * maximum of diff
+            onsets.append(np.where(diff[lower_bound:upper_bound] > threshold[i] * np.max(diff))[0][0] + lower_bound + window_size)
+        except:
+            # use trigger position when nothing found
+            onsets.append(-1)
+
+
+
+    try:
+        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound
+    except:
+        onset_2 = -10000-window_size
+    return onsets, diff, onset_2 + window_size, lower_bound
