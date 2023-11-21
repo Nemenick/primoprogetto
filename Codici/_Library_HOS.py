@@ -224,11 +224,11 @@ def get_onset_ori_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
     return onset + window_size, diff, onset_2 + window_size, lower_bound
 
 def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origin_sample=0):
-    # Origin sample è il "tempo origine" dell'evento. Evito che becco un segnale precedente!
+    # Origin sample è il "tempo origine" dell'evento. Evito che trovo un segnale precedente!
     # BOUND on statistics, not on waveforms
     # Number of threshold arbitrary
-
-
+    # TODO potrei cercare primo "massimo locale"?
+    
     # get hos, here we use S 4
     hos = get_hos(waveform, window_size, statistics)
     # smooth the S4
@@ -250,8 +250,6 @@ def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
         except:
             # use trigger position when nothing found
             onsets.append(-1)
-
-
 
     try:
         onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound
