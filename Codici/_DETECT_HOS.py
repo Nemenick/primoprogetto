@@ -49,26 +49,46 @@ uu["trace_P_arrival_sample"] = D.metadata["trace_P_arrival_sample"]
 #      [_Library_HOS.S_6, "lowpass", 20, 50 , 0.4]]
 
 
-p = [[_Library_HOS.S_6, "bandpass", [0.5,25], 300, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [0.5,25], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [0.5,25], 400, [0.1,0.2,0.3,0.4]],]
+p = [[_Library_HOS.S_6, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_6, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_6, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_6, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_6, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_6, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_6, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_6, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_6, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]],
 
-names = ["S_6","S_6","S_4","S_4","S_6"]
+     [_Library_HOS.S_4, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_4, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_4, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_4, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_4, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_4, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_4, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
+     [_Library_HOS.S_4, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
+     [_Library_HOS.S_4, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]]]
+
+names = ["S_6","S_6","S_6","S_6","S_6","S_6","S_6","S_6","S_6",
+         "S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4"]
 indi = 0
 for stat, filt, freq, wind, th in p:
     for ii in range(10):
         gc.collect()
-    string = f"stat: {str(names[indi])} type_filter: {filt} filter freq: {freq} window_width: {wind} tresh: {th}"
+    string = f"stat: {str(names[indi])} type_filter: {filt} filter freq: {freq} window_width: {wind} tresh:"
     print("sto facendo tantecosse", string)
     ons_th = [[] for i in range(len(th)) ]
     ons_max = []
 
     
-    for i in range(len(D.sismogramma[0:500])):                  #TODO FREQ campionamento ATTENTO
-        sig = _Library_HOS.freq_filter(D.sismogramma[i], D.metadata["sampling_rate"][i], freq, type_filter= filt)
+    for i in range(len(D.sismogramma)): 
+
+        or_s =  int((UTCDateTime(D.metadata["source_origin_time"][i])- UTCDateTime(D.metadata["trace_start_time"][i]))*D.metadata["sampling_rate"][i])
+
+                                                        #TODO FREQ campionamento ATTENTO
+        sig = _Library_HOS.freq_filter(D.sismogramma[i][or_s-wind:or_s+8*200], D.metadata["sampling_rate"][i], freq, type_filter= filt)
         
-        or_s =  (UTCDateTime(D.metadata["source_origin_time"][i])- UTCDateTime(D.metadata["trace_start_time"][i]))*D.metadata["sampling_rate"][i]
-        onset_th, diff, onset_max,u  = _Library_HOS.get_onset_3(sig, wind, threshold=th, statistics= stat, origin_sample=int(or_s))
+        onset_th, diff, onset_max,u  = _Library_HOS.get_onset_4(sig, wind, threshold=th, statistics= stat)
         
         for j in range(len(th)):
             ons_th[j].append(onset_th[j])
@@ -84,5 +104,5 @@ for stat, filt, freq, wind, th in p:
     uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_max":ons_max})],axis=1)
     #uu[f"{string}_ons_th"] = ons_th
     #uu[f"{string}_ons_max"] = ons_max
-    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_alredypicked_get_onset_3_bound500_search_after_origintimes.csv",index=False)
+    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_alredypicked_get_onset_4_search_intorno_maxhos_bound200_plus_window_after_origintime_entro_8_s_dopo.csv",index=False)
     indi +=1

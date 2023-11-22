@@ -227,8 +227,7 @@ def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
     # Origin sample è il "tempo origine" dell'evento. Evito che trovo un segnale precedente!
     # BOUND on statistics, not on waveforms
     # Number of threshold arbitrary
-    # TODO potrei cercare primo "massimo locale"?
-    
+
     # get hos, here we use S 4
     hos = get_hos(waveform, window_size, statistics)
     # smooth the S4
@@ -238,8 +237,13 @@ def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
     # narrow the search range to a region near the maximum
     pre_window = 500
     #lower_bound = np.argmax(np.abs(waveform)) - 200 - window_size
-
-    lower_bound = np.argmax(np.abs(hos[origin_sample:])) - pre_window + origin_sample
+    try:
+        lower_bound = np.argmax(np.abs(hos[origin_sample:])) - pre_window + origin_sample
+    except:
+        onsets = [-1 for i in range(len(threshold))]
+        lower_bound=-1
+        onset_2 = -1-window_size
+        return onsets, diff, onset_2 + window_size, lower_bound
     upper_bound = np.argmax(np.abs(hos[origin_sample:])) + pre_window + origin_sample               # MODIFIED
 
     onsets = []
@@ -256,3 +260,55 @@ def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
     except:
         onset_2 = -10000-window_size
     return onsets, diff, onset_2 + window_size, lower_bound
+
+def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origin_sample=None, sampling_rate=200):
+    # Origin sample è il "tempo origine" dell'evento. Evito che trovo un segnale precedente!
+    # BOUND not on max of waveforms, not on max of statistics but constrain to be near the origin time
+    # Number of threshold arbitrary
+    # TODO search intorno al massimo della statistica e NON al valore assoluto? 
+
+    # get hos, here we use S 4
+    hos = get_hos(waveform, window_size, statistics)
+    # smooth the S4
+    hos = np.convolve(hos, np.ones(3)/3, mode='valid')
+    # get first derivative
+    diff = np.diff(hos)
+    # narrow the search range to a region near the maximum
+    pre_window = 200 * sampling_rate//200
+
+    lower_bound = np.argmax(hos) - pre_window
+    upper_bound = lower_bound + pre_window +  window_size
+
+    onsets = []
+    for i in range(len(threshold)):
+        try:
+            # find the onset larger than 0.1 * maximum of diff
+            onsets.append(np.where(diff[lower_bound:upper_bound] > threshold[i] * np.max(diff))[0][0] + lower_bound + window_size)
+        except:
+            # use trigger position when nothing found
+            onsets.append(-1)
+
+    try:
+        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound
+    except:
+        onset_2 = -10000-window_size
+    return onsets, diff, onset_2 + window_size, lower_bound
+
+
+
+
+
+
+
+
+
+
+
+
+
+    """
+    except:
+        onsets = [-1 for i in range(len(threshold))]
+        lower_bound=-1
+        onset_2 = -1-window_size
+        return onsets, diff, onset_2 + window_size, lower_bound"""
