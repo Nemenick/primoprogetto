@@ -261,7 +261,7 @@ def get_onset_3(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
         onset_2 = -10000-window_size
     return onsets, diff, onset_2 + window_size, lower_bound
 
-def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origin_sample=None, sampling_rate=200):
+def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origin_sample=0, sampling_rate=200):
     # Origin sample è il "tempo origine" dell'evento. Evito che trovo un segnale precedente!
     # BOUND not on max of waveforms, not on max of statistics but constrain to be near the origin time
     # Number of threshold arbitrary
@@ -276,7 +276,10 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
     # narrow the search range to a region near the maximum
     pre_window = 200 * sampling_rate//200
 
+
     lower_bound = np.argmax(hos) - pre_window
+    if lower_bound < 0:
+        lower_bound = 0
     upper_bound = lower_bound + pre_window +  window_size
 
     onsets = []
@@ -286,13 +289,13 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
             onsets.append(np.where(diff[lower_bound:upper_bound] > threshold[i] * np.max(diff))[0][0] + lower_bound + window_size)
         except:
             # use trigger position when nothing found
-            onsets.append(-1)
+            onsets.append(-100000)
 
     try:
-        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound
+        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound + window_size
     except:
-        onset_2 = -10000-window_size
-    return onsets, diff, onset_2 + window_size, lower_bound
+        onset_2 = -100000
+    return onsets, diff, onset_2, lower_bound
 
 
 

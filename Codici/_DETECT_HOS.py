@@ -49,25 +49,27 @@ uu["trace_P_arrival_sample"] = D.metadata["trace_P_arrival_sample"]
 #      [_Library_HOS.S_6, "lowpass", 20, 50 , 0.4]]
 
 
-p = [[_Library_HOS.S_6, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_6, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_6, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_6, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_6, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]],
+# p = [[_Library_HOS.S_6, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_6, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_6, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_6, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_6, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_6, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_6, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_6, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_6, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]],
 
-     [_Library_HOS.S_4, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_4, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_4, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_4, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_4, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_4, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_4, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
-     [_Library_HOS.S_4, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
-     [_Library_HOS.S_4, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]]]
+#      [_Library_HOS.S_4, "bandpass", [1,25], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_4, "bandpass", [1,25], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_4, "bandpass", [1,25], 400, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_4, "bandpass", [1,30], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_4, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_4, "bandpass", [1,30], 400, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_4, "bandpass", [2,30], 200, [0.1,0.2,0.3,0.4]],
+#      [_Library_HOS.S_4, "bandpass", [2,30], 300, [0.1,0.2,0.3,0.4]],    
+#      [_Library_HOS.S_4, "bandpass", [2,30], 400, [0.1,0.2,0.3,0.4]]]
+
+p = [[_Library_HOS.S_6, "bandpass", [5,35], 300, [0.1,0.2,0.3,0.4]]]
 
 names = ["S_6","S_6","S_6","S_6","S_6","S_6","S_6","S_6","S_6",
          "S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4"]
@@ -91,8 +93,8 @@ for stat, filt, freq, wind, th in p:
         onset_th, diff, onset_max,u  = _Library_HOS.get_onset_4(sig, wind, threshold=th, statistics= stat)
         
         for j in range(len(th)):
-            ons_th[j].append(onset_th[j])
-        ons_max.append(onset_max)
+            ons_th[j].append(onset_th[j] + or_s-wind)
+        ons_max.append(onset_max + or_s-wind)
         #onset_1, diff, onset_2  = _Library_HOS.get_onset(sig, window_width, threshold=tresh, statistics= stat)
         # print(onset_1, onset_2)
     for j in range(len(th)):
@@ -104,5 +106,5 @@ for stat, filt, freq, wind, th in p:
     uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_max":ons_max})],axis=1)
     #uu[f"{string}_ons_th"] = ons_th
     #uu[f"{string}_ons_max"] = ons_max
-    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_alredypicked_get_onset_4_search_intorno_maxhos_bound200_plus_window_after_origintime_entro_8_s_dopo.csv",index=False)
+    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_alredypicked_get_onset_4_search_intorno_maxhos_bound200_plus_window_after_origintime_entro_8_s_dopo_altro.csv",index=False)
     indi +=1
