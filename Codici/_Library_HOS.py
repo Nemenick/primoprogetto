@@ -165,7 +165,6 @@ def get_onset(waveform,window_size=100, threshold=0.1, statistics=S_6):
 
     return onset + window_size//2, diff, onset_2 + window_size//2
 
-
 def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
     # Cannot use the get_onset without upper and lower bounds, original search window for DETECT waveforms is too large?
 
@@ -265,7 +264,7 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
     # Origin sample è il "tempo origine" dell'evento. Evito che trovo un segnale precedente!
     # BOUND not on max of waveforms, not on max of statistics but constrain to be near the origin time
     # Number of threshold arbitrary
-    # TODO search intorno al massimo della statistica e NON al valore assoluto? 
+    # search intorno al massimo della statistica e NON al valore assoluto? 
 
     # get hos, here we use S 4
     hos = get_hos(waveform, window_size, statistics)
@@ -297,21 +296,125 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
         onset_2 = -100000
     return onsets, diff, onset_2, lower_bound
 
-
-
-
-
-
-
-
-
-
-
-
-
+def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False):
     """
-    except:
-        onsets = [-1 for i in range(len(threshold))]
-        lower_bound=-1
-        onset_2 = -1-window_size
-        return onsets, diff, onset_2 + window_size, lower_bound"""
+    divisive hierarchical clustering with max distance by Gio to find clusters of picks
+    
+    dmax        :
+    th          :
+    force_cut   : force the division of the clusters with dimension > dmax
+    picks       : list of numbers, the 
+    sclust      : index of where a new cluster starts
+    """
+    # FIXME implement force_cut
+    picks.sort()                            #
+    pdiff = np.diff(picks)                  #
+    sclust = np.where(pdiff>dmax / th)      # cluster size 2, not more than dmax / th (120)
+    sclust = [0] + list(sclust[0]+1) + [len(picks)]
+
+    for i in range(len(sclust)-1): # TODO ricorda sclust.sort() alla fine
+        # Check all clusters with more than 2 elements and larger than dmax
+        if (sclust[i+1] - sclust[i]) > 2 and (picks[sclust[i+1]-1] - picks[sclust[i]]) > dmax:
+            3 # TODO non mi piace più il divisivo
+
+
+def cluster_agg(picks: list, indexes=None, dmax=300, th=5):
+    
+    # agglomerative 1D hierarchical clustering with max distance by Gio, find clusters of picks
+
+    # starting fromm all single elements representing a separate cluster,
+    # agglomerate Reciprocal Nearest Neighbour,
+    #     if diameter cluster < diam_max, accept new cluster (diam_max depends on numbers of points in the cluster)
+    #     if distance of new link giving rise to new clusters < th * mean of other distances of original clusters, accept # FIXME RIVEDI!
+    # Cycle
+    # I End the cycle when no new cluster is born
+
+    """ 
+    Save the index of the starting and end of each cluster (sclust, eclust lists)
+    
+    i0  i1      i2            i3        i4             i5
+    .   .      (.)<--------->(...)<--->(..)<--------->(.  .)
+    
+    Agglomerate i3 e i4 iif dist(3,4) < dist(2,3) & dist(3,4) < dist(4,5)
+    Delete i4 from starting cluster list and i3 from ending cluster list
+    """
+    # picks.sort()
+    picks = [picks[0]-3*dmax] + picks + [picks[-1]+3*dmax]
+
+    sclust = [i for i in range(len(picks))]   # index representing the start of each cluster
+    eclust = [i for i in range(len(picks))]   # index representing the end of each cluster
+    agglomero = True
+    while agglomero:
+        agglomero = False
+        sdel = []                              
+        edel = []
+
+        for i in range(1,len(sclust)-2):
+            dl = picks[sclust[i]] - picks[eclust[i-1]]
+            d0 = picks[sclust[i+1]] - picks[eclust[i]]
+            dr = picks[sclust[i+2]] - picks[eclust[i+1]]        
+            
+            if d0<=dl and d0<=dr and d0<=dmax: # verify clusters are reciprocal Nearest Neighbour and New link not over maximum distance
+                dnew = picks[eclust[i+1]] - picks[sclust[i]]    # size of the new candidate cluster
+                Nnew = eclust[i+1] - sclust[i] + 1              # Number of component of the  new candidate
+
+                if dnew < Nnew * dmax/8 + 3/8 * dmax:           # size not over the maximum size (225 for 3 points and 450 for 9 if dmax=300)
+                    if Nnew == 2:
+                        sdel.append(sclust[i+1])
+                        edel.append(eclust[i])
+                        agglomero = True
+                    elif (d0 <= th * (picks[eclust[i+1]] - picks[sclust[i]] - d0) / (Nnew-2)) or d0 <=50:
+                        sdel.append(sclust[i+1])
+                        edel.append(eclust[i])
+                        agglomero = True
+
+        for i in sdel:
+            sclust.remove(i)
+        for i in edel:
+            eclust.remove(i)
+        #print(sclust,eclust, agglomero)
+
+    for i in range(len(sclust)):
+        sclust[i] -=1
+    for i in range(len(eclust)):
+        eclust[i] -=1
+
+    return sclust[1:-1], eclust[1:-1]
+
+    
+def accept_cluster(startclust:list,endclust:list):
+    """
+    startclust[i]: indice di dove inizia il cluster i-esimo
+    endtclust[i]: indice di dove finisce il cluster i-esimo
+    """
+    # Una volta fatti i cluster, vedo il più popoloso (min 3), confronto con altri. 
+    # Chiamo p1 e p2 le popolosità dei cluster maggiore e secondo maggiore. Affidabile se valgono tutte le seguenti:
+        # 1) cluster maggiore comprende almeno metà dei pick (metà nel senso di //) o se ha 4 punti o di più
+        # 2) p1 - p2 >= 2 (escludo caso 4,3)
+        # 3) p1 >= 2 * p2 (escludo caso 6-4, 5-3)
+
+    if len(startclust) != len(endclust):
+        raise Exception("Len startclust does not match endclust")
+    
+    if len(startclust) == 1:
+        return 0
+    
+    index_ok = -1
+    size = np.array(endclust) - np.array(startclust) + 1 # diff contains the sizes of the clusters
+    ssort = np.sort(size)
+    if ((ssort[-1] > len(size)//2 )or ssort[-1]>=4)  and (ssort[-1] - ssort[-2]) >=2 and (ssort[-1] >= 2*ssort[-2]):
+        #Accetto!
+        index_ok = np.argmax(size)
+
+    return index_ok
+
+
+    3
+
+
+"""
+except:
+onsets = [-1 for i in range(len(threshold))]
+lower_bound=-1
+onset_2 = -1-window_size
+return onsets, diff, onset_2 + window_size, lower_bound"""
