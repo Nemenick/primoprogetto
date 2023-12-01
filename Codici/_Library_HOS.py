@@ -402,7 +402,7 @@ def accept_cluster(startclust:list,endclust:list):
     index_ok = -1
     size = np.array(endclust) - np.array(startclust) + 1 # diff contains the sizes of the clusters
     ssort = np.sort(size)
-    if ((ssort[-1] > len(size)//2 )or ssort[-1]>=4)  and (ssort[-1] - ssort[-2]) >=2 and (ssort[-1] >= 2*ssort[-2]):
+    if ((ssort[-1] > len(size)//2 ) or ssort[-1]>=4)  and (ssort[-1] - ssort[-2]) >=2 and (ssort[-1] >= 2*ssort[-2]):
         #Accetto!
         index_ok = np.argmax(size)
 
