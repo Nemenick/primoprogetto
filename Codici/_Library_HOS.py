@@ -1,6 +1,7 @@
 import scipy.signal as sc_sig
 import numpy as np
 import scipy
+from scipy.cluster.hierarchy import linkage, fcluster
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
     """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
@@ -317,7 +318,6 @@ def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False):
         if (sclust[i+1] - sclust[i]) > 2 and (picks[sclust[i+1]-1] - picks[sclust[i]]) > dmax:
             3 # TODO non mi piace più il divisivo
 
-
 def cluster_agg(picks: list, indexes=None, dmax=300, th=5):
     
     # agglomerative 1D hierarchical clustering with max distance by Gio, find clusters of picks
@@ -381,11 +381,30 @@ def cluster_agg(picks: list, indexes=None, dmax=300, th=5):
 
     return sclust[1:-1], eclust[1:-1]
 
-    
+def cluster_agg_max_distance(picks, dmax=300):
+    # picks have to be a sorted list!
+    pic_M = [ [i] for i in picks]
+    Z = linkage(pic_M,"complete")       # "compute" the clustering procedure. returns the "rappresentation of the dendrogram"
+    crit = Z[:, 2]
+    flat_clusters = fcluster(Z, t=dmax, criterion='monocrit', monocrit=crit) # stops the clustering procedure based on criteria inside crit
+    sclust=[0]
+    eclust=[]
+    for i in range(len(flat_clusters)):
+        if i !=0:
+            if flat_clusters[i-1] != flat_clusters[i]:
+                sclust.append(i)
+                eclust.append(i-1)
+    eclust.append(len(flat_clusters)-1)
+
+    return sclust, eclust
+
 def accept_cluster(startclust:list,endclust:list):
     """
     startclust[i]: indice di dove inizia il cluster i-esimo
     endtclust[i]: indice di dove finisce il cluster i-esimo
+    e.g. per cluster del vettore [1,2,3,50,51,100] con cluster pari a [[1,2,3], [50,51], 100], abbiamo:
+            s = [0,3,5]
+            e = [2,4,5]
     """
     # Una volta fatti i cluster, vedo il più popoloso (min 3), confronto con altri. 
     # Chiamo p1 e p2 le popolosità dei cluster maggiore e secondo maggiore. Affidabile se valgono tutte le seguenti:
@@ -408,8 +427,6 @@ def accept_cluster(startclust:list,endclust:list):
 
     return index_ok
 
-
-    3
 
 
 """
