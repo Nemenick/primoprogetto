@@ -2,6 +2,7 @@ import scipy.signal as sc_sig
 import numpy as np
 import scipy
 from scipy.cluster.hierarchy import linkage, fcluster
+from scipy.integrate import simps
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
     """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
@@ -427,6 +428,16 @@ def accept_cluster(startclust:list,endclust:list):
 
     return index_ok
 
+def semblance(u):
+    # https://doi.org/10.1093/gji/ggu311 eq. (4)
+    # u to be
+    #   3) demeaned
+    #   1) filtered
+    #   2) each row aligned for its own arrival time
+    u = np.array(u)
+    Num = np.sum(u, axis=0)**2
+    Den = np.sum(u*u, axis=0)
+    return simps(Num)/simps(Den)/len(u)
 
 
 """

@@ -3,9 +3,25 @@ from obspy import read
 import numpy as np
 # Funzione write permette di salvare in sac format.
 # purtroppo sembra non possa salvare in unico file ma ogni forma d'onda in un file differente!
-# Noto che mseed genera un unico file, molto leggero, vedo se i file mseed e sac condividono le stesse identiche info1
+# Noto che mseed genera un unico file, molto leggero, vedo se i file mseed e sac condividono le stesse identiche info
 # ok, Mseed va bene!
 
+"""
+SAC header:
+    suppose b is obspy.core.stream.Stream
+    b[0].stats.starttime    --------------->    starttime of the trace      
+    b[0].stats.endtime:     --------------->    end time of the tarce
+    b[0].stats.sac["iztype"]--------------->    Reference time
+                                                                                    IZTYPE
+                                                                                Reference time equivalence:
+                                                                                IUNKN (Unknown)
+                                                                                IB (Begin time)
+                                                                                IDAY (Midnight of refernece GMT day)
+                                                                                IO (Event origin time)
+                                                                                IA (First arrival time)
+                                                                                ITn (User defined time pick n, n=0,9)
+
+"""
 inutile=False
 
 # TODO Read single flile
