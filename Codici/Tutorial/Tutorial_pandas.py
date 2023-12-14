@@ -71,3 +71,20 @@ df_senza_duplicate = df.T.drop_duplicates(keep='last').T
 print(df)
 print(df_senza_duplicate)
 """
+
+# TODO insert in pecific location
+"""
+df.loc[1.5] = ['Jane', 25, 'Madrid']
+df = df.sort_index().reset_index(drop=True)
+
+print(df)
+
+# Returns:
+#    Name  Age  Location
+# 0   Nik   31   Toronto
+# 1  Kate   30    London
+# 2  Jane   25    Madrid
+# 3  Evan   40  Kingston
+# 4  Kyra   33  Hamilton
+
+"""
