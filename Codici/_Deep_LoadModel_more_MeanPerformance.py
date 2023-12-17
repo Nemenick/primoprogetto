@@ -43,8 +43,8 @@ from Classe_sismogramma_v3 import ClasseDataset
 # hdf5_predicting = f'/home/silvia/Desktop/Data/SCSN(Ross)/Normaliz/Ross_test_polarity_data_Normalizzate{str(asoglia)}_New1-1.hdf5'
 # csv_predicting = f'/home/silvia/Desktop/Data/SCSN(Ross)/Normaliz/Ross_test_polarity_metadata_Normalizzate{str(asoglia)}_New1-1.csv'
 
-# hdf5_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_data_normalized.hdf5"
-# csv_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_metadata_normalized.csv"
+hdf5_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_data_normalized.hdf5"
+csv_predicting = "/home/silvia/Desktop/Data/Instance_Data/Undecidable/Instance_undecidable_metadata_normalized.csv"
 
 # hdf5_predicting = "/home/silvia/Desktop/Data/SCSN(Ross)/Ross_test_undecidable_Normalizzate20_New1-1_data.hdf5"
 # csv_predicting = "/home/silvia/Desktop/Data/SCSN(Ross)/Ross_test_undecidable_Normalizzate20_New1-1_metadata.csv"
@@ -52,8 +52,8 @@ from Classe_sismogramma_v3 import ClasseDataset
 #hdf5_predicting ="/home/silvia/Desktop/Data/DETECT/Detect_data_picked_normalized_downsampled.hdf5"
 #csv_predicting = "/home/silvia/Desktop/Data/DETECT/Detect_metadata_picked_normalized_downsampled.csv"
 
-hdf5_predicting = "/home/silvia/Desktop/Data/Instance_noise/data_Instance_noise.hdf5"
-csv_predicting = "/home/silvia/Desktop/Data/Instance_noise/metadata_Instance_noise.csv"
+#hdf5_predicting = "/home/silvia/Desktop/Data/Instance_noise/data_Instance_noise.hdf5"
+#csv_predicting = "/home/silvia/Desktop/Data/Instance_noise/metadata_Instance_noise.csv"
 
 Data_predicting = ClasseDataset()
 Data_predicting.leggi_custom_dataset(hdf5_predicting, csv_predicting)
@@ -61,19 +61,19 @@ N_samples = len(Data_predicting.sismogramma)
 lung = len(Data_predicting.sismogramma[0])
 
 semi_amp = 80
-tentativo = "1"                # More_tentativo
+tentativo = "16"                # More_tentativo
 path_tentativi = f'/home/silvia/Documents/GitHub/primoprogetto/Codici/Tentativi/More_{tentativo}'
 time_shift = 0
 #nome_predizione = f"Ross_Undecidable_normalized"
 #nome_predizione = f"Instance_New_pol_shift_{time_shift}"          # RICORDA su noise la parte "_shift{time_shift} viene eliminata!!!"
-nome_predizione = f"Instance_noise_0"
+nome_predizione = f"Instance_Undecidable_normalized_ALTRO"
 salva_predizioni = True
 unknown_polarity = True
 if unknown_polarity:
-    Data_predicting.metadata["trace_polarity"] = ["unknown"]
+    Data_predicting.metadata["trace_polarity"] = "unknown"
     
 # TODO predict Instance noise
-#"""
+"""
 randomseed = 678902
 np.random.rand(randomseed)
 
@@ -93,7 +93,7 @@ for i in nome[1:-1]:
         nome_predizione = nome_predizione + "_" + i
 nome_predizione = nome_predizione + f"_randomseed_{randomseed}"
 print("\n\n#####################Ho finito di mettere dati#####################\n\n")
-#"""
+"""
 
 # TODO predict Instance Test
 """
@@ -114,7 +114,7 @@ Data_predicting = Data_predicting.seleziona_indici(test_indici)
 """
 
 # TODO predict other than Instance polarity test
-"""
+#"""
 xtest = np.zeros((N_samples, semi_amp * 2))
 for k in range(N_samples):
     xtest[k] = Data_predicting.sismogramma[k][lung // 2 - semi_amp + time_shift:lung // 2 + semi_amp + time_shift]
@@ -123,7 +123,7 @@ if Data_predicting.metadata["trace_polarity"][0] == "positive" or Data_predictin
     y_test_true = y_test_true + 0
 else:
     y_test_true = [Data_predicting.metadata["trace_polarity"][0] for i in range(len(xtest))]
-"""
+#"""
 
 xtest = np.array(xtest)
 
