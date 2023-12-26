@@ -3,6 +3,7 @@ import numpy as np
 import scipy
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.integrate import simps
+import matplotlib.pyplot as plt
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
     """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
@@ -438,6 +439,77 @@ def semblance(u):
     Num = np.sum(u, axis=0)**2
     Den = np.sum(u*u, axis=0)
     return simps(Num)/simps(Den)/len(u)
+
+def SNR(sig,noise):
+    sig = np.array(sig)
+    noise = np.array(noise)
+    print("RICARICA")
+    return np.std(sig,axis=1)/np.std(noise,axis=1)
+
+
+def SNR2(Data, arrival, semiamp=3*200, source_sample=None, equalsize=False):
+    if source_sample is None:
+        source_sample = Data.shape[1]//2
+    sig = []
+    noise = []
+    leng = Data.shape[1]
+    for i in range(len(Data)):
+        arrivo = arrival[i]
+        if semiamp+1 < arrivo < leng-semiamp-1: 
+            sig.append(Data[i,arrivo-semiamp:arrivo+semiamp])
+            noise.append(Data[i,source_sample-semiamp:source_sample+semiamp])
+        elif equalsize:             # to create fictious data, in order to insert snr in catalogue
+            sig.append([0 for _ in range(semiamp*2)])
+            noise.append([_ for _ in range(semiamp*2)])
+    sig = np.array(sig)
+    noise = np.array(noise)
+    res = np.std(sig,axis=1)/np.std(noise,axis=1)
+    print(res.shape)
+    return res
+
+def log_hist(arrays, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
+    """ATTENTO passare sempre come 2D array(o list), acnhe se ho 1 solo hist da fare!!"""
+    print(kwargs)
+    if type(arrays) != list:
+        print("attenzione, non hai messo una lista di array!")
+        return -1
+    mini = 10**2
+    maxi = 0
+    for ar in arrays:
+        if np.min(ar) < mini:
+            mini = np.min(ar)
+        if np.max(ar) > maxi:
+            maxi = np.max(ar)
+    if bins is None:
+        bins= []
+        i = mini-mini/10
+        while i<= maxi:
+            bins.append(i)
+            i = i*ratio
+        bins.append(i)    
+
+    a_s = []
+    for j in range(len(arrays)):
+        norm = len(arrays[j]) if Normalize else 1
+        
+        if len(labels)== len(arrays):
+            kwargs["label"] = labels[j]
+        if len(edgecolors) == len(arrays):
+            kwargs["edgecolor"] = edgecolors[j]
+        else:
+            kwargs["edgecolor"] = "black"
+        if ylogscale:
+            plt.yscale("log")
+            a_s.append(plt.hist(arrays[j], bins=bins,weights=np.ones(len(arrays[j])) / norm  , **kwargs))
+        else:
+            a_s.append(plt.hist(arrays[j], bins=bins, weights=np.ones(len(arrays[j])) / norm, **kwargs))
+    plt.xscale("log")
+    plt.legend()
+    plt.title(title)
+    return a_s
+
+
+
 
 
 """
