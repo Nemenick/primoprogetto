@@ -4,6 +4,7 @@ import scipy
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.integrate import simps
 import matplotlib.pyplot as plt
+import warnings
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
     """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
@@ -168,6 +169,8 @@ def get_onset(waveform,window_size=100, threshold=0.1, statistics=S_6):
 
     return onset + window_size//2, diff, onset_2 + window_size//2
 
+
+"""Giovanni Functions"""
 def get_onset_2(waveform,window_size=100, threshold=0.1, statistics=S_6):
     # Cannot use the get_onset without upper and lower bounds, original search window for DETECT waveforms is too large?
 
@@ -299,7 +302,7 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
         onset_2 = -100000
     return onsets, diff, onset_2, lower_bound
 
-def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False):
+def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False, Ok= "not ok, not used function"):
     """
     divisive hierarchical clustering with max distance by Gio to find clusters of picks
     
@@ -440,13 +443,6 @@ def semblance(u):
     Den = np.sum(u*u, axis=0)
     return simps(Num)/simps(Den)/len(u)
 
-def SNR(sig,noise):
-    sig = np.array(sig)
-    noise = np.array(noise)
-    print("RICARICA")
-    return np.std(sig,axis=1)/np.std(noise,axis=1)
-
-
 def SNR2(Data, arrival, semiamp=3*200, source_sample=None, equalsize=False):
     if source_sample is None:
         source_sample = Data.shape[1]//2
@@ -467,26 +463,30 @@ def SNR2(Data, arrival, semiamp=3*200, source_sample=None, equalsize=False):
     print(res.shape)
     return res
 
-def log_hist(arrays, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
+def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
     """ATTENTO passare sempre come 2D array(o list), acnhe se ho 1 solo hist da fare!!"""
     print(kwargs)
     if type(arrays) != list:
         print("attenzione, non hai messo una lista di array!")
         return -1
-    mini = 10**2
-    maxi = 0
+    mini = 10**10
+    maxi = -10**10
     for ar in arrays:
         if np.min(ar) < mini:
             mini = np.min(ar)
         if np.max(ar) > maxi:
             maxi = np.max(ar)
+
     if bins is None:
         bins= []
-        i = mini-mini/10
+        i = mini-abs(mini)/10
         while i<= maxi:
             bins.append(i)
             i = i*ratio
-        bins.append(i)    
+        bins.append(i)
+
+    if type(bins) is int:
+        bins = np.linspace(mini-abs(mini)/10,maxi+abs(maxi)/10,bins)   
 
     a_s = []
     for j in range(len(arrays)):
@@ -503,10 +503,51 @@ def log_hist(arrays, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolo
             a_s.append(plt.hist(arrays[j], bins=bins,weights=np.ones(len(arrays[j])) / norm  , **kwargs))
         else:
             a_s.append(plt.hist(arrays[j], bins=bins, weights=np.ones(len(arrays[j])) / norm, **kwargs))
-    plt.xscale("log")
+    if xlogscale:
+        plt.xscale("log")
     plt.legend()
     plt.title(title)
     return a_s
+
+def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1):
+    """
+    D:          dataset (complete)
+    time:       arrival times (pd.dataframe)
+    key:        key of the dataframe
+    ntraces:    if > 1, calc semblance only if number of traces for array == ntraces
+    """
+    semblance_arr = []
+
+    event_list = np.array([s[:12] for s in time["trace_name"]])
+    event_uniq = list(set(event_list))
+    event_uniq.sort()
+
+    for ev in event_uniq:
+        tmp = time[(event_list==ev)]                                # select a single event
+        arr_list = np.array([s[16:18] for s in tmp["trace_name"]])  # select a single array for each event (tipical arr_list=["01", "01", "10"..] )
+        arr_uniq = list(set(arr_list))
+        arr_uniq.sort()
+        for arr in arr_uniq:
+            tmp_2 = tmp[(arr_list==arr)]
+            if len(tmp_2) > 1:                                      # can't calculate semblance for 1 lonely trace
+                if len(tmp_2)==ntraces or ntraces==-1:
+                    u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] for j,i in enumerate(tmp_2.index)]
+
+                    cond=True
+                    for io in u:
+                        if len(io) != s_+s:
+                            cond = False
+
+                    if  cond:
+                        semblance_arr.append(semblance(u)- 1/len(u))
+                    else:
+                        print(f"ho incontrato tracce lunghe di meno, {tmp_2.index},{key}")
+
+    semblance_arr = np.array(semblance_arr)
+    return semblance_arr
+
+
+
 
 
 
