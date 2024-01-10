@@ -4,6 +4,7 @@ import scipy
 from scipy.cluster.hierarchy import linkage, fcluster
 from scipy.integrate import simps
 import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import warnings
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
@@ -465,7 +466,7 @@ def SNR2(Data, arrival, semiamp=3*200, source_sample=None, equalsize=False):
 
 def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
     """ATTENTO passare sempre come 2D array(o list), acnhe se ho 1 solo hist da fare!!"""
-    print(kwargs)
+    
     if type(arrays) != list:
         print("attenzione, non hai messo una lista di array!")
         return -1
@@ -486,12 +487,12 @@ def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, ti
         bins.append(i)
 
     if type(bins) is int:
-        bins = np.linspace(mini-abs(mini)/10,maxi+abs(maxi)/10,bins)   
+        bins = np.linspace(mini-abs(mini)/100,maxi+abs(maxi)/100,bins)   
 
     a_s = []
     for j in range(len(arrays)):
         norm = len(arrays[j]) if Normalize else 1
-        
+            
         if len(labels)== len(arrays):
             kwargs["label"] = labels[j]
         if len(edgecolors) == len(arrays):
@@ -505,6 +506,9 @@ def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, ti
             a_s.append(plt.hist(arrays[j], bins=bins, weights=np.ones(len(arrays[j])) / norm, **kwargs))
     if xlogscale:
         plt.xscale("log")
+    if Normalize:
+        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+
     plt.legend()
     plt.title(title)
     return a_s
