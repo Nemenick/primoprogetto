@@ -421,7 +421,7 @@ def accept_cluster(startclust:list,endclust:list):
     if len(startclust) != len(endclust):
         raise Exception("Len startclust does not match endclust")
     
-    if len(startclust) == 1:
+    if len(startclust) == 1:       # Accept if only 1 cluster is provided
         return 0
     
     index_ok = -1
@@ -444,20 +444,22 @@ def semblance(u):
     Den = np.sum(u*u, axis=0)
     return simps(Num)/simps(Den)/len(u)
 
-def SNR2(Data, arrival, semiamp=3*200, source_sample=None, equalsize=False):
+def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False):
     if source_sample is None:
         source_sample = Data.shape[1]//2
     sig = []
     noise = []
     leng = Data.shape[1]
+    # select signal window     [arrival - shift ; arrival +amp -shift ]
+    shift = max(amp//10,20)
     for i in range(len(Data)):
         arrivo = arrival[i]
-        if semiamp+1 < arrivo < leng-semiamp-1: 
-            sig.append(Data[i,arrivo-semiamp:arrivo+semiamp])
-            noise.append(Data[i,source_sample-semiamp:source_sample+semiamp])
+        if amp+1 < arrivo < leng-amp-1: 
+            sig.append(Data[i,arrivo-shift:arrivo+amp-shift])
+            noise.append(Data[i,source_sample-amp:source_sample])
         elif equalsize:             # to create fictious data, in order to insert snr in catalogue
-            sig.append([0 for _ in range(semiamp*2)])
-            noise.append([_ for _ in range(semiamp*2)])
+            sig.append([0 for _ in range(amp)])
+            noise.append([_ for _ in range(amp)])
     sig = np.array(sig)
     noise = np.array(noise)
     res = np.std(sig,axis=1)/np.std(noise,axis=1)
