@@ -8,7 +8,9 @@ from matplotlib.ticker import PercentFormatter
 import warnings
 
 def freq_filter(signal,sf,freqs,type_filter="bandpass", order_filter=2):
-    """ freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
+    """ 
+    sf: sampling rate of the input waveform
+    freqs: list of frequences (e.g. 2 for bandpass), or single float (e.g. for highpass)
         sf sampling frequence  """
     # type_filter: ‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’
 
@@ -389,7 +391,7 @@ def cluster_agg(picks: list, indexes=None, dmax=300, th=5):
 
 def cluster_agg_max_distance(picks, dmax=300):
     # picks have to be a sorted list!
-    pic_M = [ [i] for i in picks]
+    pic_M = [[i] for i in picks]
     Z = linkage(pic_M,"complete")       # "compute" the clustering procedure. returns the "rappresentation of the dendrogram"
     crit = Z[:, 2]
     flat_clusters = fcluster(Z, t=dmax, criterion='monocrit', monocrit=crit) # stops the clustering procedure based on criteria inside crit

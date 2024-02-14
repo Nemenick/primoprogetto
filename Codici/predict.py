@@ -8,13 +8,6 @@ import os
 from datetime import datetime
 
 
-"""
-RIVEDI:
-    read_mseed:
-        - key "a"-> how to save arrival in MSEED file?
-        - key "b"-> how to save reference time in MSEED file?
-"""
-
 def read_mseed(fname, csv_arrivals={}):
     sampling_rate=100
     try:
@@ -38,11 +31,15 @@ def read_mseed(fname, csv_arrivals={}):
     
     i = 0
     for trace in stream:
+    
+        if trace.id[-1].upper() != "Z":
+            ids_not_predictable.append(trace.id)
+            error_not_predictable.append("CFM only works on vertical component. This is not a vertical component!")
+            continue
+        
         arrival = -10
         # try to find a valid arrival time
-        if "a" in trace.stats.mseed.keys():
-            arrival = int(trace.stats.mseed["a"]*trace.stats.sampling_rate)
-        elif "trace_P_arrival_sample" in csv_arrivals.keys():
+        if "trace_P_arrival_sample" in csv_arrivals.keys():
             if len(csv_arrivals[csv_arrivals["trace_id"]==trace.id])>1:
                 ids_not_predictable.append(trace.id)
                 error_not_predictable.append("Two or more arrival found for the trace with this id!")
@@ -56,6 +53,7 @@ def read_mseed(fname, csv_arrivals={}):
                 continue
             if len(csv_arrivals[csv_arrivals["trace_id"]==trace.id])==1:
                 arrival = int((UTCDateTime(csv_arrivals[csv_arrivals["trace_id"]==trace.id]["trace_P_arrival_time"].iloc[0])-trace.stats.starttime) * trace.stats.sampling_rate)
+                
         if arrival < 0:
             ids_not_predictable.append(trace.id)
             error_not_predictable.append("Unable to find a valid P arrival")
@@ -106,6 +104,12 @@ def read_sac(fname, csv_arrivals={}):
     arrivals = []
     i = 0
     for trace in stream:
+
+        if trace.id[-1].upper() != "Z":
+            ids_not_predictable.append(trace.id)
+            error_not_predictable.append("CFM only works on vertical component. This is not a vertical component!")
+            continue
+
         arrival = -10
         # try to find a valid arrival time
         if "a" in trace.stats.sac.keys():
@@ -175,7 +179,7 @@ parser.add_argument("--model", type=str, help="REQUIRED: Path of the model used 
 parser.add_argument("--data", type=str, help="REQUIRED: Path of the input data. Can accept wildcards for sac or mseed formats")
 parser.add_argument("--format", type=str, help="REQUIRED: input data file format. Accepted values are 'sac' or 'mseed'")
 parser.add_argument("--arrivals", type=str, default={}, help=harrival)
-parser.add_argument("--batch_size", type=int, default=1, help="Optional: batch size (default=1)")
+parser.add_argument("--batch_size", type=int, default=16, help="Optional: batch size (default=1)")
 parser.add_argument("--demean", type=str, default="true", help="Optional: if 'true', data will be demeaned. Any other value is interpreted as 'false'. RECOMANDED TO DEMEAN (default='true')")
 parser.add_argument("--normalize", type=str, default="true", help="Optional: if 'true', data will be cut and normalized. Any other value is interpreted as 'false'. RECOMANDED TO NORMALIZE (default='true')")
 parser.add_argument("--results_dir", type=str, default=None, help="Optional: Folder where to store the results. If not provided, a folder in the current path is created")
@@ -199,7 +203,28 @@ else:
 # data          --> np.array of shape (n_traces, 160)
 # pd_pred       --> pd dataframe, contains id of predictable waveforms with their respective arrival considered and predictions
 # pd_not_pred   --> pd dataframe, contains id of not_predictable waveforms with the motivation
-    
+
+# Get the current date and time to create the folder where to store the outcomes.
+current_time = str(datetime.now())
+current_time = current_time.replace("-","_").replace(" ","_").replace(":","_").replace(".","_")
+try:
+    os.mkdir(f"{args.results_dir}/results_{current_time}")
+    path = f"{args.results_dir}/results_{current_time}"
+except:
+    if args.results_dir is not None:
+        print(f"The path provided ('{args.results_dir}') is not a valid path to store the results. Creating a folder in the current path")
+    else:
+        print(f"No path to store the results provided. Creating a folder in the current path")
+    os.mkdir(f"results_{current_time}")
+    path = f"results_{current_time}"
+
+
+if len(data)<1:
+    print("Number of predictable traces equal to 0. Exit")
+    pd_pred.to_csv(f"{path}/waveforms_predicted.csv",index=False)
+    pd_not_pred.to_csv(f"{path}/waveforms_not_predicted.csv",index=False)
+    exit()
+
 if args.demean.lower() == "true":
     data = demean(data)
 else:
@@ -214,20 +239,6 @@ y = model.predict(data[:,semi_amp-80:semi_amp+80], batch_size=args.batch_size)
 y.reshape(max(y.shape))
 
 pd_pred["prediction"] = y
-
-# Get the current date and time.
-current_time = str(datetime.now())
-current_time = current_time.replace("-","_").replace(" ","_").replace(":","_").replace(".","_")
-try:
-    os.mkdir(f"{args.results_dir}/results_{current_time}")
-    path = f"{args.results_dir}/results_{current_time}"
-except:
-    if args.results_dir is not None:
-        print(f"The path provided ('{args.results_dir}') is not a valid path to store the results. Creating a folder in the current path")
-    else:
-        print(f"No path to store the results provided. Creating a folder in the current path")
-    os.mkdir(f"results_{current_time}")
-    path = f"results_{current_time}"
 
 pd_pred.to_csv(f"{path}/waveforms_predicted.csv",index=False)
 pd_not_pred.to_csv(f"{path}/waveforms_not_predicted.csv",index=False)
