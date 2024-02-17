@@ -303,7 +303,7 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
         onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound + window_size
     except:
         onset_2 = -100000
-    return onsets, diff, onset_2, lower_bound
+    return onsets, diff, onset_2, lower_bound, hos
 
 def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False, Ok= "not ok, not used function"):
     """
@@ -393,8 +393,8 @@ def cluster_agg_max_distance(picks, dmax=300):
     # picks have to be a sorted list!
     pic_M = [[i] for i in picks]
     Z = linkage(pic_M,"complete")       # "compute" the clustering procedure. returns the "rappresentation of the dendrogram"
-    crit = Z[:, 2]
-    flat_clusters = fcluster(Z, t=dmax, criterion='monocrit', monocrit=crit) # stops the clustering procedure based on criteria inside crit
+    crit = Z[:, 2]                      # distance between clusters at each step
+    flat_clusters = fcluster(Z, t=dmax, criterion='monocrit', monocrit=crit) # stops the clustering procedure based on criteria inside crit (Z<=dmax)
     sclust=[0]
     eclust=[]
     for i in range(len(flat_clusters)):
@@ -468,9 +468,10 @@ def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False):
     print(res.shape)
     return res
 
-def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
+def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
     """ATTENTO passare sempre come 2D array(o list), acnhe se ho 1 solo hist da fare!!"""
-    
+    # a,b,c sono i parametri di plt.subplot(a,b,c)
+    ax1 = plt.subplot(a,b,c)
     if type(arrays) != list:
         print("attenzione, non hai messo una lista di array!")
         return -1
@@ -493,7 +494,7 @@ def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, ti
     if type(bins) is int:
         bins = np.linspace(mini-abs(mini)/100,maxi+abs(maxi)/100,bins)   
 
-    a_s = []
+    a_s = [ax1]
     for j in range(len(arrays)):
         norm = len(arrays[j]) if Normalize else 1
             
@@ -504,17 +505,17 @@ def log_hist(arrays, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, ti
         else:
             kwargs["edgecolor"] = "black"
         if ylogscale:
-            plt.yscale("log")
-            a_s.append(plt.hist(arrays[j], bins=bins,weights=np.ones(len(arrays[j])) / norm  , **kwargs))
+            ax1.set_yscale("log")
+            a_s.append(ax1.hist(arrays[j], bins=bins,weights=np.ones(len(arrays[j])) / norm  , **kwargs))
         else:
-            a_s.append(plt.hist(arrays[j], bins=bins, weights=np.ones(len(arrays[j])) / norm, **kwargs))
+            a_s.append(ax1.hist(arrays[j], bins=bins, weights=np.ones(len(arrays[j])) / norm, **kwargs))
     if xlogscale:
-        plt.xscale("log")
+        ax1.set_xscale("log")
     if Normalize:
-        plt.gca().yaxis.set_major_formatter(PercentFormatter(1))
+        ax1.yaxis.set_major_formatter(PercentFormatter(1))
 
-    plt.legend()
-    plt.title(title)
+    ax1.legend()
+    ax1.set_title(title)
     return a_s
 
 def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1):
