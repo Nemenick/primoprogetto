@@ -439,9 +439,22 @@ def semblance(u):
     # https://doi.org/10.1093/gji/ggu311 eq. (4)
     # u to be
     #   3) demeaned
-    #   1) filtered
+    #   1) not(?) filtered
     #   2) each row aligned for its own arrival time
     u = np.array(u)
+    Num = np.sum(u, axis=0)**2
+    Den = np.sum(u*u, axis=0)
+    return simps(Num)/simps(Den)/len(u)
+
+def semblance_normalized_tracess(u):
+    # https://doi.org/10.1093/gji/ggu311 eq. (4)
+    # u to be
+    #   1) not(?) filtered (if filtered ok but it takes sooo long)
+    #   2) each row aligned for its own arrival time
+    #   3) demeaned
+    u = np.array(u)
+    # u = u - np.mean(u, axis=1).reshape(len(u),1) (non necessario, già demeaned prima(meglio perchè più punti))
+    u = u / np.max([np.max(u,axis=1),-np.min(u,axis = 1)], axis = 0).reshape(len(u),1)
     Num = np.sum(u, axis=0)**2
     Den = np.sum(u*u, axis=0)
     return simps(Num)/simps(Den)/len(u)
@@ -518,11 +531,11 @@ def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=Tru
     ax1.set_title(title)
     return a_s
 
-def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1):
+def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True):
     """
     D:          dataset (complete)
     time:       arrival times (pd.dataframe)
-    key:        key of the dataframe
+    key:        key of the dataframe (to retrive info of arrivals)
     ntraces:    if > 1, calc semblance only if number of traces for array == ntraces
     """
     semblance_arr = []
@@ -540,7 +553,8 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1):
             tmp_2 = tmp[(arr_list==arr)]
             if len(tmp_2) > 1:                                      # can't calculate semblance for 1 lonely trace
                 if len(tmp_2)==ntraces or ntraces==-1:
-                    u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] for j,i in enumerate(tmp_2.index)]
+                    # Attento! adesso DEMEANED in maniera giusta
+                    u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] - np.mean(D.sismogramma[i][tmp_2[key][i]-150:tmp_2[key][i]-10]) for j,i in enumerate(tmp_2.index) ]
 
                     cond=True
                     for io in u:
@@ -548,7 +562,10 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1):
                             cond = False
 
                     if  cond:
-                        semblance_arr.append(semblance(u)- 1/len(u))
+                        if normalize:
+                            semblance_arr.append(semblance_normalized_tracess(u)- 1/len(u))
+                        else:
+                            semblance_arr.append(semblance(u)- 1/len(u))
                     else:
                         print(f"ho incontrato tracce lunghe di meno, {tmp_2.index},{key}")
 

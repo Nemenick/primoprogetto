@@ -292,8 +292,7 @@ class ClasseDataset:
         """
         if metodo == "totale":
             self.demeaned = "totale"
-            for i in range(len(self.sismogramma)):
-                self.sismogramma = self.sismogramma - np.mean(self.sismogramma, axis=1).reshape(len(self.sismogramma),1)
+            self.sismogramma = self.sismogramma - np.mean(self.sismogramma, axis=1).reshape(len(self.sismogramma),1)
 
         if metodo == "rumore":
             self.demeaned = "rumore"
