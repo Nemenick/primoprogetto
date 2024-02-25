@@ -531,7 +531,7 @@ def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=Tru
     ax1.set_title(title)
     return a_s
 
-def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True):
+def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True, filter_frequencies=None, semi_amp_filt = 500):
     """
     D:          dataset (complete)
     time:       arrival times (pd.dataframe)
@@ -554,8 +554,15 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True):
             if len(tmp_2) > 1:                                      # can't calculate semblance for 1 lonely trace
                 if len(tmp_2)==ntraces or ntraces==-1:
                     # Attento! adesso DEMEANED in maniera giusta
-                    u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] - np.mean(D.sismogramma[i][tmp_2[key][i]-150:tmp_2[key][i]-10]) for j,i in enumerate(tmp_2.index) ]
-
+                    if filter_frequencies is None:
+                        u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] - np.mean(D.sismogramma[i][tmp_2[key][i]-150:tmp_2[key][i]-10]) for j,i in enumerate(tmp_2.index)]
+                    else:
+                        try:
+                            u = [freq_filter(D.sismogramma[i][tmp_2[key][i]-semi_amp_filt:tmp_2[key][i]+semi_amp_filt],200,filter_frequencies,type_filter="bandpass")[semi_amp_filt-s_:semi_amp_filt+s] for i in tmp_2.index]
+                        except Exception as e: 
+                            print(f"Error: {e},{tmp_2.index},{key}")
+                        u=np.array(u)
+                        u=u-np.mean(u[:, 0:45], axis=1).reshape(len(u),1)
                     cond=True
                     for io in u:
                         if len(io) != s_+s:
