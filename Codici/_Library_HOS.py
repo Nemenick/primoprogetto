@@ -459,7 +459,7 @@ def semblance_normalized_tracess(u):
     Den = np.sum(u*u, axis=0)
     return simps(Num)/simps(Den)/len(u)
 
-def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False):
+def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False,freq=None):
     if source_sample is None:
         source_sample = Data.shape[1]//2
     sig = []
@@ -469,9 +469,13 @@ def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False):
     shift = max(amp//10,20)
     for i in range(len(Data)):
         arrivo = arrival[i]
-        if amp+1 < arrivo < leng-amp-1: 
-            sig.append(Data[i,arrivo-shift:arrivo+amp-shift])
-            noise.append(Data[i,source_sample-amp:source_sample])
+        if amp+1 < arrivo < leng-amp-1:
+            if filter is None: 
+                sig.append(Data[i,arrivo-shift:arrivo+amp-shift])
+                noise.append(Data[i,source_sample-amp:source_sample])
+            else:
+                sig.append(freq_filter(Data[i,arrivo-shift:arrivo+amp-shift],200,freq,type_filter="highpass"))
+                noise.append(freq_filter(Data[i,source_sample-amp:source_sample],200,freq,type_filter="highpass"))
         elif equalsize:             # to create fictious data, in order to insert snr in catalogue
             sig.append([0 for _ in range(amp)])
             noise.append([_ for _ in range(amp)])
@@ -481,7 +485,7 @@ def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False):
     print(res.shape)
     return res
 
-def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],  **kwargs):
+def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=True,ratio=2, title=" ", edgecolors=[], bins=None, labels=[],linewidths=[],  **kwargs):
     """ATTENTO passare sempre come 2D array(o list), acnhe se ho 1 solo hist da fare!!"""
     # a,b,c sono i parametri di plt.subplot(a,b,c)
     ax1 = plt.subplot(a,b,c)
@@ -510,7 +514,9 @@ def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=Tru
     a_s = [ax1]
     for j in range(len(arrays)):
         norm = len(arrays[j]) if Normalize else 1
-            
+        
+        if len(linewidths)== len(arrays):
+            kwargs["linewidth"] = linewidths[j]
         if len(labels)== len(arrays):
             kwargs["label"] = labels[j]
         if len(edgecolors) == len(arrays):
@@ -526,7 +532,8 @@ def log_hist(arrays, a=1,b=1,c=1, xlogscale=False, ylogscale=True, Normalize=Tru
         ax1.set_xscale("log")
     if Normalize:
         ax1.yaxis.set_major_formatter(PercentFormatter(1))
-
+    
+    ax1.set_ylim(0-ax1.set_ylim()[1]*0.2/10,ax1.set_ylim()[1])
     ax1.legend()
     ax1.set_title(title)
     return a_s
