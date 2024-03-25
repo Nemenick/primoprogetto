@@ -25,6 +25,7 @@ uu["trace_P_arrival_sample"] = D.metadata["trace_P_arrival_sample"]
 
 
 p = [[_Library_HOS.S_4, "bandpass", [1,30], 300, [0.1,0.2,0.3,0.4]]]
+post_origin = 10
 
 names = ["S_4","S_6","S_6","S_6","S_6","S_6","S_6","S_6","S_6",
          "S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4","S_4"]         # used to generate a string that report the used statistic
@@ -38,16 +39,21 @@ for stat, filt, freq, wind, th in p:                                    # cycle 
     ons_th = [[] for i in range(len(th)) ]                              # I use different threshold for same setting
     ons_max = []
     
-    for i in range(len(D.sismogramma)): 
+    for i in range(len(D.sismogramma[0:30000])): 
 
         # register the sample corresponding to the event origin
         or_s =  int((UTCDateTime(D.metadata["source_origin_time"][i])- UTCDateTime(D.metadata["trace_start_time"][i]))*D.metadata["sampling_rate"][i])
 
-        #inizio = or_s-wind if or_s-wind >0  else 0
-                                        # I extract the portion of the waveform from the arrival until 8 seconds after
-        #sig = _Library_HOS.freq_filter(D.sismogramma[i][inizio:or_s+8*int(D.metadata["sampling_rate"][i])], D.metadata["sampling_rate"][i], freq, type_filter= filt)
-
-        try:
+        inizio = or_s-wind if or_s-wind >0  else 0
+                                        # I extract the portion of the waveform from the arrival until post_origin seconds after
+        sig = _Library_HOS.freq_filter(D.sismogramma[i][inizio:or_s+post_origin*int(D.metadata["sampling_rate"][i])], D.metadata["sampling_rate"][i], freq, type_filter= filt)
+        onset_th, diff, onset_max,u,hoss  = _Library_HOS.get_onset_4(sig, wind, threshold=th, statistics= stat) # get onsets
+        for j in range(len(th)):
+            ons_th[j].append(onset_th[j] + or_s-wind)
+        ons_max.append(onset_max + or_s-wind)
+        
+        # "Test che succede su noise!"
+        """try:
             inizio = or_s-wind- 4*int(D.metadata["sampling_rate"][i])if or_s-wind >0  else 0
             sig = _Library_HOS.freq_filter(D.sismogramma[i][inizio:inizio+4*int(D.metadata["sampling_rate"][i])], D.metadata["sampling_rate"][i], freq, type_filter= filt)
             onset_th, diff, onset_max,u  = _Library_HOS.get_onset_4(sig, wind, threshold=th, statistics= stat) # get onsets
@@ -58,7 +64,7 @@ for stat, filt, freq, wind, th in p:                                    # cycle 
         except:
             for j in range(len(th)):
                 ons_th[j].append(1000000000)
-            ons_max.append(1000000000)
+            ons_max.append(1000000000)"""
 
     for j in range(len(th)):
         ons_th_tmp = np.array(ons_th[j])
@@ -66,5 +72,5 @@ for stat, filt, freq, wind, th in p:                                    # cycle 
 
     ons_max = np.array(ons_max)
     uu = pd.concat([uu,pd.DataFrame.from_dict({f"{string}_ons_max":ons_max})],axis=1)
-    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_whole_4s_prima_inizio(HOS_on_noise).csv",index=False)
+    uu.to_csv("/home/silvia/Desktop/ONSET_HOS/ONSET_DETECT_whole_10s_dopo_inizio_primi_30000.csv",index=False)
     indi +=1

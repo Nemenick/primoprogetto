@@ -300,10 +300,10 @@ def get_onset_4(waveform,window_size=100, threshold=[0.1], statistics=S_6, origi
             onsets.append(-100000)
 
     try:
-        onset_2 = np.argmax(diff[lower_bound:upper_bound]) + lower_bound + window_size
+        onset_max = np.argmax(diff[lower_bound:upper_bound]) + lower_bound + window_size
     except:
-        onset_2 = -100000
-    return onsets, diff, onset_2, lower_bound, hos
+        onset_max = -100000
+    return onsets, diff, onset_max, lower_bound, hos
 
 def cluster_div(picks: list, dmax=200, th=5/3, force_cut = False, Ok= "not ok, not used function"):
     """
@@ -465,12 +465,13 @@ def SNR2(Data, arrival, amp=4*200, source_sample=None, equalsize=False,freq=None
     sig = []
     noise = []
     leng = Data.shape[1]
-    # select signal window     [arrival - shift ; arrival +amp -shift ]
+    # select signal window      [arrival - shift ; arrival + amp -shift ]
+    # select noise window       [origin_time - amp; origin_time]
     shift = max(amp//10,20)
     for i in range(len(Data)):
         arrivo = arrival[i]
         if amp+1 < arrivo < leng-amp-1:
-            if filter is None: 
+            if freq is None: 
                 sig.append(Data[i,arrivo-shift:arrivo+amp-shift])
                 noise.append(Data[i,source_sample-amp:source_sample])
             else:
@@ -559,7 +560,7 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True, fil
         for arr in arr_uniq:
             tmp_2 = tmp[(arr_list==arr)]
             if len(tmp_2) > 1:                                      # can't calculate semblance for 1 lonely trace
-                if len(tmp_2)==ntraces or ntraces==-1:
+                if len(tmp_2)==ntraces or ntraces==-1 or (ntraces==10 and len(tmp_2)==11):
                     # Attento! adesso DEMEANED in maniera giusta
                     if filter_frequencies is None:
                         u = [D.sismogramma[i][tmp_2[key][i]-s_:tmp_2[key][i]+s] - np.mean(D.sismogramma[i][tmp_2[key][i]-150:tmp_2[key][i]-10]) for j,i in enumerate(tmp_2.index)]
@@ -568,6 +569,7 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True, fil
                             u = [freq_filter(D.sismogramma[i][tmp_2[key][i]-semi_amp_filt:tmp_2[key][i]+semi_amp_filt],200,filter_frequencies,type_filter="bandpass")[semi_amp_filt-s_:semi_amp_filt+s] for i in tmp_2.index]
                         except Exception as e: 
                             print(f"Error: {e},{tmp_2.index},{key}")
+                            continue
                         u=np.array(u)
                         u=u-np.mean(u[:, 0:45], axis=1).reshape(len(u),1)
                     cond=True
@@ -581,7 +583,7 @@ def semblance_for_array(D,time, key, s_=50,s=50, ntraces=-1, normalize=True, fil
                         else:
                             semblance_arr.append(semblance(u)- 1/len(u))
                     else:
-                        print(f"ho incontrato tracce lunghe di meno, {tmp_2.index},{key}")
+                        print(f"ho incontrato tracce lunghe meno, {tmp_2.index},{key}")
 
     semblance_arr = np.array(semblance_arr)
     return semblance_arr
